@@ -1,168 +1,146 @@
 <!doctype html>
 <html>
-    <ul class="purple flex-container">
-        <li class="blue rightMenuBarItem centered" style="text-align: center">ICCC<br>Home</li>
-        <li contenteditable style="border-radius: 1000px" class="blue flexFiller"></li>
-        <li style="border-radius: 1000px" class="blue rightMenuBarItem"><img src="images/searchIcon.png" class='rightMenuBarItem'></li>
-        <li style="border-radius: 1000px" class="blue rightMenuBarItem"><img src="images/addNewComic.png" class='rightMenuBarItem'></li>
-        <li style="border-radius: 1000px" class="blue rightMenuBarItem"><img src="images/accountIcon.png" class='rightMenuBarItem'></li>
-    </ul>
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-</head>
-<body>
-<ul class="purple flex-container">
-    <a href="/">
-        <li class="blue rightMenuBarItem">
-            ICCC
-        </li>
-    </a>
-    <li class="blue rightMenuBarItem">
-        Authors
-    </li>
-    <li class="blue rightMenuBarItem">
-        Genres
-    </li>
-    <li class="blue rightMenuBarItem">
-        Series
-    </li>
-    <li class="blue flexFiller invisible"></li>
-    <li class="blue rightMenuBarItem">
-        <img src="images/searchIcon.png" class='rightMenuBarItem'>
-    </li>
-    <a href="personalPage.html">
-        <li class="blue rightMenuBarItem">
-            <img src="images/accountIcon.png" class='rightMenuBarItem'>
-        </li>
-    </a>
-</ul>
-</body>
+	<ul class="purple flex-container">
+		<li class="blue rightMenuBarItem centered" style="text-align: center">ICCC<br>Home</li>
+		<li contenteditable style="border-radius: 1000px" class="blue flexFiller"></li>
+		<li style="border-radius: 1000px" class="blue rightMenuBarItem"><img src="images/searchIcon.png" class='rightMenuBarItem'></li>
+		<li style="border-radius: 1000px" class="blue rightMenuBarItem"><img src="images/addNewComic.png" class='rightMenuBarItem'></li>
+		<li style="border-radius: 1000px" class="blue rightMenuBarItem"><img src="images/accountIcon.png" class='rightMenuBarItem'></li>
+	</ul>
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+	</head>
+
+
+	<style>
+		body
+		{
+			background-color: lightslategray;
+		}
+
+		button
+		{
+
+			/* visibility: hidden */
+		}
+
+		.loggedin
+		{
+			visibility: visible /* hidden */
+		}
+
+		/* background-color:green */
+	</style>
+
+	<body>
+		<div class=purple style='width: 97%;display:flex'>
+			<button class="loggedin">Add Category</button>
+			<div style='flex-grow: 1'>
+
+			</div>
+			<div class=centered style="flex-grow: 0">
+				<h4>Filter: </h4>
+				<span style="width: 10px"></span>
+			</div>
+			<div style='flex-grow: 3;'>
+				<input type="" name="" style="color: black">
+			</div>
+			<div style='flex-grow: 1'>
+
+			</div>
+		</div>
+
+		<div class="purple" style='width: 97%;margin:0'>
+			<div class=blue style='display: flex;flex-direction: column '>
+				<div class style='height:20px;display:flex'>
+					<button class='loggedin' style='flex-grow: 0;'>Remove</button>
+					<div class='rainbow centered' style='flex-grow: 1;text-align: center'>
+						<h2>
+							Popular Series
+						</h2>
+					</div>
+
+					<button class='loggedin centered' style='flex-grow: 0;'>🠦</button>
+					<button class='loggedin centered' style='flex-grow: 0;'>🠧</button>
+					<button class=centered style='flex-grow: 0;'>More</button>
+
+				</div>
+				<br>
+				<object type="text/html" data="searchScrollerWithEditing.html" style='width:100%;height:120px'></object>
+			</div>
+
+			<div class=blue style='display: flex;flex-direction: column '>
+				<div class style='height:20px;display:flex'>
+					<button class='loggedin' style='flex-grow: 0;'>Remove</button>
+					<div class='rainbow centered' style='flex-grow: 1;text-align: center'>
+						<h2>
+							New Episodes
+						</h2>
+					</div>
+
+					<button class='loggedin centered' style='flex-grow: 0;'>🠦</button>
+					<button class='loggedin centered' style='flex-grow: 0;'>🠧</button>
+					<button class=centered style='flex-grow: 0;'>More</button>
+
+				</div>
+				<br>
+				<object type="text/html" data="searchscroller.html" style='width:100%;height:120px'></object>
+			</div>
+
+			<div class=blue style='display: flex;flex-direction: column '>
+				<div class style='height:20px;display:flex'>
+					<button class='loggedin' style='flex-grow: 0;'>Remove</button>
+					<div class='rainbow centered' style='flex-grow: 1;text-align: center'>
+						<h2>
+							Popular Authors
+						</h2>
+					</div>
+
+					<button class='loggedin centered' style='flex-grow: 0;'>🠦</button>
+					<button class='loggedin centered' style='flex-grow: 0;'>🠧</button>
+					<button class=centered style='flex-grow: 0;'>More</button>
+
+				</div>
+				<br>
+				<object type="text/html" data="searchscroller.html" style='width:100%;height:120px'></object>
+			</div>
+
+			<div class=blue style='display: flex;flex-direction: column '>
+				<div class style='height:20px;display:flex'>
+					<button class='loggedin' style='flex-grow: 0;'>Remove</button>
+					<div class='rainbow centered' style='flex-grow: 1;text-align: center'>
+						<h2>
+							Popular Community Comics
+						</h2>
+					</div>
+
+					<button class='loggedin centered' style='flex-grow: 0;'>🠦</button>
+					<button class='loggedin centered' style='flex-grow: 0;'>🠧</button>
+					<button class=centered style='flex-grow: 0;'>More</button>
+
+				</div>
+				<br>
+				<object type="text/html" data="searchscroller.html" style='width:100%;height:120px'></object>
+			</div>
+
+			<div class=blue style='display: flex;flex-direction: column '>
+				<div class style='height:20px;display:flex'>
+					<button class='loggedin' style='flex-grow: 0;'>Remove</button>
+					<div class='rainbow centered' style='flex-grow: 1;text-align: center'>
+						<h2>
+							Top Genres
+						</h2>
+					</div>
+
+					<button class='loggedin centered' style='flex-grow: 0;'>🠦</button>
+					<button class='loggedin centered' style='flex-grow: 0;'>🠧</button>
+					<button class=centered style='flex-grow: 0;'>More</button>
+
+				</div>
+				<br>
+				<object type="text/html" data="searchscroller.html" style='width:100%;height:120px'></object>
+			</div>
+		</div>
+	</body>
 </html>
-
-
-<style>
-    body {
-        background-color: lightslategray;
-    }
-
-    button {
-
-        /* visibility: hidden */
-    }
-
-    .loggedin {
-        visibility: visible /* hidden */
-    }
-
-    /* background-color:green */
-</style>
-
-<div class=purple style='width: 97%;display:flex'>
-    <button class="loggedin">Add Category</button>
-    <div style='flex-grow: 1'>
-
-    </div>
-    <div class=centered style="flex-grow: 0">
-        <h4>Filter: </h4>
-        <span style="width: 10px"></span>
-    </div>
-    <div style='flex-grow: 3;'>
-        <input type="" name="" style="color: black">
-    </div>
-    <div style='flex-grow: 1'>
-
-    </div>
-</div>
-
-<div class="purple" style='width: 97%;margin:0'>
-    <div class=blue style='display: flex;flex-direction: column '>
-        <div class style='height:20px;display:flex'>
-            <button class='loggedin' style='flex-grow: 0;'>Remove</button>
-            <div class='rainbow centered' style='flex-grow: 1;text-align: center'>
-                <h2>
-                    Popular Series
-                </h2>
-            </div>
-
-            <button class='loggedin centered' style='flex-grow: 0;'>🠦</button>
-            <button class='loggedin centered' style='flex-grow: 0;'>🠧</button>
-            <button class=centered style='flex-grow: 0;'>More</button>
-
-        </div>
-        <br>
-        <object type="text/html" data="searchScrollerWithEditing.html" style='width:100%;height:120px'></object>
-    </div>
-
-    <div class=blue style='display: flex;flex-direction: column '>
-        <div class style='height:20px;display:flex'>
-            <button class='loggedin' style='flex-grow: 0;'>Remove</button>
-            <div class='rainbow centered' style='flex-grow: 1;text-align: center'>
-                <h2>
-                    New Episodes
-                </h2>
-            </div>
-
-            <button class='loggedin centered' style='flex-grow: 0;'>🠦</button>
-            <button class='loggedin centered' style='flex-grow: 0;'>🠧</button>
-            <button class=centered style='flex-grow: 0;'>More</button>
-
-        </div>
-        <br>
-        <object type="text/html" data="searchscroller.html" style='width:100%;height:120px'></object>
-    </div>
-
-    <div class=blue style='display: flex;flex-direction: column '>
-        <div class style='height:20px;display:flex'>
-            <button class='loggedin' style='flex-grow: 0;'>Remove</button>
-            <div class='rainbow centered' style='flex-grow: 1;text-align: center'>
-                <h2>
-                    Popular Authors
-                </h2>
-            </div>
-
-            <button class='loggedin centered' style='flex-grow: 0;'>🠦</button>
-            <button class='loggedin centered' style='flex-grow: 0;'>🠧</button>
-            <button class=centered style='flex-grow: 0;'>More</button>
-
-        </div>
-        <br>
-        <object type="text/html" data="searchscroller.html" style='width:100%;height:120px'></object>
-    </div>
-
-    <div class=blue style='display: flex;flex-direction: column '>
-        <div class style='height:20px;display:flex'>
-            <button class='loggedin' style='flex-grow: 0;'>Remove</button>
-            <div class='rainbow centered' style='flex-grow: 1;text-align: center'>
-                <h2>
-                    Popular Community Comics
-                </h2>
-            </div>
-
-            <button class='loggedin centered' style='flex-grow: 0;'>🠦</button>
-            <button class='loggedin centered' style='flex-grow: 0;'>🠧</button>
-            <button class=centered style='flex-grow: 0;'>More</button>
-
-        </div>
-        <br>
-        <object type="text/html" data="searchscroller.html" style='width:100%;height:120px'></object>
-    </div>
-
-    <div class=blue style='display: flex;flex-direction: column '>
-        <div class style='height:20px;display:flex'>
-            <button class='loggedin' style='flex-grow: 0;'>Remove</button>
-            <div class='rainbow centered' style='flex-grow: 1;text-align: center'>
-                <h2>
-                    Top Genres
-                </h2>
-            </div>
-
-            <button class='loggedin centered' style='flex-grow: 0;'>🠦</button>
-            <button class='loggedin centered' style='flex-grow: 0;'>🠧</button>
-            <button class=centered style='flex-grow: 0;'>More</button>
-
-        </div>
-        <br>
-        <object type="text/html" data="searchscroller.html" style='width:100%;height:120px'></object>
-    </div>
-</div>

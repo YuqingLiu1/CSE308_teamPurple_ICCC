@@ -8,7 +8,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String getHomePage() {
-        return "loggedOutHomepage";
+        return "Mockups/loggedOutHomepage";
     }
 
 }

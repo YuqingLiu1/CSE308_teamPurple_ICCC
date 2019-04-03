@@ -1,0 +1,238 @@
+@import url('https://fonts.googleapis.com/css?family=Bitter|Nanum+Gothic|Quicksand');
+*
+{
+	margin: 0;
+	padding: 0;
+	font-family: 'Bitter', monospace;
+	color: white;
+	border-collapse: collapse;
+	border-width: 0;
+	text-shadow: 0px 0px 4px rgba(0, 0, 0, .3);
+
+}
+.blue
+{
+	box-shadow: 0px 0px 4px rgba(0, 0, 0, .3);
+	color: white;
+	border: 1px solid rgba(135, 206, 250, .6);
+	border-radius: 5px;
+	padding: 5pt;
+	margin: 5px;
+	background-color: rgba(50, 128, 216, 0.3);
+	overflow: hidden;
+}
+.white
+{
+	box-shadow: 0px 0px 4px rgba(0, 0, 0, .3);
+	color: white;
+	border: 1px solid rgba(206, 206, 206, .6);
+	border-radius: 5px;
+	padding: 5pt;
+	margin: 5px;
+	background-color: rgba(216, 216, 216, 0.3);
+	overflow: hidden;
+}
+img
+{
+	box-shadow: 0px 0px 4px rgba(0, 0, 0, .3);
+	border-radius: 40px;
+}
+:focus
+{
+	outline: none;
+}
+input:focus
+{
+	box-shadow: 0 0 3pt 2pt #719ECE;
+}
+td
+{
+	color: white;
+}
+.horz
+{
+	display: inline-block;
+}
+.purple
+{
+	box-shadow: 0px 0px 4px rgba(0, 0, 0, .3);
+	color: white;
+	display: inline-block;
+	border: 1px solid rgba(206, 135, 250, .6);
+	border-radius: 10px;
+	padding: 5pt;
+	margin: 5px;
+	background-color: rgba(128, 50, 216, 0.3);
+
+	overflow: hidden;
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(2px);
+	backdrop-filter: blur(2em);
+}
+input, select
+{
+	border-radius: 15px;
+	border: solid 1px black;
+	padding: 5px;
+	height: 20px;
+	min-width: 20px;
+	width: 100%;
+	resize: horizontal;
+}
+html
+{
+
+	/* user-select: none */
+}
+:disabled
+{
+	background: gray;
+	color: black;
+	border-color: black;
+}
+.disabled
+{
+	background: gray;
+	color: black;
+	border-color: black;
+}
+body
+{
+	margin: 0;
+	padding: 0;
+	/* background-color: black; */
+	/* background-image: url("https://i.imgur.com/4uMC5Ji.png"); */
+	/* background-size: auto 100%; */
+	/* background-repeat: no-repeat; */
+}
+button:hover
+{
+	background: #47A7F5 radial-gradient(circle, transparent 1%, #47A7F5 1%) center/15000%;
+	box-shadow: 0 0 4px #999;
+	transition: all .1s, background .8s;
+}
+button:active
+{
+	background-color: #6EB9F7;
+	background-size: 100%;
+	transition: all .5s, background 0s;
+}
+button
+{
+	box-shadow: 0 0 4px #999;
+
+	padding: 2px;
+	padding-left: 6px;
+	padding-right: 6px;
+
+	transition: all .2s;
+	margin: 5;
+	cursor: pointer;
+	color: white;
+	background: rgba(70, 130, 180, .5) center;
+	outline: none;
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 10px;
+	border-color: rgba(255, 255, 255, .5);
+}
+.bigbitton
+{
+	padding: 8px;
+	padding-left: 14px;
+	padding-right: 14px;
+
+	font-size: 20pt;
+	border-width: 3px;
+	border-radius: 100px;
+}
+select
+{
+	color: black;
+}
+.leftColBorder
+{
+	border-left: 1px solid rgba(255, 255, 255, .3);
+}
+td
+{
+	padding-left: 5px;
+	padding-right: 5px;
+}
+.reset
+{
+	all: unset;
+}
+div
+{
+	vertical-align: middle;
+	color: white;
+}
+div, span, td
+{
+	font-size: 10pt;
+}
+.rainbow
+{
+	style : 'filter: hue-rotate(90deg)'
+}
+.gray
+{
+	color: gray;
+}
+
+.centered
+{
+	/* This is the holy grail. It centers everything. */
+	align-items: center; /* "valign" */
+	display: flex; /* opt into the new box model */
+	justify-content: center; /* "align" */
+}
+.rightMenuBarItem
+{
+
+	height: 30px;
+	/* width: 30px; */
+	flex-grow: 0;
+	align-items: center; /* "valign" */
+	display: flex; /* opt into the new box model */
+	justify-content: center; /* "align" */
+
+}
+.thumbnailImage
+{
+	height: 100px;
+	border-radius: 10px;
+	text-align: center;
+	display: inline-block;
+}
+
+.flexFiller
+{
+	flex-grow: 100;
+}
+.invisible
+{
+	opacity: 0
+}
+.flex-container
+{
+	padding: 0;
+	margin: 0;
+	list-style: none;
+
+	-ms-box-orient: horizontal;
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -moz-flex;
+	display: -webkit-flex;
+	display: flex;
+
+	-webkit-justify-content: space-around;
+	justify-content: space-around;
+	-webkit-flex-flow: row wrap;
+	flex-flow: row wrap;
+	-webkit-align-items: stretch;
+	align-items: stretch;
+}

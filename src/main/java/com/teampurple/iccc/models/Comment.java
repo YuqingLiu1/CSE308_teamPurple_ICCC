@@ -1,4 +1,4 @@
-package com.teampurple.iccc;
+package com.teampurple.iccc.models;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

@@ -1,5 +1,6 @@
-package com.teampurple.iccc;
+package com.teampurple.iccc.models;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -9,19 +10,19 @@ import java.util.Date;
 @Document(collection = "GeneralBase")
 public class GeneralBase {
     @Id
-    private String id;
-    private String typeRef;
+    private ObjectId id;
+    private ObjectId typeRef;
     private String type;
-    private String sketch;
+    private ObjectId sketch;
     private String title;
     private String description;
     private Date creationDate;
-    private ArrayList<String> children;
-    private ArrayList<String> likers;
-    private ArrayList<String> comments;
+    private ArrayList<ObjectId> children;
+    private ArrayList<ObjectId> likers;
+    private ArrayList<ObjectId> comments;
 
 
-    public void setTypeRef(String typeRef){
+    public void setTypeRef(ObjectId typeRef){
         this.typeRef = typeRef;
     }
 
@@ -29,7 +30,7 @@ public class GeneralBase {
         this.type = type;
     }
 
-    public void setSketch(String sketch){
+    public void setSketch(ObjectId sketch){
         this.sketch = sketch;
     }
 
@@ -45,23 +46,23 @@ public class GeneralBase {
         creationDate = date;
     }
 
-    public void setChildren(ArrayList<String> children){
+    public void setChildren(ArrayList<ObjectId> children){
         this.children = children;
     }
 
-    public void setLikers(ArrayList<String> likers){
+    public void setLikers(ArrayList<ObjectId> likers){
         this.likers = likers;
     }
 
-    public void setComments(ArrayList<String> comments){
+    public void setComments(ArrayList<ObjectId> comments){
         this.comments = comments;
     }
 
-    public String getId(){
+    public ObjectId getId(){
         return id;
     }
 
-    public String getTypeRef(){
+    public ObjectId getTypeRef(){
         return typeRef;
     }
 
@@ -69,7 +70,7 @@ public class GeneralBase {
         return type;
     }
 
-    public String getSketch(){
+    public ObjectId getSketch(){
         return sketch;
     }
 
@@ -85,15 +86,15 @@ public class GeneralBase {
         return creationDate;
     }
 
-    public ArrayList<String> getChildren(){
+    public ArrayList<ObjectId> getChildren(){
         return children;
     }
 
-    public ArrayList<String> getLikers(){
+    public ArrayList<ObjectId> getLikers(){
         return likers;
     }
 
-    public ArrayList<String> getComments(){
+    public ArrayList<ObjectId> getComments(){
         return comments;
     }
 

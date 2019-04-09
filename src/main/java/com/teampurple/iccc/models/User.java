@@ -1,5 +1,6 @@
-package com.teampurple.iccc;
+package com.teampurple.iccc.models;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -8,20 +9,20 @@ import java.util.ArrayList;
 @Document(collection = "User")
 public class User {
     @Id
-    private String id;
-    private String generalBaseRef;
+    private ObjectId id;
+    private ObjectId generalBaseRef;
     private String email;
     private String password;
-    private ArrayList<String> liked;
-    private ArrayList<String> content;
-    private ArrayList<String> userCategories;
-    private ArrayList<String> homeCategories;
+    private ArrayList<ObjectId> liked;
+    private ArrayList<ObjectId> content;
+    private ArrayList<ObjectId> userCategories;
+    private ArrayList<ObjectId> homeCategories;
 
-    public String getId(){
+    public ObjectId getId(){
         return id;
     }
 
-    public String getGeneralBaseRef(){
+    public ObjectId getGeneralBaseRef(){
         return generalBaseRef;
     }
 
@@ -33,23 +34,23 @@ public class User {
         return password;
     }
 
-    public ArrayList<String> getLiked() {
+    public ArrayList<ObjectId> getLiked() {
         return liked;
     }
 
-    public ArrayList<String> getContent() {
+    public ArrayList<ObjectId> getContent() {
         return content;
     }
 
-    public ArrayList<String> getUserCategories(){
+    public ArrayList<ObjectId> getUserCategories(){
         return userCategories;
     }
 
-    public ArrayList<String> getHomeCategories(){
+    public ArrayList<ObjectId> getHomeCategories(){
         return homeCategories;
     }
 
-    public void setGeneralBaseRef(String generalBaseRef){
+    public void setGeneralBaseRef(ObjectId generalBaseRef){
         this.generalBaseRef = generalBaseRef;
     }
 
@@ -61,19 +62,19 @@ public class User {
         this.password = password;
     }
 
-    public void setLiked(ArrayList<String> liked){
+    public void setLiked(ArrayList<ObjectId> liked){
         this.liked = liked;
     }
 
-    public void setHomeCategories(ArrayList<String> categories){
+    public void setHomeCategories(ArrayList<ObjectId> categories){
         this.homeCategories = categories;
     }
 
-    public void setUserCategories(ArrayList<String> userCategories){
+    public void setUserCategories(ArrayList<ObjectId> userCategories){
         this.userCategories = userCategories;
     }
 
-    public void setContent(ArrayList<String> content){
+    public void setContent(ArrayList<ObjectId> content){
         this.content = content;
     }
 

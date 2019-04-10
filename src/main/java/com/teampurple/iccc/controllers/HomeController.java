@@ -1,4 +1,4 @@
-package com.teampurple.iccc;
+package com.teampurple.iccc.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

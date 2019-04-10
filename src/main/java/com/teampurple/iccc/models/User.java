@@ -18,6 +18,12 @@ public class User {
     private ArrayList<ObjectId> userCategories;
     private ArrayList<ObjectId> homeCategories;
 
+    public User(String email, String password) {
+        // TODO: actually implement this constructor
+        this.email = email;
+        this.password = password;
+    }
+
     public ObjectId getId(){
         return id;
     }
@@ -26,9 +32,7 @@ public class User {
         return generalBaseRef;
     }
 
-    public String getEmail(){
-        return email;
-    }
+    public String getEmail(){ return email; }
 
     public String getPassword(){
         return password;
@@ -78,5 +82,12 @@ public class User {
         this.content = content;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "User[email='%s', password='%s']",
+                email, password
+        );
+    }
 
 }

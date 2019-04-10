@@ -24,9 +24,15 @@ public class IcccApplicationTests {
 	public void addUser() {
 		final String EMAIL = "test@email.com";
 		final String PASSWORD = "testpassword";
+
+		userRepository.deleteAll();
+
 		User user = new User(EMAIL, new BCryptPasswordEncoder(10).encode(PASSWORD));
+
 		userRepository.save(user);
+
 		User retrievedUser = userRepository.findByEmail(EMAIL);
+
 		Assert.assertEquals(retrievedUser.getEmail(), user.getEmail());
 		Assert.assertTrue(new BCryptPasswordEncoder().matches(PASSWORD, retrievedUser.getPassword()));
 	}

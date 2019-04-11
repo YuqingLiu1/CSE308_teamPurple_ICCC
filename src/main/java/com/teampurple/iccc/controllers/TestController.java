@@ -14,8 +14,7 @@ public class TestController {
     private UserRepository userRepository;
 
     @GetMapping(value = "/test", produces = "application/json")
-    public @ResponseBody
-    User getUser() {
+    public @ResponseBody User getUser() {
         return userRepository.findByEmail("testemail");
     }
 

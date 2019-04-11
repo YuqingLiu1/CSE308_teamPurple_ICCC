@@ -1,6 +1,8 @@
 require("@babel/polyfill");
-const React = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+import LoginForm from './LoginForm';
 
 class App extends React.Component {
     constructor(props) {
@@ -24,6 +26,8 @@ class App extends React.Component {
             <div>
                 <h1>Hello World!</h1>
                 <p>Fetched email: {this.state.email}</p>
+                <button type="button" className="btn btn-primary">Press me!</button>
+                <LoginForm />
             </div>
         );
     }

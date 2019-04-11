@@ -27,3 +27,8 @@ HELP.md
 
 ### VS Code ###
 .vscode/
+
+### Node JS ###
+node_modules
+built
+package-lock.json

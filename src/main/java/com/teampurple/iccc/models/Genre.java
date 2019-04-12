@@ -7,15 +7,15 @@ import java.util.*;
 @Document(collection = "Genre")
 public class Genre {
     @Id
-    private ObjectId id;
+    private String id;
     private String name;
-    private List<ObjectId> series;
+    private List<String> series;
 
-    public ObjectId getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(ObjectId id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -27,11 +27,11 @@ public class Genre {
         this.name = name;
     }
 
-    public List<ObjectId> getSeries() {
+    public List<String> getSeries() {
         return series;
     }
 
-    public void setSeries(List<ObjectId> series) {
+    public void setSeries(List<String> series) {
         this.series = series;
     }
 }

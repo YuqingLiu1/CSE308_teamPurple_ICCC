@@ -5,7 +5,9 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 
 import Menubar from './Components/menubar';
-import Thumbnail from './Components/thumbnail';
+import UserInfo from "./Components/userinfo";
+import LoggedOutCategories from './Components/loggedOutCategories';
+import LoggedInCategories from './Components/loggedInCategories';
 
 class App extends Component
 {
@@ -13,7 +15,7 @@ class App extends Component
 		super(props);
 
 		this.state = {
-			page: '',
+			page: 'homepage',
 			loggedIn: false
 		}
 	}
@@ -21,15 +23,15 @@ class App extends Component
 	async componentDidMount() {
 		let res = await fetch('/generalBase/id');
 		res = await res.json();
-		this.setState({ loggedIn: res.id.length != 0 });
+		this.setState({ loggedIn: res.id.length !== 0 });
 	}
 
 	render()
 	{
 		const pages = {
 			create: <CreateAccount/>,
-			loggedOutHomepage: <></>,
-			loggedInHomepage: <></>,
+			homepage: this.state.loggedIn ? <LoggedInCategories /> : <LoggedOutCategories />,
+			userInfo: <UserInfo />
 		};
 
 		return (

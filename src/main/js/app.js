@@ -42,6 +42,7 @@ class App extends React.Component {
                 password: this.state.password
             })
         });
+        alert('response status: ' + response.status);
     }
 
     render() {

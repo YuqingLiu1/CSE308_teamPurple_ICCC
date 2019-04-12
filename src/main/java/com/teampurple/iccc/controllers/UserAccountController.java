@@ -1,7 +1,8 @@
 package com.teampurple.iccc.controllers;
 
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonObjectFormatVisitor;
 import com.teampurple.iccc.models.GeneralBase;
+import com.teampurple.iccc.models.NewUser;
+import com.teampurple.iccc.models.Response;
 import com.teampurple.iccc.models.User;
 import com.teampurple.iccc.repositories.GeneralBaseRepository;
 import com.teampurple.iccc.repositories.UserRepository;
@@ -13,57 +14,77 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserAccountController {
+
     @Autowired
     private UserRepository users;
+    @Autowired
     private GeneralBaseRepository generalbase;
 
-    @PostMapping("/user/add")
-    public boolean addUserAccount(@RequestBody final String userInfor) {
-        int index = 0;
-        index=userInfor.indexOf(":",index);
-        String email = userInfor.substring(index+2,userInfor.indexOf("\"",index+2));
-        if (users.existsUserByEmail(email)){
-            return false;
-        }
+    @PostMapping(value = "/user/add")
+    public Response addUserAccount(@RequestBody NewUser user) {
         try {
-            index = userInfor.indexOf(":", index + 1);
-            String password = userInfor.substring(index + 2, userInfor.indexOf("\"", index + 2));
-            index = userInfor.indexOf(":", index + 1);
-            String name = userInfor.substring(index + 2, userInfor.indexOf("\"", index + 2));
-            index = userInfor.indexOf(":", index + 1);
-            String description = userInfor.substring(index + 2, userInfor.indexOf("\"", index + 2));
-            index = userInfor.indexOf(":", index + 1);
-            String imageURL = userInfor.substring(index + 2, userInfor.indexOf("\"", index + 2));
             GeneralBase gb = new GeneralBase();
             gb.setType("User");
-            if (!name.equals(null)) {
-                gb.setTitle(name);
-            }
-            if (!description.equals(null)) {
-                gb.setDescription(description);
-            }
-            if (!imageURL.equals(null)) {
-                gb.setThumbnail(imageURL);
-            }
+            gb.setTitle(user.getUsername());
             generalbase.save(gb);
-            User user = new User(email, password);
-            user.setPassword(new BCryptPasswordEncoder(10).encode(user.getPassword()));
-            user.setGeneralBaseRef(gb.getId());
-            users.save(user);
-            return true;
+
+            User newUser = new User(user.getEmail(), user.getPassword());
+            newUser.setGeneralBaseRef(gb.getId());
+            users.save(newUser);
+
+            gb.setTypeRef(newUser.getId());
+            generalbase.save(gb);
+
+            return new Response("OK");
+        } catch (Exception e) {
+            return new Response("error");
         }
-        catch(Exception e){
-            return false;
-        }
+
+//        index = 0;
+//        index=userInfor.indexOf(":",index);
+//        String email = userInfor.substring(index+2,userInfor.indexOf("\"",index+2));
+//        if (users.existsUserByEmail(email)){
+//            return new Response("error");
+//        }
+//        try {
+//            index = userInfor.indexOf(":", index + 1);
+//            String password = userInfor.substring(index + 2, userInfor.indexOf("\"", index + 2));
+//            index = userInfor.indexOf(":", index + 1);
+//            String name = userInfor.substring(index + 2, userInfor.indexOf("\"", index + 2));
+//            index = userInfor.indexOf(":", index + 1);
+//            String description = userInfor.substring(index + 2, userInfor.indexOf("\"", index + 2));
+//            index = userInfor.indexOf(":", index + 1);
+//            String imageURL = userInfor.substring(index + 2, userInfor.indexOf("\"", index + 2));
+//            GeneralBase gb = new GeneralBase();
+//            gb.setType("User");
+//            if (!name.equals(null)) {
+//                gb.setTitle(name);
+//            }
+//            if (!description.equals(null)) {
+//                gb.setDescription(description);
+//            }
+//            if (!imageURL.equals(null)) {
+//                gb.setThumbnail(imageURL);
+//            }
+//            generalbase.save(gb);
+//            User user = new User(email, password);
+//            user.setPassword(new BCryptPasswordEncoder(10).encode(user.getPassword()));
+//            user.setGeneralBaseRef(gb.getId());
+//            users.save(user);
+//            return new Response("OK");
+//        }
+//        catch(Exception e){
+//            return new Response("error");
+//        }
     }
 
 
     @PostMapping("/user/exists")
-    public Boolean checkUserExist(@RequestBody final String email) {
+    public Response checkUserExist(@RequestBody final String email) {
         if (users.existsUserByEmail(email)) {
-            return false;
+            return new Response("error");
         }
-        return true;
+        return new Response("OK");
     }
 
     @GetMapping(value="/generalBase/thumbnail")
@@ -98,33 +119,33 @@ public class UserAccountController {
         User currentUser = getCurrentUser();
         System.out.println(currentUser);
         if (currentUser == null) {
-            return "";
+            return "{\"id\":\"\"}";
         }
-        return currentUser.getGeneralBaseRef();
+        return "{\"id\":\"" + currentUser.getGeneralBaseRef() + "\"}";
     }
 
     @PostMapping("/user/setpassword")
-    public boolean setCurrentUserPassword(@RequestBody final String password) {
+    public Response setCurrentUserPassword(@RequestBody final String password) {
         try {
             User currentUser = getCurrentUser();
             currentUser.setPassword(new BCryptPasswordEncoder(10).encode(currentUser.getPassword()));
             users.save(currentUser);
-            return true;
+            return new Response("OK");
         }catch (Exception e){
-            return false;
+            return new Response("error");
         }
     }
 
     @PostMapping("/user/username")
-    public boolean setCurrentUserName(@RequestBody final String username) {
+    public Response setCurrentUserName(@RequestBody final String username) {
         try {
             User currentUser = getCurrentUser();
             GeneralBase gb = generalbase.findById(currentUser.getGeneralBaseRef());
             gb.setTitle(username);
             generalbase.save(gb);
-            return true;
+            return new Response("OK");
         }catch (Exception e){
-            return false;
+            return new Response("error");
         }
     }
 

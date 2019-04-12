@@ -1,0 +1,139 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+div.changePasswordDiv{
+  text-align: center;
+  color: black;
+
+  margin: 10px;
+}
+
+div.form1{
+  text-align: center;
+  width: 50%;
+
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, .3);
+  color: white;
+  border: 1px solid rgba(206, 206, 206, .6);
+  border-radius: 5px;
+  padding: 30pt;
+  margin: 50px auto;
+  background-color: rgba(216, 216, 216, 0.3);
+  overflow: hidden;
+}
+
+div.form2{
+  text-align: center;
+  width: 50%;
+
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, .3);
+  color: white;
+  border: 1px solid rgba(206, 206, 206, .6);
+  border-radius: 5px;
+  padding: 30pt;
+  margin: 50px auto;
+  background-color: rgba(216, 216, 216, 0.3);
+  overflow: hidden;
+}
+
+div.createDiv{
+  text-align: center;
+  color: black;
+
+  margin: 10px;
+}
+
+input.changePasswordInput{
+  text-align: center;
+  border-radius: 15px;
+  border: solid 1px lightgray;
+  padding: 3px;
+  height: 15px;
+  min-width: 10px;
+  width: 30%;
+  resize: horizontal;
+}
+
+input.createInput{
+  text-align: center;
+  border-radius: 15px;
+  border: solid 1px lightgray;
+  padding: 3px;
+  height: 20px;
+  min-width: 10px;
+  width: 30%;
+  resize: horizontal;
+}
+
+label.changePasswordLabel{
+  color:black;
+  padding: 3px;
+  margin: 5pt;
+}
+
+label.createLabel{
+  color:black;
+  padding: 3px;
+  margin: 5pt;
+}
+
+button.changePasswordBtn{
+
+  box-shadow: 0 0 2px #999;
+  text-align: center;
+  margin: 5px;
+  cursor: pointer;
+  color: black;
+  background: rgba(171, 119, 191, .5) center;
+  outline: none;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 10px;
+  border-color: lightgray;
+}
+
+button.createButton{
+  box-shadow: 0 0 2px #999;
+  text-align: center;
+  margin: 5px;
+  cursor: pointer;
+  color: black;
+  background: rgba(171, 119, 191, .5) center;
+  outline: none;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 10px;
+  border-color: lightgray;
+}
+

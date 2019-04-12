@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 
 import Menubar from './Components/menubar';
 import Thumbnail from './Components/thumbnail';
+import CreateAccount from './Components/CreateAccount';
 
 class App extends Component
 {
@@ -29,6 +30,7 @@ class App extends Component
 				crossOrigin="anonymous"
 			/>
 			<div className="App">
+				<CreateAccount />
 				<Menubar loggedIn/>
 				<Thumbnail/>
 			</div>

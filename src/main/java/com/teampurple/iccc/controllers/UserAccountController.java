@@ -7,6 +7,7 @@ import com.teampurple.iccc.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,6 +48,7 @@ public class UserAccountController {
             }
             generalbase.save(gb);
             User user = new User(email, password);
+            user.setPassword(new BCryptPasswordEncoder(10).encode(password));
             user.setGeneralBaseRef(gb.getId());
             users.save(user);
             return true;

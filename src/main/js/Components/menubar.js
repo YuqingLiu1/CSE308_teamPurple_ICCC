@@ -29,16 +29,20 @@ class Menubar extends Component {
                         </InputGroup.Append>
                     </InputGroup>
                     {this.props.loggedIn ? <Nav.Link href=""><i className="fas fa-plus-circle fa-2x" /></Nav.Link> : <></>}
-                    <Dropdown>
+                    <Dropdown alignRight>
                         <Dropdown.Toggle>
                             <i className="fas fa-user-circle fa-2x" />
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
-                            <Dropdown.Item href="/login">Login</Dropdown.Item>
-                            <Dropdown.Item>Create Account</Dropdown.Item>
+                            {
+                                this.props.loggedIn ?
+                                    <Dropdown.Item href="/logout">Logout</Dropdown.Item> :
+                                    <><Dropdown.Item href="/login">Login</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => {this.props.changePage('create')}}>Create Account</Dropdown.Item></>
+                            }
                         </Dropdown.Menu>
                     </Dropdown>
-                    <Nav.Link href=""><i className="fas fa-cog fa-2x" /></Nav.Link>
+                    {this.props.loggedIn ? <Nav.Link href=""><i className="fas fa-cog fa-2x" /></Nav.Link> : <></>}
                 </Navbar.Collapse>
             </Navbar>
         );

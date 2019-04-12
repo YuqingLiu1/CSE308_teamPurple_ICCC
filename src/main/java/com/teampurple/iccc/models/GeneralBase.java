@@ -16,6 +16,7 @@ public class GeneralBase {
     private String title;
     private String description;
     private Date creationDate;
+    private String thumbnail;
     private ArrayList<String> children;
     private ArrayList<String> likers;
     private ArrayList<String> comments;
@@ -95,6 +96,14 @@ public class GeneralBase {
 
     public ArrayList<String> getComments(){
         return comments;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
 }

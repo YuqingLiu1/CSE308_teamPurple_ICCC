@@ -1,6 +1,7 @@
 package com.teampurple.iccc.models;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ public class User {
     @Id
     private String id;
     private String generalBaseRef;
+    @Indexed(unique = true)
     private String email;
     private String password;
     private ArrayList<String> liked;

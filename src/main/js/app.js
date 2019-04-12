@@ -17,14 +17,6 @@ class App extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    // async componentDidMount() {
-    //     let user = await fetch("/test");
-    //     user = await user.json();
-    //     this.setState({
-    //         email: user.email
-    //     });
-    // }
-
     handleEmailChange(event) {
         this.setState({
             email: event.target.value

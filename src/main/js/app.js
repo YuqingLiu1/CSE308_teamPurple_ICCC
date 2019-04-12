@@ -5,23 +5,21 @@ import ReactDOM from 'react-dom';
 import Menubar from './Components/menubar';
 import Thumbnail from './Components/thumbnail';
 
-
-
 class App extends Component
 {
-
 	constructor(props) {
 		super(props);
 
 		this.state = {
 			page: '',
+			loggedIn: false
 		}
 	}
 
 	async componentDidMount() {
 		let res = await fetch('/generalBase/id');
 		res = await res.json();
-		console.log(res);
+		this.setState({ loggedIn: res.id.length != 0 });
 	}
 
 	render()
@@ -40,7 +38,7 @@ class App extends Component
 				crossOrigin="anonymous"
 			/>
 			<div className="App">
-				<Menubar loggedIn/>
+				<Menubar loggedIn={this.state.loggedIn}/>
 				<Thumbnail/>
 			</div>
 		</>

@@ -18,7 +18,7 @@ class Menubar extends Component {
                 </Nav.Link>
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto" />
-                    <InputGroup>
+                    <InputGroup className="mx-3">
                         <Form.Control
                             type="text"
                             placeholder="Search..."
@@ -34,7 +34,7 @@ class Menubar extends Component {
                             <i className="fas fa-user-circle fa-2x" />
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
-                            <Dropdown.Item>Login</Dropdown.Item>
+                            <Dropdown.Item href="/login">Login</Dropdown.Item>
                             <Dropdown.Item>Create Account</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>

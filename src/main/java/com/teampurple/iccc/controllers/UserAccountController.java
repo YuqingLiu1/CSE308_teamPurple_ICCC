@@ -28,7 +28,7 @@ public class UserAccountController {
             gb.setTitle(user.getUsername());
             generalbase.save(gb);
 
-            User newUser = new User(user.getEmail(), user.getPassword());
+            User newUser = new User(user.getEmail(), new BCryptPasswordEncoder().encode(user.getPassword()));
             newUser.setGeneralBaseRef(gb.getId());
             users.save(newUser);
 

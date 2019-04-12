@@ -1,78 +1,39 @@
 require("@babel/polyfill");
-import React from 'react';
+
+import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 
-import LoginForm from './LoginForm';
+import Menubar from './Components/menubar';
+import Thumbnail from './Components/thumbnail';
 
-class App extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            email: '',
-            password: ''
-        };
-        this.handleEmailChange = this.handleEmailChange.bind(this);
-        this.handlePasswordChange = this.handlePasswordChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
-    // async componentDidMount() {
-    //     let user = await fetch("/test");
-    //     user = await user.json();
-    //     this.setState({
-    //         email: user.email
-    //     });
-    // }
-
-    handleEmailChange(event) {
-        this.setState({
-            email: event.target.value
-        });
-    }
-
-    handlePasswordChange(event) {
-        this.setState({
-            password: event.target.value
-        });
-    }
-
-    async handleSubmit(event) {
-        event.preventDefault();
-
-        let response = await fetch("/test/adduser", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email: this.state.email,
-                password: this.state.password
-            })
-        });
-    }
-
-    render() {
-        return (
-            <div>
-                <form action="/test/adduser" method="POST">
-                    <div>
-                        <label>Email</label>
-                        <input type="email" placeholder="Email" onChange={this.handleEmailChange}/>
-                    </div>
-                    <div>
-                        <label>Password</label>
-                        <input type="password" placeholder="Password" onChange={this.handlePasswordChange}/>
-                    </div>
-                    <button type="submit" className="btn btn-primary" onClick={this.handleSubmit}>Create</button>
-                </form>
-                <LoginForm />
-            </div>
-        );
-    }
+class App extends Component
+{
+	render()
+	{
+		return <>
+			<link
+				rel="stylesheet"
+				href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+				integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+				crossOrigin="anonymous"
+			/>
+			<link
+				rel="stylesheet"
+				href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+				integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+				crossorigin="anonymous"
+			/>
+			<div className="App">
+				<Menubar loggedIn/>
+				<Thumbnail/>
+			</div>
+		</>
+	}
 }
 
 ReactDOM.render(
-    <App />,
-    document.getElementById('react')
+	<App />,
+	document.getElementById('react')
 );
+
+

@@ -39,43 +39,6 @@ public class UserAccountController {
         } catch (Exception e) {
             return new Response("error");
         }
-
-//        index = 0;
-//        index=userInfor.indexOf(":",index);
-//        String email = userInfor.substring(index+2,userInfor.indexOf("\"",index+2));
-//        if (users.existsUserByEmail(email)){
-//            return new Response("error");
-//        }
-//        try {
-//            index = userInfor.indexOf(":", index + 1);
-//            String password = userInfor.substring(index + 2, userInfor.indexOf("\"", index + 2));
-//            index = userInfor.indexOf(":", index + 1);
-//            String name = userInfor.substring(index + 2, userInfor.indexOf("\"", index + 2));
-//            index = userInfor.indexOf(":", index + 1);
-//            String description = userInfor.substring(index + 2, userInfor.indexOf("\"", index + 2));
-//            index = userInfor.indexOf(":", index + 1);
-//            String imageURL = userInfor.substring(index + 2, userInfor.indexOf("\"", index + 2));
-//            GeneralBase gb = new GeneralBase();
-//            gb.setType("User");
-//            if (!name.equals(null)) {
-//                gb.setTitle(name);
-//            }
-//            if (!description.equals(null)) {
-//                gb.setDescription(description);
-//            }
-//            if (!imageURL.equals(null)) {
-//                gb.setThumbnail(imageURL);
-//            }
-//            generalbase.save(gb);
-//            User user = new User(email, password);
-//            user.setPassword(new BCryptPasswordEncoder(10).encode(user.getPassword()));
-//            user.setGeneralBaseRef(gb.getId());
-//            users.save(user);
-//            return new Response("OK");
-//        }
-//        catch(Exception e){
-//            return new Response("error");
-//        }
     }
 
 

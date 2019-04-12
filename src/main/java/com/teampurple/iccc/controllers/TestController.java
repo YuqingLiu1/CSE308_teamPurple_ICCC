@@ -1,10 +1,9 @@
 package com.teampurple.iccc.controllers;
 
-import com.mongodb.MongoWriteException;
+import com.teampurple.iccc.models.Response;
 import com.teampurple.iccc.models.User;
 import com.teampurple.iccc.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +27,11 @@ public class TestController {
     @GetMapping("/test/adduser")
     public void test() {
         return;
+    }
+
+    @PostMapping("/test/user/edit")
+    public User editUserInfo(@RequestBody User user) {
+        return user;
     }
 
 }

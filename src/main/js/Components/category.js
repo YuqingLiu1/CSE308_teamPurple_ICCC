@@ -1,12 +1,44 @@
 import React from 'react'
 import {Card} from 'react-bootstrap'
-const defaultImageURL='https://www.petmd.com/sites/default/files/Acute-Dog-Diarrhea-47066074.jpg'
-const defaultTitle   ='Untitled'
-const defaultOnClick =()=>alert("defaultOnClick Test")
-export default function({thumbnails})
+import Thumbnail from './thumbnail'
+export default function({thumbnails,editable,name})
 {
-	console.assert(generalBaseIds!==undefined && Object.getPrototypeOf(generalBaseIds)===Array.prototype)
-	return <div style={''}>
-
-	</div>
+	console.assert(thumbnails  !==undefined && Object.getPrototypeOf(thumbnails  )===Array .prototype)
+	// console.assert(numberOfRows!==undefined && Object.getPrototypeOf(numberOfRows)===Number.prototype)
+	return <Card>
+		<Card.Header style={{'text-align':'center'}}>{name}</Card.Header>
+		<Card.Body style={{'overflow':'scroll'}}>
+			<table>
+				<tr>
+					<td>
+						<Thumbnail/>
+					</td>
+					<td>
+						<Thumbnail/>
+					</td>
+					<td>
+						<Thumbnail/>
+					</td>
+					<td>
+						<Thumbnail/>
+					</td>
+					<td>
+						<Thumbnail/>
+					</td>
+					<td>
+						<Thumbnail/>
+					</td>
+					<td>
+						<Thumbnail/>
+					</td>
+					<td>
+						<Thumbnail/>
+					</td>
+					<td>
+						<Thumbnail/>
+					</td>
+				</tr>
+			</table>
+		</Card.Body>
+	</Card>;
 }

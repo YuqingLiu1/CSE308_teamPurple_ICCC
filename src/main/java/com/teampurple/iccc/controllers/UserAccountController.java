@@ -10,16 +10,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping("/")
 public class UserAccountController {
     @Autowired
     private UserRepository users;
     private GeneralBaseRepository generalbase;
 
-    @RequestMapping(value="",method = RequestMethod.POST)
-    public @ResponseBody
-    boolean AddUserAccount(@RequestBody final String userInfor) {
+    @PostMapping("/user/add")
+    public boolean addUserAccount(@RequestBody final String userInfor) {
         int index = 0;
         index=userInfor.indexOf(":",index);
         String email = userInfor.substring(index+2,userInfor.indexOf("\"",index+2));
@@ -58,75 +57,55 @@ public class UserAccountController {
     }
 
 
-    @RequestMapping(value="",method = RequestMethod.POST)
-    public @ResponseBody
-    Boolean CheckUserExist(@RequestBody final String email) {
+    @PostMapping("/user/exists")
+    public Boolean checkUserExist(@RequestBody final String email) {
         if (users.existsUserByEmail(email)) {
             return false;
         }
         return true;
     }
 
-    @RequestMapping(value="",method = RequestMethod.POST)
-    public @ResponseBody
-    String getThumbnail(@RequestBody final String generalBaseId) {
+    @GetMapping(value="/generalBase/thumbnail")
+    public String getThumbnail(@RequestParam(value="id") final String generalBaseId) {
         GeneralBase gb = generalbase.findById(generalBaseId);
         return gb.getThumbnail();
     }
 
-    @RequestMapping(value="",method = RequestMethod.POST)
-    public @ResponseBody
-    String getTitle(@RequestBody final String generalBaseId) {
+    @GetMapping(value="/generalBase/title")
+    public String getTitle(@RequestParam(value="id") final String generalBaseId) {
         GeneralBase gb = generalbase.findById(generalBaseId);
         return gb.getTitle();
     }
 
     //After login
-    @RequestMapping(value="",method = RequestMethod.POST)
-    public @ResponseBody
-    String getCurrentUserEmail() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String email;
+//    @GetMapping(value="")
+//    public @ResponseBody
+//    String getCurrentUserEmail() {
+//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        String email;
+//
+//        if (principal instanceof UserDetails) {
+//            email = ((UserDetails)principal).getUsername();
+//        } else {
+//            email = principal.toString();
+//        }
+//        return email;
+//    }
 
-        if (principal instanceof UserDetails) {
-            email = ((UserDetails)principal).getUsername();
-        } else {
-            email = principal.toString();
+    @GetMapping(value="/generalBase/id")
+    public String getCurrentUserGeneralBaseId() {
+        User currentUser = getCurrentUser();
+        if (currentUser == null) {
+            return "";
         }
-        return email;
-    }
-
-    @RequestMapping(value="",method = RequestMethod.POST)
-    public @ResponseBody
-    String getCurrentUserGeneralBaseId() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String email;
-
-        if (principal instanceof UserDetails) {
-            email = ((UserDetails)principal).getUsername();
-        } else {
-            email = principal.toString();
-        }
-
-        User currentUser = users.findByEmail(email);
         return currentUser.getGeneralBaseRef();
     }
     
 
-    @RequestMapping(value="",method = RequestMethod.POST)
-    public @ResponseBody
-    boolean setCurrentUserName(@RequestBody final String username) {
+    @PostMapping(value="/user/username")
+    public boolean setCurrentUserName(@RequestBody final String username) {
         try {
-            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            String email;
-
-            if (principal instanceof UserDetails) {
-                email = ((UserDetails) principal).getUsername();
-            } else {
-                email = principal.toString();
-            }
-
-            User currentUser = users.findByEmail(email);
+            User currentUser = getCurrentUser();
             GeneralBase gb = generalbase.findById(currentUser.getGeneralBaseRef());
             gb.setTitle(username);
             generalbase.save(gb);
@@ -136,5 +115,17 @@ public class UserAccountController {
         }
     }
 
+    private User getCurrentUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email;
+
+        if (principal instanceof UserDetails) {
+            email = ((UserDetails)principal).getUsername();
+        } else {
+            email = principal.toString();
+        }
+
+        return users.findByEmail(email);
+    }
 
 }

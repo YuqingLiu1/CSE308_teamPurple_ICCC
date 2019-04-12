@@ -1,3 +1,4 @@
+require("@babel/polyfill");
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 
@@ -6,6 +7,12 @@ import Thumbnail from './Components/thumbnail';
 
 class App extends Component
 {
+	async componentDidMount() {
+		let res = await fetch('/generalBase/id');
+		res = await res.json();
+		console.log(res);
+	}
+
 	render()
 	{
 		return <>

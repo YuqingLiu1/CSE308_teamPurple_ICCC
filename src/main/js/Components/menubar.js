@@ -4,6 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
+import Dropdown from 'react-bootstrap/Dropdown';
 
 class Menubar extends Component {
     render() {
@@ -28,7 +29,15 @@ class Menubar extends Component {
                         </InputGroup.Append>
                     </InputGroup>
                     {this.props.loggedIn ? <Nav.Link href=""><i className="fas fa-plus-circle fa-2x" /></Nav.Link> : <></>}
-                    <Nav.Link href=""><i className="fas fa-user-circle fa-2x" /></Nav.Link>
+                    <Dropdown>
+                        <Dropdown.Toggle>
+                            <i className="fas fa-user-circle fa-2x" />
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <Dropdown.Item href="/login">Login</Dropdown.Item>
+                            <Dropdown.Item href="">Create Account</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
                     <Nav.Link href=""><i className="fas fa-cog fa-2x" /></Nav.Link>
                 </Navbar.Collapse>
             </Navbar>

@@ -1,5 +1,6 @@
 package com.teampurple.iccc.controllers;
 
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonObjectFormatVisitor;
 import com.teampurple.iccc.models.GeneralBase;
 import com.teampurple.iccc.models.User;
 import com.teampurple.iccc.repositories.GeneralBaseRepository;
@@ -8,11 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/")
 public class UserAccountController {
     @Autowired
     private UserRepository users;
@@ -94,9 +93,10 @@ public class UserAccountController {
 //        return email;
 //    }
 
-    @GetMapping(value="/generalBase/id")
+    @GetMapping("/generalBase/id")
     public String getCurrentUserGeneralBaseId() {
         User currentUser = getCurrentUser();
+        System.out.println(currentUser);
         if (currentUser == null) {
             return "";
         }
@@ -115,7 +115,7 @@ public class UserAccountController {
         }
     }
 
-    @PostMapping(value="/user/username")
+    @PostMapping("/user/username")
     public boolean setCurrentUserName(@RequestBody final String username) {
         try {
             User currentUser = getCurrentUser();

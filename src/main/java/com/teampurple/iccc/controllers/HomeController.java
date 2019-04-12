@@ -8,13 +8,12 @@ public class HomeController {
 
     @GetMapping("/")
     public String getHomePage() {
-//        return "Mockups/loggedOutHomepage";
         return "index";
     }
 
-    @GetMapping("/login")
-    public String getLoginPage() {
-        return "LoginPage";
-    }
+//    @GetMapping("/login")
+//    public String getLoginPage() {
+//        return "LoginPage";
+//    }
 
 }

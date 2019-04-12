@@ -1,6 +1,5 @@
 package com.teampurple.iccc.models;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -9,14 +8,14 @@ import java.util.ArrayList;
 @Document(collection = "User")
 public class User {
     @Id
-    private ObjectId id;
-    private ObjectId generalBaseRef;
+    private String id;
+    private String generalBaseRef;
     private String email;
     private String password;
-    private ArrayList<ObjectId> liked;
-    private ArrayList<ObjectId> content;
-    private ArrayList<ObjectId> userCategories;
-    private ArrayList<ObjectId> homeCategories;
+    private ArrayList<String> liked;
+    private ArrayList<String> content;
+    private ArrayList<String> userCategories;
+    private ArrayList<String> homeCategories;
 
     public User(String email, String password) {
         // TODO: actually implement this constructor
@@ -24,37 +23,35 @@ public class User {
         this.password = password;
     }
 
-    public ObjectId getId(){
+    public String getId(){
         return id;
     }
 
-    public ObjectId getGeneralBaseRef(){
+    public String getGeneralBaseRef(){
         return generalBaseRef;
     }
 
     public String getEmail(){ return email; }
 
-    public String getPassword(){
-        return password;
-    }
+    public String getPassword(){ return password; }
 
-    public ArrayList<ObjectId> getLiked() {
+    public ArrayList<String> getLiked() {
         return liked;
     }
 
-    public ArrayList<ObjectId> getContent() {
+    public ArrayList<String> getContent() {
         return content;
     }
 
-    public ArrayList<ObjectId> getUserCategories(){
+    public ArrayList<String> getUserCategories(){
         return userCategories;
     }
 
-    public ArrayList<ObjectId> getHomeCategories(){
+    public ArrayList<String> getHomeCategories(){
         return homeCategories;
     }
 
-    public void setGeneralBaseRef(ObjectId generalBaseRef){
+    public void setGeneralBaseRef(String generalBaseRef){
         this.generalBaseRef = generalBaseRef;
     }
 
@@ -66,19 +63,19 @@ public class User {
         this.password = password;
     }
 
-    public void setLiked(ArrayList<ObjectId> liked){
+    public void setLiked(ArrayList<String> liked){
         this.liked = liked;
     }
 
-    public void setHomeCategories(ArrayList<ObjectId> categories){
+    public void setHomeCategories(ArrayList<String> categories){
         this.homeCategories = categories;
     }
 
-    public void setUserCategories(ArrayList<ObjectId> userCategories){
+    public void setUserCategories(ArrayList<String> userCategories){
         this.userCategories = userCategories;
     }
 
-    public void setContent(ArrayList<ObjectId> content){
+    public void setContent(ArrayList<String> content){
         this.content = content;
     }
 

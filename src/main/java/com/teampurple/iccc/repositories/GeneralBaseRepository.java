@@ -5,5 +5,5 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface GeneralBaseRepository extends MongoRepository<GeneralBase, ObjectId> {
-
+    GeneralBase findById(String generalBaseId);
 }

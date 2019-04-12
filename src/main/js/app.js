@@ -4,10 +4,20 @@ import ReactDOM from 'react-dom';
 
 import Menubar from './Components/menubar';
 import Thumbnail from './Components/thumbnail';
-import CreateAccount from './Components/CreateAccount';
+
+
 
 class App extends Component
 {
+
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			page: '',
+		}
+	}
+
 	async componentDidMount() {
 		let res = await fetch('/generalBase/id');
 		res = await res.json();
@@ -30,7 +40,6 @@ class App extends Component
 				crossOrigin="anonymous"
 			/>
 			<div className="App">
-				<CreateAccount />
 				<Menubar loggedIn/>
 				<Thumbnail/>
 			</div>

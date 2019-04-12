@@ -48,7 +48,7 @@ public class UserAccountController {
             }
             generalbase.save(gb);
             User user = new User(email, password);
-            user.setPassword(new BCryptPasswordEncoder(10).encode(password));
+            user.setPassword(new BCryptPasswordEncoder(10).encode(user.getPassword()));
             user.setGeneralBaseRef(gb.getId());
             users.save(user);
             return true;
@@ -102,7 +102,18 @@ public class UserAccountController {
         }
         return currentUser.getGeneralBaseRef();
     }
-    
+
+    @PostMapping("/user/setpassword")
+    public boolean setCurrentUserPassword(@RequestBody final String password) {
+        try {
+            User currentUser = getCurrentUser();
+            currentUser.setPassword(new BCryptPasswordEncoder(10).encode(currentUser.getPassword()));
+            users.save(currentUser);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
 
     @PostMapping(value="/user/username")
     public boolean setCurrentUserName(@RequestBody final String username) {

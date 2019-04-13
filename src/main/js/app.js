@@ -18,7 +18,7 @@ class App extends Component
 		this.state = {
 			page: 'homepage',
 			loggedIn: false
-		}
+		};
 
 		this.changePage = this.changePage.bind(this);
 		this.login = this.login.bind(this);

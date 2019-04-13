@@ -16,6 +16,7 @@ class Menubar extends Component {
                     <i className="fab fa-cuttlefish fa-2x" />
                     <i className="fab fa-cuttlefish fa-2x" />
                 </Nav.Link>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto" />
                     <InputGroup className="mx-3">

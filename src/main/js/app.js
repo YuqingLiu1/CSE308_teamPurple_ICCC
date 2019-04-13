@@ -1,13 +1,14 @@
-import CreateAccount from "./Components/CreateAccount";
-
 require("@babel/polyfill");
-import React, {Component} from 'react';
+
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
 import Menubar from './Components/menubar';
 import UserInfo from "./Components/userinfo";
 import LoggedOutCategories from './Components/loggedOutCategories';
 import LoggedInCategories from './Components/loggedInCategories';
+import LoginForm from "./Components/LoginForm";
+import CreateAccount from "./Components/CreateAccount";
 
 class App extends Component
 {
@@ -18,6 +19,9 @@ class App extends Component
 			page: 'homepage',
 			loggedIn: false
 		}
+
+		this.changePage = this.changePage.bind(this);
+		this.login = this.login.bind(this);
 	}
 
 	async componentDidMount() {
@@ -26,12 +30,21 @@ class App extends Component
 		this.setState({ loggedIn: res.id.length !== 0 });
 	}
 
+	changePage(page) {
+		this.setState({ page: page });
+	}
+
+	login() {
+		this.setState({ loggedIn: true });
+	}
+
 	render()
 	{
 		const pages = {
 			create: <CreateAccount/>,
 			homepage: this.state.loggedIn ? <LoggedInCategories /> : <LoggedOutCategories />,
-			userInfo: <UserInfo />
+			userInfo: <UserInfo />,
+			login: <LoginForm changePage={this.changePage} login={this.login}/>
 		};
 
 		return (
@@ -49,7 +62,7 @@ class App extends Component
 					crossOrigin="anonymous"
 				/>
 				<div className="App">
-					<Menubar loggedIn={this.state.loggedIn} changePage={(pageStr) => {this.setState({page:pageStr})}}/>
+					<Menubar loggedIn={this.state.loggedIn} changePage={this.changePage}/>
 					{pages[this.state.page]}
 				</div>
 			</>

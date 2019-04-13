@@ -1,9 +1,9 @@
 package com.teampurple.iccc.controllers;
 
-import com.teampurple.iccc.models.Response;
 import com.teampurple.iccc.models.User;
 import com.teampurple.iccc.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +12,9 @@ public class TestController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AuthenticationManager am;
 
     @GetMapping("/test/getuser")
     public User getUser(@RequestParam(value="email", defaultValue="testemail") String email) {

@@ -37,7 +37,7 @@ class Menubar extends Component {
                             {
                                 this.props.loggedIn ?
                                     <Dropdown.Item href="/logout">Logout</Dropdown.Item> :
-                                    <><Dropdown.Item href="/login">Login</Dropdown.Item>
+                                    <><Dropdown.Item onClick={() => {this.props.changePage('login')}}>Login</Dropdown.Item>
                                     <Dropdown.Item onClick={() => {this.props.changePage('create')}}>Create Account</Dropdown.Item></>
                             }
                         </Dropdown.Menu>

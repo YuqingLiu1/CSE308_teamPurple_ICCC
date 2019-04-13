@@ -80,7 +80,6 @@ public class UserAccountController {
     @GetMapping("/generalBase/id")
     public String getCurrentUserGeneralBaseId() {
         User currentUser = getCurrentUser();
-        System.out.println(currentUser);
         if (currentUser == null) {
             return "{\"id\":\"\"}";
         }

@@ -19,7 +19,8 @@ class App extends Component
 			page: 'homepage',
 			loggedIn: false,
 			bio: '',
-			username: ''
+			username: '',
+			userInfoError: false
 		};
 
 		this.changePage = this.changePage.bind(this);
@@ -53,8 +54,13 @@ class App extends Component
 			});
 		} else if (userInfoRes.status === 403) {
 			// user is not authorized to make the request (probably logged out)
+			this.setState({
+				userInfoError: true
+			});
 		} else {
-			// error occurred during request
+			this.setState({
+				userInfoError: true
+			});
 		}
 	}
 
@@ -67,7 +73,13 @@ class App extends Component
 		const pages = {
 			create: <CreateAccount/>,
 			homepage: this.state.loggedIn ? <LoggedInCategories /> : <LoggedOutCategories />,
-			userInfo: <UserInfo bio={this.state.bio} username={this.state.username} />,
+			userInfo:
+				<UserInfo
+					bio={this.state.bio}
+					username={this.state.username}
+					profilePictureUrl="https://akm-img-a-in.tosshub.com/indiatoday/images/story/201804/RTX5L0IT.jpeg?qlnshqvD6xOuLhFcVvAqQ3OzqMM9ncYQ"
+					error={this.state.userInfoError}
+				/>,
 			login: <LoginForm changePage={this.changePage} login={this.login}/>
 		};
 

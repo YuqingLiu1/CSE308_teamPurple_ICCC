@@ -103,3 +103,18 @@ button.createButton{
   border-color: lightgray;
 }
 
+.transparent-button {
+  background-color: transparent;
+  border: none;
+}
+
+.green {
+  color: green;
+}
+
+.red {
+  color: red;
+}
+
+
+

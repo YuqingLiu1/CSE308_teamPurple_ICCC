@@ -3,22 +3,14 @@ require("@babel/polyfill");
 import React, { Component } from 'react';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import Container from 'react-bootstrap/Container';
-import Thumbnail from './thumbnail';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import DBAwareEdiText from "./DBAwareEdiText";
+import Image from "react-bootstrap/Image";
 
 class UserInfo extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            error: false
-        };
-    }
-
     render() {
-        if (this.state.error) {
+        if (this.props.error) {
             return (
                 <Container className="mt-5">
                     <Jumbotron>
@@ -36,10 +28,17 @@ class UserInfo extends Component {
                     <Jumbotron>
                         <Container>
                             <Row>
-                                <Col xs="{3}">
-                                    <Thumbnail src={this.props.imageUrl} title={this.props.username}/>
+                                <Col xs={5}>
+                                    <Image src={this.props.profilePictureUrl} rounded fluid className="mb-3" />
+                                    <div className="mx-auto">
+                                        <DBAwareEdiText
+                                            type="text"
+                                            name="username"
+                                            value={this.props.username}
+                                        />
+                                    </div>
                                 </Col>
-                                <Col>
+                                <Col xs={7}>
                                     <DBAwareEdiText
                                         inputProps={{
                                             rows: 5

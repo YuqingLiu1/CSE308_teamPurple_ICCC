@@ -30,7 +30,15 @@ class DBAwareEdiText extends Component {
 
     render() {
         return (
-            <EdiText {...{...this.props, onSave:this.onSave}} />
+            <EdiText {...{...this.props, onSave:this.onSave}}
+                 hideIcons={true}
+                 editButtonContent={<i className="far fa-edit"></i>}
+                 editButtonClassName="transparent-button"
+                 saveButtonContent={<i className="fas fa-check"></i>}
+                 saveButtonClassName="transparent-button green"
+                 cancelButtonContent={<i className="fas fa-times"></i>}
+                 cancelButtonClassName="transparent-button red"
+            />
         );
     }
 }

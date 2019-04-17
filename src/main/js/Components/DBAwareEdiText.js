@@ -30,11 +30,7 @@ class DBAwareEdiText extends Component {
 
     render() {
         return (
-            <EdiText
-                type={this.props.type}
-                value={this.props.value}
-                onSave={this.onSave}
-            />
+            <EdiText {...{...this.props, onSave:this.onSave}} />
         );
     }
 }

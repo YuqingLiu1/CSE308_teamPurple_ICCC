@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class Sketch {
     @Id
     private String id;
-    private String GeneralBaseId;
+    private String Thumbnail;
     @Field
     private Binary image;
 
@@ -28,12 +28,12 @@ public class Sketch {
         this.id = id;
     }
 
-    public String getGeneralBaseId() {
-        return GeneralBaseId;
+    public String Thumbnail() {
+        return Thumbnail;
     }
 
-    public void setGeneralBaseId(String generalBaseId) {
-        GeneralBaseId = generalBaseId;
+    public void Thumbnail(String thumbnail) {
+        this.Thumbnail = thumbnail;
     }
 
 

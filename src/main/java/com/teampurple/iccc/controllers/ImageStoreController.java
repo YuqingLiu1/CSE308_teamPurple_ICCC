@@ -25,8 +25,6 @@ public class ImageStoreController {
     public String uploadImage(HttpServletRequest request, @RequestParam("image") MultipartFile image){
         try {
             Sketch sketch = new Sketch();
-            UserAccountController UserAccount = new UserAccountController();
-            sketch.setGeneralBaseId(UserAccount.getCurrentUserGeneralBaseId());
             sketch.setImage(new Binary(BsonBinarySubType.BINARY, image.getBytes()));
             sketchs.insert(sketch);
             String URL=request.getRequestURI()+sketch.getId();
@@ -36,4 +34,15 @@ public class ImageStoreController {
         }
     }
 
+    @PostMapping("/frame/save")
+    public Response saveImage(@RequestParam("id") String id,@RequestParam("image") MultipartFile image){
+        try {
+            Sketch sketch = sketchs.findById(id);
+            sketch.setImage(new Binary(BsonBinarySubType.BINARY, image.getBytes()));
+            sketchs.save(sketch);
+            return new Response(Response.OK);
+        }catch (Exception e){
+            return new Response(Response.ERROR);
+        }
+    }
 }

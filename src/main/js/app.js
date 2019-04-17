@@ -17,21 +17,45 @@ class App extends Component
 
 		this.state = {
 			page: 'homepage',
-			loggedIn: false
+			loggedIn: false,
+			bio: '',
+			username: ''
 		};
 
 		this.changePage = this.changePage.bind(this);
 		this.login = this.login.bind(this);
+		this.refresh = this.refresh.bind(this);
 	}
 
 	async componentDidMount() {
-		let res = await fetch('/generalBase/id');
-		res = await res.json();
-		this.setState({ loggedIn: res.id.length !== 0 });
+		await this.refresh();
 	}
 
-	changePage(page) {
+	async changePage(page) {
 		this.setState({ page: page });
+		await this.refresh();
+	}
+
+	async refresh() {
+		let res = await fetch('/generalBase/id');
+		res = await res.json();
+		this.setState({
+			loggedIn: res.id.length !== 0
+		});
+
+		let userInfoRes = await fetch('/user/info');
+		userInfoRes = await userInfoRes.json();
+		if (userInfoRes.status === 'OK') {
+			let userInfo = userInfoRes.content;
+			this.setState({
+				bio: userInfo.bio,
+				username: userInfo.username
+			});
+		} else if (userInfoRes.status === 403) {
+			// user is not authorized to make the request (probably logged out)
+		} else {
+			// error occurred during request
+		}
 	}
 
 	login() {
@@ -43,7 +67,7 @@ class App extends Component
 		const pages = {
 			create: <CreateAccount/>,
 			homepage: this.state.loggedIn ? <LoggedInCategories /> : <LoggedOutCategories />,
-			userInfo: <UserInfo />,
+			userInfo: <UserInfo bio={this.state.bio} username={this.state.username} />,
 			login: <LoginForm changePage={this.changePage} login={this.login}/>
 		};
 

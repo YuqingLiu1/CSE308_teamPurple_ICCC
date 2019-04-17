@@ -41,6 +41,9 @@ class UserInfo extends Component {
                                 </Col>
                                 <Col>
                                     <DBAwareEdiText
+                                        inputProps={{
+                                            rows: 5
+                                        }}
                                         type="textarea"
                                         name="bio"
                                         value={this.props.bio}

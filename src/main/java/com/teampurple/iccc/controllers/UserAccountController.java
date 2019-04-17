@@ -1,5 +1,6 @@
 package com.teampurple.iccc.controllers;
 
+import com.mongodb.MongoException;
 import com.teampurple.iccc.models.*;
 import com.teampurple.iccc.repositories.GeneralBaseRepository;
 import com.teampurple.iccc.repositories.UserRepository;
@@ -31,6 +32,43 @@ public class UserAccountController {
                 currentGeneralBase.getDescription(), currentUser.getEmail(), currentUser.getPassword());
 
         return new Response(Response.OK, userInfo);
+    }
+
+    @PostMapping("/user/edit")
+    public Response editUserInfo(@RequestBody UserInfo userInfo) {
+        User currentUser = getCurrentUser();
+        GeneralBase currentGeneralBase = generalbase.findById(currentUser.getGeneralBaseRef());
+        if (currentUser == null || currentGeneralBase == null) {
+            return new Response("error");
+        }
+
+        // only change the appropriate properties
+        String username = userInfo.getUsername();
+        String password = userInfo.getPassword();
+        String email = userInfo.getEmail();
+        String bio = userInfo.getBio();
+        if (username != null) {
+            currentGeneralBase.setTitle(username);
+        }
+        if (password != null) {
+            currentUser.setPassword(new BCryptPasswordEncoder().encode(password));
+        }
+        if (email != null) {
+            currentUser.setEmail(email);
+        }
+        if (bio != null) {
+            currentGeneralBase.setDescription(bio);
+        }
+
+        // don't forget to save changes to database
+        try {
+            generalbase.save(currentGeneralBase);
+            users.save(currentUser);
+        } catch (MongoException ex) {
+            return new Response("error");
+        }
+
+        return new Response("OK");
     }
 
     @PostMapping(value = "/user/add")

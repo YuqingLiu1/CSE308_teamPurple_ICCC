@@ -1,3 +1,5 @@
+require("@babel/polyfill");
+
 import React, { Component } from 'react';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import Container from 'react-bootstrap/Container';
@@ -15,6 +17,16 @@ should expect to have user story examples written by each team member.
 `
 
 class UserInfo extends Component {
+    async componentDidMount() {
+        let userInfoRes = await fetch('/user/info');
+        userInfoRes = await userInfoRes.json();
+        if (userInfoRes.status === 'OK') {
+            // do something on OK
+        } else {
+            // do something on error
+        }
+    }
+
     render() {
         return (
             <Container className="mt-5">

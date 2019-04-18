@@ -7,19 +7,19 @@ import Thumbnail from './thumbnail'
 import Button from 'react-bootstrap/Button'
 export default function({thumbnails, editable, title, setTitle, remove, loggedIn=true})
 {
-	const categoryFontSize='30px'
-	const [notCollapsed,setNotCollapsed]=useState(true)
-	const [askIfDelete ,setAskIfDelete ]=useState(false)
+	const categoryFontSize               ='30px'
+	const [notCollapsed, setNotCollapsed]=useState(true)
+	const [askIfDelete, setAskIfDelete]  =useState(false)
 	console.assert(thumbnails!==undefined && Object.getPrototypeOf(thumbnails)===Array.prototype)
 	// console.assert(numberOfRows!==undefined && Object.getPrototypeOf(numberOfRows)===Number.prototype)
-	const removeAsker=<div class='mx-auto' >
-			Are you sure you want to remove this category?
-			<span>
+	const removeAsker=<div class='mx-auto'>
+		Are you sure you want to remove this category?
+		<span>
 			<Button onClick={remove} variant={'danger'}>Yes</Button>
 			<Button onClick={()=>setAskIfDelete(false)}>No</Button>
 			</span>
 	</div>
-	const cards=<Card.Body style={{'overflow-x': 'scroll'}}>
+	const cards      =<Card.Body style={{'overflow-x': 'scroll'}}>
 		<div>
 			<table>
 				<tr>
@@ -72,9 +72,9 @@ export default function({thumbnails, editable, title, setTitle, remove, loggedIn
 						</div>
 					</>}
 			</div>
-		<Collapse in={askIfDelete}>
-			{removeAsker}
-		</Collapse>
+			<Collapse in={askIfDelete}>
+				{removeAsker}
+			</Collapse>
 		</Card.Header>
 		<Collapse in={notCollapsed}>
 			{cards}

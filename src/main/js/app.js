@@ -1,78 +1,88 @@
-require("@babel/polyfill");
+require("@babel/polyfill")
 
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component} from 'react'
+import ReactDOM from 'react-dom'
 
-import Menubar from './Components/menubar';
-import UserInfo from "./Components/userinfo";
-import LoggedOutCategories from './Components/loggedOutCategories';
-import LoggedInCategories from './Components/loggedInCategories';
-import LoginForm from "./Components/LoginForm";
-import CreateAccount from "./Components/CreateAccount";
+import Menubar from './Components/menubar'
+import UserInfo from "./Components/userinfo"
+import LoggedOutCategories from './Components/loggedOutCategories'
+import LoggedInCategories from './Components/loggedInCategories'
+import LoginForm from "./Components/LoginForm"
+import CreateAccount from "./Components/CreateAccount"
 
 class App extends Component
 {
-	constructor(props) {
-		super(props);
+	constructor(props)
+	{
+		super(props)
 
-		this.state = {
-			page: 'homepage',
-			loggedIn: false,
-			bio: '',
-			username: '',
+		this.state={
+			page         : 'homepage',
+			loggedIn     : false,
+			bio          : '',
+			username     : '',
 			userInfoError: false
-		};
+		}
 
-		this.changePage = this.changePage.bind(this);
-		this.login = this.login.bind(this);
-		this.refresh = this.refresh.bind(this);
+		this.changePage=this.changePage.bind(this)
+		this.login     =this.login.bind(this)
+		this.refresh   =this.refresh.bind(this)
 	}
 
-	async componentDidMount() {
-		await this.refresh();
+	async componentDidMount()
+	{
+		await this.refresh()
 	}
 
-	async changePage(page) {
-		this.setState({ page: page });
-		await this.refresh();
+	async changePage(page)
+	{
+		this.setState({page: page})
+		await this.refresh()
 	}
 
-	async refresh() {
-		let res = await fetch('/generalBase/id');
-		res = await res.json();
+	async refresh()
+	{
+		let res=await fetch('/generalBase/id')
+		res    = await res.json()
 		this.setState({
-			loggedIn: res.id.length !== 0
-		});
+						  loggedIn: res.id.length!==0
+					  })
 
-		let userInfoRes = await fetch('/user/info');
-		userInfoRes = await userInfoRes.json();
-		if (userInfoRes.status === 'OK') {
-			let userInfo = userInfoRes.content;
+		let userInfoRes=await fetch('/user/info')
+		userInfoRes    = await userInfoRes.json()
+		if(userInfoRes.status==='OK')
+		{
+			let userInfo=userInfoRes.content
 			this.setState({
-				bio: userInfo.bio,
-				username: userInfo.username
-			});
-		} else if (userInfoRes.status === 403) {
+							  bio     : userInfo.bio,
+							  username: userInfo.username
+						  })
+		}
+		else if(userInfoRes.status===403)
+		{
 			// user is not authorized to make the request (probably logged out)
 			this.setState({
-				userInfoError: true
-			});
-		} else {
+							  userInfoError: true
+						  })
+		}
+		else
+		{
 			this.setState({
-				userInfoError: true
-			});
+							  userInfoError: true
+						  })
 		}
 	}
 
-	login() {
-		this.setState({ loggedIn: true });
+	login()
+	{
+		this.setState({loggedIn: true})
 	}
 
 	render()
 	{
-		const pages = {
-			create: <CreateAccount/>,
-			homepage: this.state.loggedIn ? <LoggedInCategories /> : <LoggedOutCategories />,
+		const pages={
+			create  : <CreateAccount/>,
+			homepage: this.state.loggedIn ? <LoggedInCategories/> : <LoggedOutCategories/>,
 			userInfo:
 				<UserInfo
 					bio={this.state.bio}
@@ -80,8 +90,8 @@ class App extends Component
 					profilePictureUrl="https://akm-img-a-in.tosshub.com/indiatoday/images/story/201804/RTX5L0IT.jpeg?qlnshqvD6xOuLhFcVvAqQ3OzqMM9ncYQ"
 					error={this.state.userInfoError}
 				/>,
-			login: <LoginForm changePage={this.changePage} login={this.login}/>
-		};
+			login   : <LoginForm changePage={this.changePage} login={this.login}/>
+		}
 
 		return (
 			<>
@@ -102,12 +112,12 @@ class App extends Component
 					{pages[this.state.page]}
 				</div>
 			</>
-		);
+		)
 	}
 }
 
 ReactDOM.render(
-	<App />,
+	<App/>,
 	document.getElementById('react')
-);
+)
 

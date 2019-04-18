@@ -6,7 +6,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import DBAwareEdiText from "./DBAwareEdiText";
-import Image from "react-bootstrap/Image";
+import ProfileCard from "./ProfileCard";
 
 class UserInfo extends Component {
     render() {
@@ -30,14 +30,10 @@ class UserInfo extends Component {
                             <Row>
                                 <Col xs={5}>
                                     <div style={{textAlign: "center"}}>
-                                        <Image src={this.props.profilePictureUrl} rounded fluid className="mb-3" />
-                                        <div style={{display: 'inline-block'}} >
-                                            <DBAwareEdiText
-                                                type="text"
-                                                name="username"
-                                                value={this.props.username}
-                                            />
-                                        </div>
+                                        <ProfileCard
+                                            profileThumbnailUrl={this.props.profilePictureUrl}
+                                            username={this.props.username}
+                                        />
                                     </div>
                                 </Col>
                                 <Col xs={7}>

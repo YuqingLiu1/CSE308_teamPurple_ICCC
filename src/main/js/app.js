@@ -9,7 +9,7 @@ import LoggedOutCategories from './Components/loggedOutCategories';
 import LoggedInCategories from './Components/loggedInCategories';
 import LoginForm from "./Components/LoginForm";
 import CreateAccount from "./Components/CreateAccount";
-import FrameEditor from "./Components/FrameEditor";
+// import FrameEditor from "./Components/FrameEditor";
 import TestFrameEditor from "./Components/TestFrameEditor";
 
 class App extends Component
@@ -30,8 +30,8 @@ class App extends Component
 		this.refresh = this.refresh.bind(this);
 	}
 
-	async componentDidMount() {
-		await this.refresh();
+	componentDidMount() {
+		this.refresh();
 	}
 
 	async changePage(page) {
@@ -52,7 +52,8 @@ class App extends Component
 			let userInfo = userInfoRes.content;
 			this.setState({
 				bio: userInfo.bio,
-				username: userInfo.username
+				username: userInfo.username,
+				userInfoError: false
 			});
 		} else if (userInfoRes.status === 403) {
 			// user is not authorized to make the request (probably logged out)

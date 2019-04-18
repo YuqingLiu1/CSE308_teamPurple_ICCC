@@ -1,98 +1,48 @@
 package com.teampurple.iccc.models;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
 @Document(collection = "ContentBase")
-enum Type{
-    Series,Episode,Frame;
-}
-class Parent{
-    private ObjectId user;
-    private ObjectId series;
-    private ObjectId episode;
-    private ObjectId frame;
-    public Parent(){
-        this.user= null;
-        this.series=null;
-        this.episode=null;
-        this.frame=null;
-
-    }
-
-    public ObjectId getUser() {
-        return user;
-    }
-
-    public void setUser(ObjectId user) {
-        this.user = user;
-    }
-
-    public ObjectId getSeries() {
-        return series;
-    }
-
-    public void setSeries(ObjectId series) {
-        this.series = series;
-    }
-
-    public ObjectId getEpisode() {
-        return episode;
-    }
-
-    public void setEpisode(ObjectId episode) {
-        this.episode = episode;
-    }
-
-    public ObjectId getFrame() {
-        return frame;
-    }
-
-    public void setFrame(ObjectId frame) {
-        this.frame = frame;
-    }
-}
 public class ContentBase {
     @Id
-    private ObjectId id;
-    private ObjectId generalBase;
-    private ObjectId author;
+    private String id;
+    private String generalBaseRef;
+    private String author;
     private Type type;
     private Boolean contributable;
-    private Boolean publication;
-    private Parent parent;
+    private Boolean _public;
+    private Parents parents;
 
-    public Parent getParent() {
-        return parent;
+    public Parents getParent() {
+        return parents;
     }
 
-    public void setParent(Parent parent) {
-        this.parent = parent;
+    public void setParent(Parents parents) {
+        this.parents = parents;
     }
 
-    public ObjectId getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(ObjectId id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public ObjectId getGeneralBase() {
-        return generalBase;
+    public String getGeneralBaseRef() {
+        return generalBaseRef;
     }
 
-    public void setGeneralBase(ObjectId generalBase) {
-        this.generalBase = generalBase;
+    public void setGeneralBaseRef(String generalBaseRef) {
+        this.generalBaseRef = generalBaseRef;
     }
 
-    public ObjectId getAuthor() {
+    public String getAuthor() {
         return author;
     }
 
-    public void setAuthor(ObjectId author) {
+    public void setAuthor(String author) {
         this.author = author;
     }
 
@@ -112,12 +62,62 @@ public class ContentBase {
         this.contributable = contributable;
     }
 
-    public Boolean getPublication() {
-        return publication;
+    public Boolean getPublic() {
+        return _public;
     }
 
-    public void setPublication(Boolean publication) {
-        this.publication = publication;
+    public void setPublic(Boolean publication) {
+        this._public = publication;
+    }
+}
+
+enum Type {
+    Series, Episode, Frame;
+}
+
+class Parents {
+    private String user;
+    private String series;
+    private String episode;
+    private String frame;
+
+    public Parents() {
+        this.user= null;
+        this.series=null;
+        this.episode=null;
+        this.frame=null;
+
     }
 
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getSeries() {
+        return series;
+    }
+
+    public void setSeries(String series) {
+        this.series = series;
+    }
+
+    public String getEpisode() {
+        return episode;
+    }
+
+    public void setEpisode(String episode) {
+        this.episode = episode;
+    }
+
+    public String getFrame() {
+        return frame;
+    }
+
+    public void setFrame(String frame) {
+        this.frame = frame;
+    }
 }

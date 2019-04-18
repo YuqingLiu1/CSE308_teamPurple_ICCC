@@ -37,6 +37,7 @@ class UserInfo extends Component {
                                     </div>
                                 </Col>
                                 <Col xs={7}>
+                                    <h1>Bio:</h1>
                                     <DBAwareEdiText
                                         inputProps={{
                                             rows: 5

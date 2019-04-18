@@ -26,7 +26,7 @@ public class UserAccountController {
             return new Response(Response.ERROR);
         }
 
-        GeneralBase currentGeneralBase = generalbase.findById(currentUser.getGeneralBaseRef());
+        GeneralBase currentGeneralBase = generalbase.findById(currentUser.getGeneralBaseRef()).get();
 
         UserInfo userInfo = new UserInfo(currentGeneralBase.getTitle(),
                 currentGeneralBase.getDescription(), currentUser.getEmail(), currentUser.getPassword());
@@ -37,7 +37,7 @@ public class UserAccountController {
     @PostMapping("/user/edit")
     public Response editUserInfo(@RequestBody UserInfo userInfo) {
         User currentUser = getCurrentUser();
-        GeneralBase currentGeneralBase = generalbase.findById(currentUser.getGeneralBaseRef());
+        GeneralBase currentGeneralBase = generalbase.findById(currentUser.getGeneralBaseRef()).get();
         if (currentUser == null || currentGeneralBase == null) {
             return new Response("error");
         }
@@ -103,13 +103,13 @@ public class UserAccountController {
 
     @GetMapping(value="/generalBase/thumbnail")
     public String getThumbnail(@RequestParam(value="id") final String generalBaseId) {
-        GeneralBase gb = generalbase.findById(generalBaseId);
+        GeneralBase gb = generalbase.findById(generalBaseId).get();
         return gb.getThumbnail();
     }
 
     @GetMapping(value="/generalBase/title")
     public String getTitle(@RequestParam(value="id") final String generalBaseId) {
-        GeneralBase gb = generalbase.findById(generalBaseId);
+        GeneralBase gb = generalbase.findById(generalBaseId).get();
         return gb.getTitle();
     }
 
@@ -153,7 +153,7 @@ public class UserAccountController {
     public Response setCurrentUserName(@RequestBody final String username) {
         try {
             User currentUser = getCurrentUser();
-            GeneralBase gb = generalbase.findById(currentUser.getGeneralBaseRef());
+            GeneralBase gb = generalbase.findById(currentUser.getGeneralBaseRef()).get();
             gb.setTitle(username);
             generalbase.save(gb);
             return new Response(Response.OK);

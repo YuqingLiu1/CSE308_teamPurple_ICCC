@@ -7,9 +7,10 @@ import Menubar from './Components/menubar';
 import UserInfo from "./Components/userinfo";
 import LoggedOutCategories from './Components/loggedOutCategories';
 import LoggedInCategories from './Components/loggedInCategories';
-import LoginForm from "./Components/LoginForm";
 import CreateAccount from "./Components/CreateAccount";
-import TestFrameEditor from "./Components/TestFrameEditor";
+import TestFrameEditor from './Components/TestFrameEditor';
+import NewContentPage from './Pages/NewContentPage';
+import LoginPage from './Pages/LoginPage';
 
 class App extends Component
 {
@@ -33,7 +34,7 @@ class App extends Component
         this.refresh()
     }
 
-    changePage(page)
+    changePage(page, data)
     {
         this.setState({page: page})
         if (page === 'homepage') {
@@ -83,8 +84,9 @@ class App extends Component
                     profilePictureUrl="https://akm-img-a-in.tosshub.com/indiatoday/images/story/201804/RTX5L0IT.jpeg?qlnshqvD6xOuLhFcVvAqQ3OzqMM9ncYQ"
                     error={this.state.userInfoError}
                 />,
-            login   : <LoginForm changePage={this.changePage} login={this.login}/>,
-            editor  : <TestFrameEditor />
+            login   : <LoginPage changePage={this.changePage} login={this.login} />,
+            editor  : <TestFrameEditor />,
+            newContent: <NewContentPage />
         }
 
         return (
@@ -102,7 +104,7 @@ class App extends Component
                     crossOrigin="anonymous"
                 />
                 <div className="App">
-                    <Menubar loggedIn={this.state.loggedIn} changePage={this.changePage}/>
+                    <Menubar loggedIn={this.state.loggedIn} changePage={this.changePage} />
                     {pages[this.state.page]}
                 </div>
             </>

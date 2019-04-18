@@ -5,6 +5,7 @@ import {useState} from 'react'
 import {Card, Collapse, Modal} from 'react-bootstrap'
 import Thumbnail from './thumbnail'
 import Button from 'react-bootstrap/Button'
+import DBAwareEdiText from './DBAwareEdiText'
 export default function({thumbnails, editable, title, setTitle, remove, loggedIn=true})
 {
 	const categoryFontSize               ='30px'
@@ -17,7 +18,7 @@ export default function({thumbnails, editable, title, setTitle, remove, loggedIn
 		<span>
 			<Button onClick={remove} variant={'danger'}>Yes</Button>
 			<Button onClick={()=>setAskIfDelete(false)}>No</Button>
-			</span>
+		</span>
 	</div>
 	const cards      =<Card.Body style={{'overflow-x': 'scroll'}}>
 		<div>
@@ -66,8 +67,9 @@ export default function({thumbnails, editable, title, setTitle, remove, loggedIn
 						</Button>
 						<Button onClick={()=>setNotCollapsed(!notCollapsed)}>{notCollapsed ? '▼' : '▲'}</Button>
 						<div class='mx-auto'>
-							<EdiText viewProps={{style: {'font-size': categoryFontSize}}}
+							<DBAwareEdiText viewProps={{style: {'font-size': categoryFontSize}}}
 								// inputProps	={{style:{'font-size':categoryFontSize}}}
+
 									 value={title} type={'text'} onSave={alert}/>
 						</div>
 					</>}

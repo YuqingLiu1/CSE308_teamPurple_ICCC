@@ -5,20 +5,27 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "ContentBase")
 public class ContentBase {
+
+    // Note: for now, these have to agree with the strings used by the frontend, otherwise there could be
+    // errors when trying to save to the database
+    public static final String SERIES = "Series";
+    public static final String EPISODE = "Episode";
+    public static final String FRAME = "Frame";
+
     @Id
     private String id;
     private String generalBaseRef;
     private String author;
-    private Type type;
+    private String type;
     private Boolean contributable;
     private Boolean _public;
     private Parents parents;
 
-    public Parents getParent() {
+    public Parents getParents() {
         return parents;
     }
 
-    public void setParent(Parents parents) {
+    public void setParents(Parents parents) {
         this.parents = parents;
     }
 
@@ -46,11 +53,11 @@ public class ContentBase {
         this.author = author;
     }
 
-    public Type getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -71,53 +78,3 @@ public class ContentBase {
     }
 }
 
-enum Type {
-    Series, Episode, Frame;
-}
-
-class Parents {
-    private String user;
-    private String series;
-    private String episode;
-    private String frame;
-
-    public Parents() {
-        this.user= null;
-        this.series=null;
-        this.episode=null;
-        this.frame=null;
-
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public String getSeries() {
-        return series;
-    }
-
-    public void setSeries(String series) {
-        this.series = series;
-    }
-
-    public String getEpisode() {
-        return episode;
-    }
-
-    public void setEpisode(String episode) {
-        this.episode = episode;
-    }
-
-    public String getFrame() {
-        return frame;
-    }
-
-    public void setFrame(String frame) {
-        this.frame = frame;
-    }
-}

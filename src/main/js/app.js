@@ -86,7 +86,7 @@ class App extends Component
                 />,
             login   : <LoginPage changePage={this.changePage} login={this.login} />,
             editor  : <TestFrameEditor />,
-            newContent: <NewContentPage />
+            newContent: <NewContentPage changePage={this.changePage} />
         }
 
         return (

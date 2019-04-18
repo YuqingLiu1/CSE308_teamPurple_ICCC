@@ -8,6 +8,10 @@ import java.util.Date;
 
 @Document(collection = "GeneralBase")
 public class GeneralBase {
+
+    public static final String CONTENT_BASE_TYPE = "ContentBase";
+    public static final String USER_TYPE = "User";
+
     @Id
     private String id;
     private String typeRef;
@@ -20,7 +24,6 @@ public class GeneralBase {
     private ArrayList<String> children;
     private ArrayList<String> likers;
     private ArrayList<String> comments;
-
 
     public void setTypeRef(String typeRef){
         this.typeRef = typeRef;

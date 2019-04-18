@@ -1,4 +1,4 @@
-require("@babel/polyfill");
+require("@babel/polyfill")
 
 import React, { Component } from 'react';
 import Jumbotron from 'react-bootstrap/Jumbotron';
@@ -55,4 +55,4 @@ class UserInfo extends Component {
     }
 }
 
-export default UserInfo;
+export default UserInfo

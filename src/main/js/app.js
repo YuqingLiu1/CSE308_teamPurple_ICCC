@@ -1,4 +1,4 @@
-require("@babel/polyfill");
+require("@babel/polyfill")
 
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
@@ -9,42 +9,41 @@ import LoggedOutCategories from './Components/loggedOutCategories';
 import LoggedInCategories from './Components/loggedInCategories';
 import LoginForm from "./Components/LoginForm";
 import CreateAccount from "./Components/CreateAccount";
-// import FrameEditor from "./Components/FrameEditor";
 import TestFrameEditor from "./Components/TestFrameEditor";
 
 class App extends Component
 {
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			page: 'homepage',
-			loggedIn: false,
-			bio: '',
-			username: '',
+	constructor(props)
+	{
+		super(props)
+		this.state={
+			page         : 'homepage',
+			loggedIn     : false,
+			bio          : '',
+			username     : '',
 			userInfoError: false
-		};
-
-		this.changePage = this.changePage.bind(this);
-		this.login = this.login.bind(this);
-		this.refresh = this.refresh.bind(this);
+		}
+		this.changePage=this.changePage.bind(this)
+		this.login     =this.login.bind(this)
+		this.refresh   =this.refresh.bind(this)
 	}
 
-	componentDidMount() {
-		this.refresh();
+	componentDidMount()
+	{
+		this.refresh()
 	}
 
-	async changePage(page) {
-		this.setState({ page: page });
-		await this.refresh();
+	changePage(page)
+	{
+		this.setState({page: page})
+		this.refresh()
 	}
 
-	async refresh() {
-		let res = await fetch('/generalBase/id');
-		res = await res.json();
-		this.setState({
-			loggedIn: res.id.length !== 0
-		});
+	async refresh()
+	{
+		let res=await fetch('/generalBase/id')
+		res    = await res.json()
+		this.setState({loggedIn: res.id.length!==0})
 
 		let userInfoRes = await fetch('/user/info');
 		userInfoRes = await userInfoRes.json();
@@ -57,25 +56,24 @@ class App extends Component
 			});
 		} else if (userInfoRes.status === 403) {
 			// user is not authorized to make the request (probably logged out)
-			this.setState({
-				userInfoError: true
-			});
-		} else {
-			this.setState({
-				userInfoError: true
-			});
+			this.setState({userInfoError: true})
+		}
+		else
+		{
+			this.setState({userInfoError: true})
 		}
 	}
 
-	login() {
-		this.setState({ loggedIn: true });
+	login()
+	{
+		this.setState({loggedIn: true})
 	}
 
 	render()
 	{
-		const pages = {
-			create: <CreateAccount/>,
-			homepage: this.state.loggedIn ? <LoggedInCategories /> : <LoggedOutCategories />,
+		const pages={
+			create  : <CreateAccount/>,
+			homepage: this.state.loggedIn ? <LoggedInCategories/> : <LoggedOutCategories/>,
 			userInfo:
 				<UserInfo
 					bio={this.state.bio}
@@ -83,10 +81,9 @@ class App extends Component
 					profilePictureUrl="https://akm-img-a-in.tosshub.com/indiatoday/images/story/201804/RTX5L0IT.jpeg?qlnshqvD6xOuLhFcVvAqQ3OzqMM9ncYQ"
 					error={this.state.userInfoError}
 				/>,
-			login: <LoginForm changePage={this.changePage} login={this.login}/>,
-			// editor: <FrameEditor />
-			editor: <TestFrameEditor />
-		};
+			login   : <LoginForm changePage={this.changePage} login={this.login}/>,
+			editor  : <TestFrameEditor />
+		}
 
 		return (
 			<>
@@ -107,12 +104,12 @@ class App extends Component
 					{pages[this.state.page]}
 				</div>
 			</>
-		);
+		)
 	}
 }
 
 ReactDOM.render(
-	<App />,
+	<App/>,
 	document.getElementById('react')
-);
+)
 

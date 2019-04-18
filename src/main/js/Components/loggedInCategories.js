@@ -55,12 +55,11 @@ const grid=8
 
 const getItemStyle=(isDragging, draggableStyle)=>({
 	// some basic styles to make the items look a bit nicer
-	userSelect: "none",
-	padding   : 0,
-	margin    : 0,
-	'margin-bottom': '25px',
-	'background':'rgba(0,0,0,0)',
-
+	userSelect     : "none",
+	padding        : 0,
+	margin         : 0,
+	marginBottom: '25px',
+	background   : 'rgba(0,0,0,0)',
 
 	// change background colour if dragging
 	// background: isDragging ? "lightgreen" : "grey",

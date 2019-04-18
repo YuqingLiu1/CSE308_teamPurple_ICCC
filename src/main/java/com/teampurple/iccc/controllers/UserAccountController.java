@@ -4,9 +4,8 @@ import com.mongodb.MongoException;
 import com.teampurple.iccc.models.*;
 import com.teampurple.iccc.repositories.GeneralBaseRepository;
 import com.teampurple.iccc.repositories.UserRepository;
+import com.teampurple.iccc.utils.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,10 +16,12 @@ public class UserAccountController {
     private UserRepository users;
     @Autowired
     private GeneralBaseRepository generalbase;
+    @Autowired
+    private Authentication auth;
 
     @GetMapping("/user/info")
     public Response getUserInfo() {
-        User currentUser = getCurrentUser();
+        User currentUser = auth.getCurrentUser();
 
         if (currentUser == null) {
             return new Response(Response.ERROR);
@@ -36,7 +37,7 @@ public class UserAccountController {
 
     @PostMapping("/user/edit")
     public Response editUserInfo(@RequestBody UserInfo userInfo) {
-        User currentUser = getCurrentUser();
+        User currentUser = auth.getCurrentUser();
         GeneralBase currentGeneralBase = generalbase.findById(currentUser.getGeneralBaseRef()).get();
         if (currentUser == null || currentGeneralBase == null) {
             return new Response("error");
@@ -130,7 +131,7 @@ public class UserAccountController {
 
     @GetMapping("/generalBase/id")
     public String getCurrentUserGeneralBaseId() {
-        User currentUser = getCurrentUser();
+        User currentUser = auth.getCurrentUser();
         if (currentUser == null) {
             return "{\"id\":\"\"}";
         }
@@ -140,7 +141,7 @@ public class UserAccountController {
     @PostMapping("/user/setpassword")
     public Response setCurrentUserPassword(@RequestBody final String password) {
         try {
-            User currentUser = getCurrentUser();
+            User currentUser = auth.getCurrentUser();
             currentUser.setPassword(new BCryptPasswordEncoder(10).encode(currentUser.getPassword()));
             users.save(currentUser);
             return new Response(Response.OK);
@@ -152,7 +153,7 @@ public class UserAccountController {
     @PostMapping("/user/username")
     public Response setCurrentUserName(@RequestBody final String username) {
         try {
-            User currentUser = getCurrentUser();
+            User currentUser = auth.getCurrentUser();
             GeneralBase gb = generalbase.findById(currentUser.getGeneralBaseRef()).get();
             gb.setTitle(username);
             generalbase.save(gb);
@@ -160,19 +161,6 @@ public class UserAccountController {
         }catch (Exception e){
             return new Response(Response.ERROR);
         }
-    }
-
-    private User getCurrentUser() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String email;
-
-        if (principal instanceof UserDetails) {
-            email = ((UserDetails)principal).getUsername();
-        } else {
-            email = principal.toString();
-        }
-
-        return users.findByEmail(email);
     }
 
 }

@@ -1,9 +1,16 @@
 package com.teampurple.iccc.controllers;
 
+import com.mongodb.MongoException;
+import com.teampurple.iccc.models.GeneralBase;
+import com.teampurple.iccc.models.Response;
 import com.teampurple.iccc.models.User;
+import com.teampurple.iccc.models.UserInfo;
+import com.teampurple.iccc.repositories.GeneralBaseRepository;
 import com.teampurple.iccc.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +19,9 @@ public class TestController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private GeneralBaseRepository generalBaseRepository;
 
     @Autowired
     private AuthenticationManager am;
@@ -30,11 +40,6 @@ public class TestController {
     @GetMapping("/test/adduser")
     public void test() {
         return;
-    }
-
-    @PostMapping("/test/user/edit")
-    public User editUserInfo(@RequestBody User user) {
-        return user;
     }
 
 }

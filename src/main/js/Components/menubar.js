@@ -29,7 +29,10 @@ class Menubar extends Component {
                             <Button><i className="fas fa-search" /></Button>
                         </InputGroup.Append>
                     </InputGroup>
-                    {this.props.loggedIn ? <Nav.Link href=""><i className="fas fa-plus-circle fa-2x" /></Nav.Link> : <></>}
+                    {this.props.loggedIn ?
+                        <Nav.Link onClick={() => {this.props.changePage('editor')}}>
+                            <i className="fas fa-plus-circle fa-2x" />
+                        </Nav.Link> : <></>}
                     <Dropdown alignRight>
                         <Dropdown.Toggle>
                             <i className="fas fa-user-circle fa-2x" />

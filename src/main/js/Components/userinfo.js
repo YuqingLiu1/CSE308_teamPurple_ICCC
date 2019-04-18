@@ -1,39 +1,61 @@
+require("@babel/polyfill");
+
 import React, { Component } from 'react';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import Container from 'react-bootstrap/Container';
-import Thumbnail from './thumbnail';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-
-let defaultText = `
-Anyone can write user stories.
-It's the product owner's responsibility to make sure a
-product backlog of agile user stories exists, but that
-doesn’t mean that the product owner is the one who writes
-them. Over the course of a good agile project, you
-should expect to have user story examples written by each team member.
-`
+import DBAwareEdiText from "./DBAwareEdiText";
+import Image from "react-bootstrap/Image";
 
 class UserInfo extends Component {
     render() {
-        return (
-            <Container className="mt-5">
-                <Jumbotron>
-                    <Container>
-                        <Row>
-                            <Col xs="{3}">
-                                <Thumbnail src={this.props.imageUrl} />
-                            </Col>
-                            <Col>
-                                <p className="ml-5">
-                                    {this.props.description ? this.props.description : defaultText}
-                                </p>
-                            </Col>
-                        </Row>
-                    </Container>
-                </Jumbotron>
-            </Container>
-        );
+        if (this.props.error) {
+            return (
+                <Container className="mt-5">
+                    <Jumbotron>
+                        <Container>
+                            <Row className="justify-content-center">
+                                <p>Sorry, something went wrong <i className="far fa-frown"></i></p>
+                            </Row>
+                        </Container>
+                    </Jumbotron>
+                </Container>
+            );
+        } else {
+            return (
+                <Container className="mt-5">
+                    <Jumbotron>
+                        <Container>
+                            <Row>
+                                <Col xs={5}>
+                                    <div style={{textAlign: "center"}}>
+                                        <Image src={this.props.profilePictureUrl} rounded fluid className="mb-3" />
+                                        <div style={{display: 'inline-block'}} >
+                                            <DBAwareEdiText
+                                                type="text"
+                                                name="username"
+                                                value={this.props.username}
+                                            />
+                                        </div>
+                                    </div>
+                                </Col>
+                                <Col xs={7}>
+                                    <DBAwareEdiText
+                                        inputProps={{
+                                            rows: 5
+                                        }}
+                                        type="textarea"
+                                        name="bio"
+                                        value={this.props.bio}
+                                    />
+                                </Col>
+                            </Row>
+                        </Container>
+                    </Jumbotron>
+                </Container>
+            );
+        }
     }
 }
 

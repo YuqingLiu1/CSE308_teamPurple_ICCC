@@ -1,9 +1,7 @@
 package com.teampurple.iccc.controllers;
 
-import com.teampurple.iccc.models.GeneralBase;
-import com.teampurple.iccc.models.NewUser;
-import com.teampurple.iccc.models.Response;
-import com.teampurple.iccc.models.User;
+import com.mongodb.MongoException;
+import com.teampurple.iccc.models.*;
 import com.teampurple.iccc.repositories.GeneralBaseRepository;
 import com.teampurple.iccc.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +18,59 @@ public class UserAccountController {
     @Autowired
     private GeneralBaseRepository generalbase;
 
+    @GetMapping("/user/info")
+    public Response getUserInfo() {
+        User currentUser = getCurrentUser();
+
+        if (currentUser == null) {
+            return new Response(Response.ERROR);
+        }
+
+        GeneralBase currentGeneralBase = generalbase.findById(currentUser.getGeneralBaseRef());
+
+        UserInfo userInfo = new UserInfo(currentGeneralBase.getTitle(),
+                currentGeneralBase.getDescription(), currentUser.getEmail(), currentUser.getPassword());
+
+        return new Response(Response.OK, userInfo);
+    }
+
+    @PostMapping("/user/edit")
+    public Response editUserInfo(@RequestBody UserInfo userInfo) {
+        User currentUser = getCurrentUser();
+        GeneralBase currentGeneralBase = generalbase.findById(currentUser.getGeneralBaseRef());
+        if (currentUser == null || currentGeneralBase == null) {
+            return new Response("error");
+        }
+
+        // only change the appropriate properties
+        String username = userInfo.getUsername();
+        String password = userInfo.getPassword();
+        String email = userInfo.getEmail();
+        String bio = userInfo.getBio();
+        if (username != null) {
+            currentGeneralBase.setTitle(username);
+        }
+        if (password != null) {
+            currentUser.setPassword(new BCryptPasswordEncoder().encode(password));
+        }
+        if (email != null) {
+            currentUser.setEmail(email);
+        }
+        if (bio != null) {
+            currentGeneralBase.setDescription(bio);
+        }
+
+        // don't forget to save changes to database
+        try {
+            generalbase.save(currentGeneralBase);
+            users.save(currentUser);
+        } catch (MongoException ex) {
+            return new Response("error");
+        }
+
+        return new Response("OK");
+    }
+
     @PostMapping(value = "/user/add")
     public Response addUserAccount(@RequestBody NewUser user) {
         try {
@@ -35,19 +86,19 @@ public class UserAccountController {
             gb.setTypeRef(newUser.getId());
             generalbase.save(gb);
 
-            return new Response("OK");
+            return new Response(Response.OK);
         } catch (Exception e) {
-            return new Response("error");
+            return new Response(Response.ERROR);
         }
     }
 
 
     @PostMapping("/user/exists")
-    public Response checkUserExist(@RequestBody final String email) {
-        if (users.existsUserByEmail(email)) {
-            return new Response("error");
+    public Response checkUserExist(@RequestBody UserInfo userInfo) {
+        if (!users.existsByEmail(userInfo.getEmail())) {
+            return new Response(Response.ERROR);
         }
-        return new Response("OK");
+        return new Response(Response.OK);
     }
 
     @GetMapping(value="/generalBase/thumbnail")
@@ -92,9 +143,9 @@ public class UserAccountController {
             User currentUser = getCurrentUser();
             currentUser.setPassword(new BCryptPasswordEncoder(10).encode(currentUser.getPassword()));
             users.save(currentUser);
-            return new Response("OK");
+            return new Response(Response.OK);
         }catch (Exception e){
-            return new Response("error");
+            return new Response(Response.ERROR);
         }
     }
 
@@ -105,9 +156,9 @@ public class UserAccountController {
             GeneralBase gb = generalbase.findById(currentUser.getGeneralBaseRef());
             gb.setTitle(username);
             generalbase.save(gb);
-            return new Response("OK");
+            return new Response(Response.OK);
         }catch (Exception e){
-            return new Response("error");
+            return new Response(Response.ERROR);
         }
     }
 

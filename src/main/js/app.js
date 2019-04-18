@@ -10,6 +10,7 @@ import LoggedInCategories from './Components/loggedInCategories';
 import LoginForm from "./Components/LoginForm";
 import CreateAccount from "./Components/CreateAccount";
 import FrameEditor from "./Components/FrameEditor";
+import TestFrameEditor from "./Components/TestFrameEditor";
 
 class App extends Component
 {
@@ -82,7 +83,8 @@ class App extends Component
 					error={this.state.userInfoError}
 				/>,
 			login: <LoginForm changePage={this.changePage} login={this.login}/>,
-			editor: <FrameEditor />
+			// editor: <FrameEditor />
+			editor: <TestFrameEditor />
 		};
 
 		return (

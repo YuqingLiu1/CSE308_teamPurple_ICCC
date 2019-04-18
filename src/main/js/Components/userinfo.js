@@ -29,13 +29,15 @@ class UserInfo extends Component {
                         <Container>
                             <Row>
                                 <Col xs={5}>
-                                    <Image src={this.props.profilePictureUrl} rounded fluid className="mb-3" />
-                                    <div className="mx-auto">
-                                        <DBAwareEdiText
-                                            type="text"
-                                            name="username"
-                                            value={this.props.username}
-                                        />
+                                    <div style={{textAlign: "center"}}>
+                                        <Image src={this.props.profilePictureUrl} rounded fluid className="mb-3" />
+                                        <div style={{display: 'inline-block'}} >
+                                            <DBAwareEdiText
+                                                type="text"
+                                                name="username"
+                                                value={this.props.username}
+                                            />
+                                        </div>
                                     </div>
                                 </Col>
                                 <Col xs={7}>

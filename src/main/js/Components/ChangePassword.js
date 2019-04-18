@@ -6,21 +6,21 @@ class ChangePassword extends Component
 	render()
 	{
 		return (
-			<div class="form1">
+			<div className="form1">
 				<form>
 					<h3 style={{"text-align": "center", "color": "black"}}>Change Password</h3>
-					<div class="changePasswordDiv">
-						<label class="changePasswordLabel">Password</label>
+					<div className="changePasswordDiv">
+						<label className="changePasswordLabel">Password</label>
 						<br/>
-						<input type="password" className="form-control" class="changePasswordInput"/>
+						<input type="password" className="form-control" className="changePasswordInput"/>
 					</div>
-					<div class="editDiv">
-						<label class="changePasswordLabel">Enter Password Again</label>
+					<div className="editDiv">
+						<label className="changePasswordLabel">Enter Password Again</label>
 						<br/>
-						<input type="password" className="form-control" class="changePasswordInput"/>
+						<input type="password" className="form-control" className="changePasswordInput"/>
 					</div>
 					<br/>
-					<button type="submit" className="btn btn-primary" class="changePasswordBtn">change</button>
+					<button type="submit" className="btn btn-primary" className="changePasswordBtn">change</button>
 				</form>
 			</div>
 		)

@@ -11,66 +11,66 @@ export default function({thumbnails, editable, title, setTitle, remove, loggedIn
 	const categoryFontSize               ='30px'
 	const [notCollapsed, setNotCollapsed]=useState(true)
 	const [askIfDelete, setAskIfDelete]  =useState(false)
-	console.assert(thumbnails!==undefined && Object.getPrototypeOf(thumbnails)===Array.prototype)
+	// console.assert(thumbnails!==undefined && Object.getPrototypeOf(thumbnails)===Array.prototype)
 	// console.assert(numberOfRows!==undefined && Object.getPrototypeOf(numberOfRows)===Number.prototype)
-	const removeAsker=<div class='mx-auto'>
+	const removeAsker=<div className='mx-auto'>
 		Are you sure you want to remove this category?
 		<span>
 			<Button onClick={remove} variant={'danger'}>Yes</Button>
 			<Button onClick={()=>setAskIfDelete(false)}>No</Button>
 		</span>
 	</div>
-	const cards      =<Card.Body style={{'overflow-x': 'scroll'}}>
+	const cards      =<Card.Body style={{overflowX: 'scroll'}}>
 		<div>
 			<table>
-				<tr>
-					<td>
-						<Thumbnail/>
-					</td>
-					<td>
-						<Thumbnail/>
-					</td>
-					<td>
-						<Thumbnail/>
-					</td>
-					<td>
-						<Thumbnail/>
-					</td>
-					<td>
-						<Thumbnail/>
-					</td>
-					<td>
-						<Thumbnail/>
-					</td>
-					<td>
-						<Thumbnail/>
-					</td>
-					<td>
-						<Thumbnail/>
-					</td>
-					<td>
-						<Thumbnail/>
-					</td>
-				</tr>
+				<tbody>
+					<tr>
+						<td>
+							<Thumbnail/>
+						</td>
+						<td>
+							<Thumbnail/>
+						</td>
+						<td>
+							<Thumbnail/>
+						</td>
+						<td>
+							<Thumbnail/>
+						</td>
+						<td>
+							<Thumbnail/>
+						</td>
+						<td>
+							<Thumbnail/>
+						</td>
+						<td>
+							<Thumbnail/>
+						</td>
+						<td>
+							<Thumbnail/>
+						</td>
+						<td>
+							<Thumbnail/>
+						</td>
+					</tr>
+				</tbody>
 			</table>
 		</div>
 	</Card.Body>
 	return <Card>
 		<Card.Header>
-			<div style={{'display': 'flex', 'flex-direction': 'vertical'}}>
-				{!loggedIn ? <span class='mx-auto' style={{'font-size': categoryFontSize}}>{title}</span> :
+			<div style={{display: 'flex', flexDirection: 'vertical'}}>
+				{!loggedIn ? <span className='mx-auto' style={{'fontSize': categoryFontSize}}>{title}</span> :
 					<>
 						<Button variant="danger"
 								onClick={()=>setAskIfDelete(true)}>
-							{<i style={{'flex-grow': 0}}
-								className="fas fa-minus-circle"/>}
+							{<i className="fas fa-minus-circle"/>}
 						</Button>
 						<Button onClick={()=>setNotCollapsed(!notCollapsed)}>{notCollapsed ? '▼' : '▲'}</Button>
-						<div class='mx-auto'>
-							<DBAwareEdiText viewProps={{style: {'font-size': categoryFontSize}}}
-								// inputProps	={{style:{'font-size':categoryFontSize}}}
-
-									 value={title} type={'text'} onSave={alert}/>
+						<div className='mx-auto'>
+							<DBAwareEdiText viewProps={{style: {fontSize: categoryFontSize}}}
+								// inputProps	={{style:{'fontSize':categoryFontSize}}}
+											value={title} type={'text'} onSave={alert}/>
 						</div>
 					</>}
 			</div>

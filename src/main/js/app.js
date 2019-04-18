@@ -9,6 +9,7 @@ import LoggedOutCategories from './Components/loggedOutCategories';
 import LoggedInCategories from './Components/loggedInCategories';
 import LoginForm from "./Components/LoginForm";
 import CreateAccount from "./Components/CreateAccount";
+import FrameEditor from "./Components/FrameEditor";
 
 class App extends Component
 {
@@ -80,7 +81,8 @@ class App extends Component
 					profilePictureUrl="https://akm-img-a-in.tosshub.com/indiatoday/images/story/201804/RTX5L0IT.jpeg?qlnshqvD6xOuLhFcVvAqQ3OzqMM9ncYQ"
 					error={this.state.userInfoError}
 				/>,
-			login: <LoginForm changePage={this.changePage} login={this.login}/>
+			login: <LoginForm changePage={this.changePage} login={this.login}/>,
+			editor: <FrameEditor />
 		};
 
 		return (

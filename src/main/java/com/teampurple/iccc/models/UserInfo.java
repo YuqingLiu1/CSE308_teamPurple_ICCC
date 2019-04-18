@@ -1,13 +1,13 @@
 package com.teampurple.iccc.models;
 
-public class UserInfo {
+public class Userinfo {
 
     private String username;
     private String bio;
     private String email;
     private String password;
 
-    public UserInfo(String username, String bio, String email, String password) {
+    public Userinfo(String username, String bio, String email, String password) {
         this.username = username;
         this.bio = bio;
         this.email = email;

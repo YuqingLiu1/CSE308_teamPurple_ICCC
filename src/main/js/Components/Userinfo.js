@@ -8,7 +8,7 @@ import Col from 'react-bootstrap/Col'
 import DBAwareEdiText from "./DBAwareEdiText"
 import Image from "react-bootstrap/Image"
 
-class UserInfo extends Component
+class Userinfo extends Component
 {
 	render()
 	{
@@ -64,4 +64,4 @@ class UserInfo extends Component
 	}
 }
 
-export default UserInfo
+export default Userinfo

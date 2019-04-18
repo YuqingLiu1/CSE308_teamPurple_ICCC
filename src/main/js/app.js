@@ -3,8 +3,8 @@ require("@babel/polyfill")
 import React, {Component} from 'react'
 import ReactDOM from 'react-dom'
 
-import Menubar from './Components/menubar'
-import UserInfo from "./Components/userinfo"
+import Menubar from './Components/Menubar'
+import Userinfo from "./Components/Userinfo"
 import LoggedOutCategories from './Components/loggedOutCategories'
 import LoggedInCategories from './Components/loggedInCategories'
 import LoginForm from "./Components/LoginForm"
@@ -72,7 +72,7 @@ class App extends Component
 			create  : <CreateAccount/>,
 			homepage: this.state.loggedIn ? <LoggedInCategories/> : <LoggedOutCategories/>,
 			userInfo:
-				<UserInfo
+				<Userinfo
 					bio={this.state.bio}
 					username={this.state.username}
 					profilePictureUrl="https://akm-img-a-in.tosshub.com/indiatoday/images/story/201804/RTX5L0IT.jpeg?qlnshqvD6xOuLhFcVvAqQ3OzqMM9ncYQ"

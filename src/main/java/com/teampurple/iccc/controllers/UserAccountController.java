@@ -28,14 +28,14 @@ public class UserAccountController {
 
         GeneralBase currentGeneralBase = generalbase.findById(currentUser.getGeneralBaseRef());
 
-        UserInfo userInfo = new UserInfo(currentGeneralBase.getTitle(),
+        Userinfo userInfo = new Userinfo(currentGeneralBase.getTitle(),
                 currentGeneralBase.getDescription(), currentUser.getEmail(), currentUser.getPassword());
 
         return new Response(Response.OK, userInfo);
     }
 
     @PostMapping("/user/edit")
-    public Response editUserInfo(@RequestBody UserInfo userInfo) {
+    public Response editUserInfo(@RequestBody Userinfo userInfo) {
         User currentUser = getCurrentUser();
         GeneralBase currentGeneralBase = generalbase.findById(currentUser.getGeneralBaseRef());
         if (currentUser == null || currentGeneralBase == null) {
@@ -94,7 +94,7 @@ public class UserAccountController {
 
 
     @PostMapping("/user/exists")
-    public Response checkUserExist(@RequestBody UserInfo userInfo) {
+    public Response checkUserExist(@RequestBody Userinfo userInfo) {
         if (!users.existsByEmail(userInfo.getEmail())) {
             return new Response(Response.ERROR);
         }

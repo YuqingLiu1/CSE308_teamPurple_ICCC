@@ -4,7 +4,7 @@ import com.mongodb.MongoException;
 import com.teampurple.iccc.models.GeneralBase;
 import com.teampurple.iccc.models.Response;
 import com.teampurple.iccc.models.User;
-import com.teampurple.iccc.models.UserInfo;
+import com.teampurple.iccc.models.Userinfo;
 import com.teampurple.iccc.repositories.GeneralBaseRepository;
 import com.teampurple.iccc.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

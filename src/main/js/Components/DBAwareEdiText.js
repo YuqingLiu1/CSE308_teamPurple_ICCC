@@ -32,7 +32,7 @@ class DBAwareEdiText extends Component
 		{
 			// do something on unsuccessful save
 		}
-	};
+	}
 
 	render()
 	{

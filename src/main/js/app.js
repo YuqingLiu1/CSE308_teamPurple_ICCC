@@ -1,7 +1,21 @@
 require("@babel/polyfill")
 
+<<<<<<< HEAD
 import React, {Component} from 'react'
 import ReactDOM from 'react-dom'
+=======
+import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+
+import Menubar from './Components/menubar';
+import UserInfo from "./Components/userinfo";
+import LoggedOutCategories from './Components/loggedOutCategories';
+import LoggedInCategories from './Components/loggedInCategories';
+import LoginForm from "./Components/LoginForm";
+import CreateAccount from "./Components/CreateAccount";
+import FrameEditor from "./Components/FrameEditor";
+import TestFrameEditor from "./Components/TestFrameEditor";
+>>>>>>> 4292c99c75815e911d4f7e251094a603f48e54ca
 
 import Menubar from './Components/menubar'
 import UserInfo from "./Components/userinfo"
@@ -78,8 +92,15 @@ class App extends Component
 					profilePictureUrl="https://akm-img-a-in.tosshub.com/indiatoday/images/story/201804/RTX5L0IT.jpeg?qlnshqvD6xOuLhFcVvAqQ3OzqMM9ncYQ"
 					error={this.state.userInfoError}
 				/>,
+<<<<<<< HEAD
 			login   : <LoginForm changePage={this.changePage} login={this.login}/>
 		}
+=======
+			login: <LoginForm changePage={this.changePage} login={this.login}/>,
+			// editor: <FrameEditor />
+			editor: <TestFrameEditor />
+		};
+>>>>>>> 4292c99c75815e911d4f7e251094a603f48e54ca
 
 		return (
 			<>

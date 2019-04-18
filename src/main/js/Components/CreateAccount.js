@@ -24,7 +24,11 @@ class CreateAccount extends Component{
             body: JSON.stringify(this.state)
         });
         res = await res.json();
-        console.log(res);
+        if (res.status === 'OK') {
+            this.props.changePage('homepage')
+        } else {
+            alert('Could not create new account')
+        }
     }
 
     render(){

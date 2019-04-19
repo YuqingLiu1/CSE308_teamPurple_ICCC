@@ -4,6 +4,8 @@ import React, {Component} from 'react'
 import ReactDOM from 'react-dom'
 
 import Menubar from './Components/Menubar'
+import ArrowButton from './Components/NavButtons/ArrowButton'
+import PlusButton from './Components/NavButtons/PlusButton'
 import UserInfo from "./Components/Userinfo"
 import LoggedOutCategories from './Components/loggedOutCategories'
 import LoggedInCategories from './Components/loggedInCategories'
@@ -114,6 +116,11 @@ class App extends Component
 					<Menubar loggedIn={this.state.loggedIn} changePage={this.changePage}/>
 					{pages[this.state.page]}
 				</div>
+			<PlusButton color='cyan' position='down'/>
+			<ArrowButton color='cyan' position='right'/>
+			<ArrowButton color='cyan' position='left'/>
+			<ArrowButton color='cyan' position='up'/>
+			<ArrowButton color='cyan' position='down'/>
 			</>
 		)
 	}

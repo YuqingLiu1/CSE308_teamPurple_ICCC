@@ -25,10 +25,10 @@ public class ImageStoreController {
     private SketchRepository sketchs;
 
     @PostMapping("/frame/upload")
-    public String uploadImage(HttpServletRequest request, @RequestBody Image image){
+    public String uploadImage(HttpServletRequest request, @RequestBody MultipartFile image){
         try {
             Sketch sketch = new Sketch();
-            sketch.setImage(image);
+            sketch.setImage(new Binary(BsonBinarySubType.BINARY, image.getBytes()));
             sketchs.insert(sketch);
             String URL=request.getRequestURI()+sketch.getId();
             return URL;
@@ -38,10 +38,10 @@ public class ImageStoreController {
     }
 
     @PostMapping("/frame/save")
-    public Response saveImage(@RequestParam("id") String id,@RequestBody Image image){
+    public Response saveImage(@RequestParam("id") String id,@RequestBody MultipartFile image){
         try {
             Sketch sketch = sketchs.findById(id);
-            sketch.setImage(image);
+            sketch.setImage(new Binary(BsonBinarySubType.BINARY, image.getBytes()));
             sketchs.save(sketch);
             return new Response(Response.OK);
         }catch (Exception e){

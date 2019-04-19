@@ -31,7 +31,7 @@ class CreateAccount extends Component{
                 let res = await fetch('/frame/upload', {
                     method: 'POST',
                     headers: {
-
+                        'contentType': 'application/octet-stream'
                     },
                     body: this.state.image
                 });
@@ -49,6 +49,7 @@ class CreateAccount extends Component{
 
                 //sending the file
                 console.log("in file picker box " + this.state.image);
+
                 reader.readAsBinaryString(file);
             } else {
                 alert("You should only upload image");

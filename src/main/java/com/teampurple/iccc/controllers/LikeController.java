@@ -10,12 +10,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 public class LikeController {
-    @Autowired
-    private GeneralBaseRepository generalBases;
-    @PostMapping("/like")
-    public String getCurrentLikeState(@RequestBody String generalBaseID){
-        GeneralBase generalBase = generalBases.findById(generalBaseID).get();
-
-        return
-    }
+//    @Autowired
+//    private GeneralBaseRepository generalBases;
+//    @PostMapping("/like")
+//    public String getCurrentLikeState(@RequestBody String generalBaseID){
+//        GeneralBase generalBase = generalBases.findById(generalBaseID).get();
+//
+//        return
+//    }
 }

@@ -8,7 +8,7 @@ import Col from 'react-bootstrap/Col'
 import DBAwareEdiText from "./DBAwareEdiText"
 import ProfileCard from "./ProfileCard"
 
-class UserInfo extends Component
+export default class extends Component
 {
 	render()
 	{
@@ -60,5 +60,3 @@ class UserInfo extends Component
 		}
 	}
 }
-
-export default Userinfo

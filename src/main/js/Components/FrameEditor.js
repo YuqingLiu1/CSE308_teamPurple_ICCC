@@ -10,16 +10,12 @@ class FrameEditor extends React.Component
 	{
 		super(props)
 
-		this.state={
-			tool: Tools.Pencil
-		}
+		this.state={tool: Tools.Pencil}
 	}
 
 	setTool(tool)
 	{
-		this.setState({
-						  tool: tool
-					  })
+		this.setState({tool: tool})
 	}
 
 	saveJSON()

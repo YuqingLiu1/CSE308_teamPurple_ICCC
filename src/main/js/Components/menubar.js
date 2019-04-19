@@ -4,7 +4,7 @@ import Nav from 'react-bootstrap/Nav'
 import Form from 'react-bootstrap/Form'
 import InputGroup from 'react-bootstrap/InputGroup'
 import Button from 'react-bootstrap/Button'
-import Dropdown from 'react-bootstrap/Dropdown'
+import NavDropdown from "react-bootstrap/es/NavDropdown";
 
 class Menubar extends Component
 {
@@ -18,55 +18,58 @@ class Menubar extends Component
                     <i className="fab fa-cuttlefish fa-2x"/>
                     <i className="fab fa-cuttlefish fa-2x"/>
                 </Nav.Link>
+                <Nav>
+                    <Form inline>
+                        <InputGroup>
+                            <Form.Control
+                                type="text"
+                                placeholder="Search..."
+                                required
+                            />
+                            <InputGroup.Append>
+                                <Button><i className="fas fa-search"/></Button>
+                            </InputGroup.Append>
+                        </InputGroup>
+                    </Form>
+                </Nav>
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
-                <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="mr-auto"/>
-                    <InputGroup className="mx-3">
-                        <Form.Control
-                            type="text"
-                            placeholder="Search..."
-                            required
-                        />
-                        <InputGroup.Append>
-                            <Button><i className="fas fa-search"/></Button>
-                        </InputGroup.Append>
-                    </InputGroup>
-                    {
-                        this.props.loggedIn ?
-                            <Nav.Link onClick={() => {this.props.changePage('newContent')}}>
-                                <i className="fas fa-plus-circle fa-2x"/>
-                            </Nav.Link>
-                                :
-                            <></>
-                    }
-                    <Dropdown alignRight>
-                        <Dropdown.Toggle>
-                            <i className="fas fa-user-circle fa-2x"/>
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
+                <Navbar.Collapse id="basic-navbar-nav" className='justify-content-end' style={{textAlign: 'right'}}>
+                    <Nav>
+                        {
+                            this.props.loggedIn ?
+                                <Nav.Link onClick={() => {this.props.changePage('newContent')}}>
+                                    <i className="fas fa-plus-circle fa-2x"/>
+                                </Nav.Link>
+                                    :
+                                <></>
+                        }
+                        <NavDropdown title={<i className="fas fa-user-circle fa-2x"/>} alignRight>
                             {
-                                this.props.loggedIn ?
-                                    <Dropdown.Item href="/logout">Logout</Dropdown.Item>
-                                        :
-                                    <>
-                                        <Dropdown.Item onClick={()=>{this.props.changePage('login')}}>
-                                            Login
-                                        </Dropdown.Item>
-                                        <Dropdown.Item onClick={()=>{this.props.changePage('create')}}>
-                                            Create Account
-                                        </Dropdown.Item>
-                                    </>
+                                this.props.loggedIn &&
+                                    <NavDropdown.Item href='/logout'>Logout</NavDropdown.Item>
                             }
-                        </Dropdown.Menu>
-                    </Dropdown>
-                    {
-                        this.props.loggedIn ?
-                            <Nav.Link onClick={()=>{this.props.changePage('userInfo')}}>
-                                <i className="fas fa-cog fa-2x"/>
-                            </Nav.Link>
-                                :
-                            <></>
-                    }
+                            {
+                                !this.props.loggedIn &&
+                                    <NavDropdown.Item onClick={() => {this.props.changePage('login')}}>
+                                        Login
+                                    </NavDropdown.Item>
+                            }
+                            {
+                                !this.props.loggedIn &&
+                                    <NavDropdown.Item onClick={() => {this.props.changePage('create')}}>
+                                        Create Account
+                                    </NavDropdown.Item>
+                            }
+                        </NavDropdown>
+                        {
+                            this.props.loggedIn ?
+                                <Nav.Link onClick={()=>{this.props.changePage('userInfo')}}>
+                                    <i className="fas fa-cog fa-2x"/>
+                                </Nav.Link>
+                                    :
+                                <></>
+                        }
+                    </Nav>
                 </Navbar.Collapse>
             </Navbar>
         )

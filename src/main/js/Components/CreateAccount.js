@@ -12,56 +12,6 @@ class CreateAccount extends Component{
 
         }
         this.handleSubmit = this.handleSubmit.bind(this);
-<<<<<<< HEAD
-        this.onImageChange = this.onImageChange.bind(this);
-        this.onImageChange2 = this.onImageChange2.bind(this);
-
-    }
-    onImageChange2(event){
-        event.preventDefault();
-        if (event.target.files && event.target.files[0]) {
-            let reader = new FileReader();
-            var file = event.target.files[0];
-            reader.onload = async (e) => {
-                console.log(e.target.result);
-                console.log(typeof (e.target.result));
-                this.setState({image: e.target.result});
-
-                let res = await fetch('/frame/upload', {
-                    method: 'POST',
-                    headers: {
-                        'contentType': 'application/octet-stream'
-                    },
-                    body: this.state.image
-                });
-                res = await res.json();
-                if (res.status == 'OK') {
-                    console.log("Success");
-                } else {
-                    this.setState({badCredentials: true});
-                }
-
-            };
-
-            if (event.target.files[0].type.startsWith("image/")) {
-                console.log("send");
-
-                //sending the file
-                console.log("in file picker box " + this.state.image);
-
-                reader.readAsBinaryString(file);
-            } else {
-                alert("You should only upload image");
-            }
-
-
-
-            console.log("reach here");
-        }
-=======
-
->>>>>>> master
-
     }
 
 

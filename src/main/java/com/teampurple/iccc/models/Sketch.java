@@ -1,6 +1,5 @@
 package com.teampurple.iccc.models;
 import org.bson.types.Binary;
-import org.graalvm.compiler.graph.spi.Canonicalizable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;

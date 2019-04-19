@@ -116,11 +116,6 @@ class App extends Component
 					<Menubar loggedIn={this.state.loggedIn} changePage={this.changePage}/>
 					{pages[this.state.page]}
 				</div>
-			<PlusButton color='cyan' position='down'/>
-			<ArrowButton color='cyan' position='right'/>
-			<ArrowButton color='cyan' position='left'/>
-			<ArrowButton color='cyan' position='up'/>
-			<ArrowButton color='cyan' position='down'/>
 			</>
 		)
 	}

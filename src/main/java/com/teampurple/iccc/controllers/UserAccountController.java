@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 @RestController
 public class UserAccountController {
 
@@ -78,12 +80,16 @@ public class UserAccountController {
             GeneralBase gb = new GeneralBase();
             gb.setType("User");
             gb.setTitle(user.getUsername());
+            gb.setDescription("Hello! I am " + user.getUsername() + ".");
+            gb.setDateCreated(new Date());
+            gb.setDateLastEdited(new Date());
             generalbase.save(gb);
 
             User newUser = new User(user.getEmail(), new BCryptPasswordEncoder().encode(user.getPassword()));
             newUser.setGeneralBaseRef(gb.getId());
             users.save(newUser);
 
+            // don't forget to set the reference to the contentbase or user related to this generalbase
             gb.setTypeRef(newUser.getId());
             generalbase.save(gb);
 

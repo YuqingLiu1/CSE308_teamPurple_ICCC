@@ -14,10 +14,10 @@ public class User {
     @Indexed(unique = true)
     private String email;
     private String password;
-    private ArrayList<String> liked;
-    private ArrayList<String> content;
-    private ArrayList<String> userCategories;
-    private ArrayList<String> homeCategories;
+    private ArrayList<String> liked = new ArrayList<>();
+    private ArrayList<String> content = new ArrayList<>();
+    private ArrayList<String> userCategories = new ArrayList<>();
+    private ArrayList<String> homeCategories = new ArrayList<>();
 
     public User(String email, String password) {
         // TODO: actually implement this constructor

@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from "react-bootstrap/Image";
 import DBAwareEdiText from "./DBAwareEdiText";
+import Likes from './Likes'
 
 export default function({profileThumbnailUrl, username}) {
     return <div>
@@ -14,5 +15,6 @@ export default function({profileThumbnailUrl, username}) {
                 />
             </div>
         </div>
+        <Likes/>
     </div>
 }

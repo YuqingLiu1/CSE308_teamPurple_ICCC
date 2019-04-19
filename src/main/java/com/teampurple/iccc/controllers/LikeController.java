@@ -29,8 +29,8 @@ public class LikeController {
         return "False";
     }
 
-    @PostMapping("/clicklike")
-    public Response clickLike(@RequestBody String generalBaseID) {
+    @GetMapping("/clicklike")
+    public Response clickLike(@RequestParam(value="id") String generalBaseID) {
         try {
             GeneralBase generalBase = generalBases.findById(generalBaseID).get();
             User currentUser = auth.getCurrentUser();

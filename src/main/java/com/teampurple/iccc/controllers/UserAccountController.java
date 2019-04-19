@@ -31,8 +31,8 @@ public class UserAccountController {
 
         GeneralBase currentGeneralBase = generalbase.findById(currentUser.getGeneralBaseRef()).get();
 
-        Userinfo userInfo = new Userinfo(currentGeneralBase.getTitle(),
-                currentGeneralBase.getDescription(), currentUser.getEmail(), currentUser.getPassword());
+        UserInfo userInfo = new UserInfo(currentGeneralBase.getTitle(),
+                                         currentGeneralBase.getDescription(),currentUser.getEmail(),currentUser.getPassword());
 
         return new Response(Response.OK, userInfo);
     }
@@ -101,7 +101,7 @@ public class UserAccountController {
 
 
     @PostMapping("/user/exists")
-    public Response checkUserExist(@RequestBody Userinfo userInfo) {
+    public Response checkUserExist(@RequestBody UserInfo userInfo) {
         if (!users.existsByEmail(userInfo.getEmail())) {
             return new Response(Response.ERROR);
         }

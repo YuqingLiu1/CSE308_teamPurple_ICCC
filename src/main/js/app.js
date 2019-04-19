@@ -9,12 +9,13 @@ import LoggedOutCategories from './Components/loggedOutCategories'
 import LoggedInCategories from './Components/loggedInCategories'
 import LoginForm from "./Components/LoginForm"
 import CreateAccount from "./Components/CreateAccount"
+import Likes from "./Components/Likes"
 class App extends Component
 {
 	constructor(props)
 	{
 		super(props)
-		this.state={
+		this.state     ={
 			page         : 'homepage',
 			loggedIn     : false,
 			bio          : '',
@@ -99,6 +100,7 @@ class App extends Component
 					<Menubar loggedIn={this.state.loggedIn} changePage={this.changePage}/>
 					{pages[this.state.page]}
 				</div>
+				<Likes/>
 			</>
 		)
 	}

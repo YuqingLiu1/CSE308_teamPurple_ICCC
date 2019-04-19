@@ -25,5 +25,4 @@ class Demo extends React.Component {
 	}
 }
 
-// render(<Demo />, document.getElementById("app"));
-return Demo
+export default Demo

@@ -1,106 +1,83 @@
 package com.teampurple.iccc.models;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
 
 @Document(collection = "ContentBase")
-enum Type{
-    Series,Episode,Frame;
-}
-class Parent{
-    private ObjectId user;
-    private ObjectId series;
-    private ObjectId episode;
-    private ObjectId frame;
-    public Parent(){
-        this.user= null;
-        this.series=null;
-        this.episode=null;
-        this.frame=null;
-
-    }
-
-    public ObjectId getUser() {
-        return user;
-    }
-
-    public void setUser(ObjectId user) {
-        this.user = user;
-    }
-
-    public ObjectId getSeries() {
-        return series;
-    }
-
-    public void setSeries(ObjectId series) {
-        this.series = series;
-    }
-
-    public ObjectId getEpisode() {
-        return episode;
-    }
-
-    public void setEpisode(ObjectId episode) {
-        this.episode = episode;
-    }
-
-    public ObjectId getFrame() {
-        return frame;
-    }
-
-    public void setFrame(ObjectId frame) {
-        this.frame = frame;
-    }
-}
 public class ContentBase {
+
+    // Note: for now, these have to agree with the strings used by the frontend, otherwise there could be
+    // errors when trying to save to the database
+    public static final String SERIES = "Series";
+    public static final String EPISODE = "Episode";
+    public static final String FRAME = "Frame";
+
     @Id
-    private ObjectId id;
-    private ObjectId generalBase;
-    private ObjectId author;
-    private Type type;
+    private String id;
+    private String generalBaseRef;
+    private String author;
+    private String type;
     private Boolean contributable;
-    private Boolean publication;
-    private Parent parent;
+    private Boolean _public;
+    private Parents parents;
+    private Date dateMadeContributable;
+    private Date dateMadePublic;
 
-    public Parent getParent() {
-        return parent;
+    public Date getDateMadeContributable() {
+        return dateMadeContributable;
     }
 
-    public void setParent(Parent parent) {
-        this.parent = parent;
+    public void setDateMadeContributable(Date dateMadeContributable) {
+        this.dateMadeContributable = dateMadeContributable;
     }
 
-    public ObjectId getId() {
+    public Date getDateMadePublic() {
+        return dateMadePublic;
+    }
+
+    public void setDateMadePublic(Date dateMadePublic) {
+        this.dateMadePublic = dateMadePublic;
+    }
+
+    public Parents getParents() {
+        return parents;
+    }
+
+    public void setParents(Parents parents) {
+        this.parents = parents;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(ObjectId id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public ObjectId getGeneralBase() {
-        return generalBase;
+    public String getGeneralBaseRef() {
+        return generalBaseRef;
     }
 
-    public void setGeneralBase(ObjectId generalBase) {
-        this.generalBase = generalBase;
+    public void setGeneralBaseRef(String generalBaseRef) {
+        this.generalBaseRef = generalBaseRef;
     }
 
-    public ObjectId getAuthor() {
+    public String getAuthor() {
         return author;
     }
 
-    public void setAuthor(ObjectId author) {
+    public void setAuthor(String author) {
         this.author = author;
     }
 
-    public Type getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -112,12 +89,12 @@ public class ContentBase {
         this.contributable = contributable;
     }
 
-    public Boolean getPublication() {
-        return publication;
+    public Boolean getPublic() {
+        return _public;
     }
 
-    public void setPublication(Boolean publication) {
-        this.publication = publication;
+    public void setPublic(Boolean publication) {
+        this._public = publication;
     }
-
 }
+

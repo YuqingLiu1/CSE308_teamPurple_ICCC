@@ -10,7 +10,7 @@ public class Category {
     private String id;
     private String user;
     private String name;
-    private List<String> filters;
+    private List<String> filters = new ArrayList<>();
 
     public String getId() {
         return id;

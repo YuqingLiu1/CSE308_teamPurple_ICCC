@@ -8,10 +8,101 @@ class CreateAccount extends Component{
         this.state = {
             username: '',
             email: '',
-            password: ''
+            password: '',
+            image: '',
+            errors: false,
+            badCredentials: false
         }
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.onImageChange = this.onImageChange.bind(this);
+        this.onImageChange2 = this.onImageChange2.bind(this);
+
     }
+    onImageChange2(event){
+        event.preventDefault();
+        if (event.target.files && event.target.files[0]) {
+            let reader = new FileReader();
+            var file = event.target.files[0];
+            reader.onload = async (e) => {
+                console.log(e.target.result);
+                console.log(typeof (e.target.result));
+                this.setState({image: e.target.result});
+
+                let res = await fetch('/frame/upload', {
+                    method: 'POST',
+                    headers: {
+
+                    },
+                    body: this.state.image
+                });
+                res = await res.json();
+                if (res.status == 'OK') {
+                    console.log("Success");
+                } else {
+                    this.setState({badCredentials: true});
+                }
+
+            };
+
+            if (event.target.files[0].type.startsWith("image/")) {
+                console.log("send");
+
+                //sending the file
+                console.log("in file picker box " + this.state.image);
+                reader.readAsBinaryString(file);
+            } else {
+                alert("You should only upload image");
+            }
+
+
+
+            console.log("reach here");
+        }
+
+    }
+
+
+
+    async onImageChange(event){
+        event.preventDefault();
+        if (event.target.files && event.target.files[0]){
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                this.setState({image: e.target.result});
+            };
+            console.log(event.target.files);
+            console.log(event.target.files[0].type);
+            console.log(event.target.files[0].type.startsWith("image/"));
+            console.log("image is " + typeof(this.state.image));
+
+            if (event.target.files[0].type.startsWith("image/")){
+                console.log("send");
+                reader.readAsDataURL(event.target.files[0]);
+                //sending the file
+                console.log("in file picker box " + reader.result)
+
+                    let res = await fetch('/frame/upload', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': "string"
+                        },
+                        body: this.state.image
+                    });
+                    res = await res.json();
+                    if (res.status == 'OK'){
+                        console.log("Success");
+                    }
+                    else{
+                        this.setState({badCredentials: true});
+                    }
+                }
+
+
+            }
+            else{
+                alert("You should only upload image");
+            }
+        }
 
     async handleSubmit(event) {
         event.preventDefault();
@@ -24,7 +115,11 @@ class CreateAccount extends Component{
             body: JSON.stringify(this.state)
         });
         res = await res.json();
-        console.log(res);
+        if (res.status === 'OK') {
+            this.props.changePage('homepage')
+        } else {
+            alert('Could not create new account')
+        }
     }
 
     render(){
@@ -54,6 +149,7 @@ class CreateAccount extends Component{
                     </div>
                     <br/>
                     <button type="submit" className="btn btn-primary createButton" style={{"textAlign":"center"}} onClick={this.handleSubmit}>create</button>
+                    <input type="file" onChange={this.onImageChange2} className="filetype" id="group_image"/>
                 </form>
             </div>
         );

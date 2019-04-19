@@ -3,8 +3,8 @@ require("@babel/polyfill")
 import React, {Component} from 'react'
 import ReactDOM from 'react-dom'
 
-import Menubar from './Components/menubar'
-import UserInfo from "./Components/userinfo"
+import Menubar from './Components/Menubar'
+import UserInfo from "./Components/Userinfo"
 import LoggedOutCategories from './Components/loggedOutCategories'
 import LoggedInCategories from './Components/loggedInCategories'
 import CreateAccount from "./Components/CreateAccount"

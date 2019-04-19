@@ -1,5 +1,4 @@
 package com.teampurple.iccc.models;
-import org.bson.types.Binary;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -10,13 +9,13 @@ public class Sketch {
     private String id;
     private String Thumbnail;
     @Field
-    private Binary image;
+    private Image image;
 
-    public Binary getImage() {
+    public Image getImage() {
         return image;
     }
 
-    public void setImage(Binary image) {
+    public void setImage(Image image) {
         this.image = image;
     }
 

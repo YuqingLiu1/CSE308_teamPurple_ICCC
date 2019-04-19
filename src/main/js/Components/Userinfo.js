@@ -7,11 +7,24 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import DBAwareEdiText from "./DBAwareEdiText"
 import ProfileCard from "./ProfileCard"
+import UploadImage from "./UploadImage"
 
 export default class extends Component
 {
+	state = {
+		refresh: false
+	}
+
+	refresh = () => {
+		this.setState({ refresh: true });
+	}
+
 	render()
 	{
+		if (this.state.refresh) {
+			this.setState({ refresh: false });
+			return <></>;
+		}
 		if(this.props.error)
 		{
 			return (
@@ -39,6 +52,7 @@ export default class extends Component
 											profileThumbnailUrl={this.props.profilePictureUrl}
 											username={this.props.username}
 										/>
+										<UploadImage uploadType='profile' refresh={this.refresh}/>
 									</div>
 								</Col>
 								<Col xs={7}>

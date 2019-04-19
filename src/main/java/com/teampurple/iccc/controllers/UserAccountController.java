@@ -3,12 +3,19 @@ package com.teampurple.iccc.controllers;
 import com.mongodb.MongoException;
 import com.teampurple.iccc.models.*;
 import com.teampurple.iccc.repositories.GeneralBaseRepository;
+import com.teampurple.iccc.repositories.SketchRepository;
 import com.teampurple.iccc.repositories.UserRepository;
 import com.teampurple.iccc.utils.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.util.Base64;
 import java.util.Date;
 
 @RestController
@@ -20,6 +27,8 @@ public class UserAccountController {
     private GeneralBaseRepository generalbase;
     @Autowired
     private Authentication auth;
+    @Autowired
+    private SketchRepository sketchRepository;
 
     @GetMapping("/user/info")
     public Response getUserInfo() {
@@ -31,8 +40,11 @@ public class UserAccountController {
 
         GeneralBase currentGeneralBase = generalbase.findById(currentUser.getGeneralBaseRef()).get();
 
-        UserInfo userInfo = new UserInfo(currentGeneralBase.getTitle(),
-                                         currentGeneralBase.getDescription(),currentUser.getEmail(),currentUser.getPassword());
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUsername(currentGeneralBase.getTitle());
+        userInfo.setBio(currentGeneralBase.getDescription());
+        userInfo.setEmail(currentUser.getEmail());
+        userInfo.setPassword(currentUser.getPassword());
 
         return new Response(Response.OK, userInfo);
     }
@@ -50,6 +62,7 @@ public class UserAccountController {
         String password = userInfo.getPassword();
         String email = userInfo.getEmail();
         String bio = userInfo.getBio();
+        String sketchRef = userInfo.getSketchRef();
         if (username != null) {
             currentGeneralBase.setTitle(username);
         }
@@ -61,6 +74,9 @@ public class UserAccountController {
         }
         if (bio != null) {
             currentGeneralBase.setDescription(bio);
+        }
+        if (sketchRef != null) {
+            currentGeneralBase.setSketch(sketchRef);
         }
 
         // don't forget to save changes to database
@@ -109,9 +125,16 @@ public class UserAccountController {
     }
 
     @GetMapping(value="/generalBase/thumbnail")
-    public String getThumbnail(@RequestParam(value="id") final String generalBaseId) {
+    public ResponseEntity<byte[]> getThumbnail(@RequestParam(value="id") final String generalBaseId) {
         GeneralBase gb = generalbase.findById(generalBaseId).get();
-        return gb.getThumbnail();
+        Sketch sketch = sketchRepository.findById(gb.getSketch()).get();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_PNG);
+
+        byte[] media = Base64.getDecoder().decode(sketch.getThumbnail());
+
+        return new ResponseEntity<>(media, headers, HttpStatus.OK);
     }
 
     @GetMapping(value="/generalBase/title")

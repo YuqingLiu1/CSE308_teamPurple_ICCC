@@ -7,6 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.util.Base64;
 
 @RestController
 public class TestController {
@@ -34,6 +38,16 @@ public class TestController {
     @GetMapping("/test/adduser")
     public void test() {
         return;
+    }
+
+    @PostMapping("/test/upload")
+    public void upload(@RequestParam("file") MultipartFile file) {
+        try {
+            String encodedData = Base64.getEncoder().encodeToString(file.getBytes());
+            System.out.println(encodedData);
+        } catch (Exception e) {
+
+        }
     }
 
 }

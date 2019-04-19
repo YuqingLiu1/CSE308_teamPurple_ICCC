@@ -11,6 +11,7 @@ import CreateAccount from "./Components/CreateAccount"
 import TestFrameEditor from './Components/TestFrameEditor'
 import NewContentPage from './Pages/NewContentPage'
 import LoginPage from './Pages/LoginPage'
+import TestPage from "./Components/TestPage";
 
 class App extends Component
 {
@@ -22,11 +23,11 @@ class App extends Component
 			loggedIn     : false,
 			bio          : '',
 			username     : '',
-			userInfoError: false
+			userInfoError: false,
+			generalBaseId: '',
 		}
 		this.changePage=this.changePage.bind(this)
 		this.login     =this.login.bind(this)
-		this.refresh   =this.refresh.bind(this)
 	}
 
 	componentDidMount()
@@ -43,11 +44,14 @@ class App extends Component
 		}
 	}
 
-	async refresh()
+	refresh = async () =>
 	{
 		let res=await fetch('/generalBase/id')
 		res    = await res.json()
-		this.setState({loggedIn: res.id.length!==0})
+		this.setState({
+			loggedIn: res.id.length!==0,
+			generalBaseId: res.id,
+		});
 
 		let userInfoRes=await fetch('/user/info')
 		userInfoRes    = await userInfoRes.json()
@@ -85,12 +89,13 @@ class App extends Component
 				<UserInfo
 					bio={this.state.bio}
 					username={this.state.username}
-					profilePictureUrl="https://akm-img-a-in.tosshub.com/indiatoday/images/story/201804/RTX5L0IT.jpeg?qlnshqvD6xOuLhFcVvAqQ3OzqMM9ncYQ"
+					profilePictureUrl={'http://localhost/generalBase/thumbnail?id=' + this.state.generalBaseId}
 					error={this.state.userInfoError}
 				/>,
 			login     : <LoginPage changePage={this.changePage} login={this.login}/>,
 			editor    : <TestFrameEditor/>,
-			newContent: <NewContentPage/>
+			newContent: <NewContentPage changePage={this.changePage} />,
+			test      : <TestPage />
 		}
 		return (
 			<>

@@ -21,7 +21,6 @@ public class GeneralBase {
     private String description;
     private Date dateCreated;
     private Date dateLastEdited;
-    private String thumbnail;
     private ArrayList<String> children = new ArrayList<>();
     private ArrayList<String> likers = new ArrayList<>();
     private ArrayList<String> comments = new ArrayList<>();
@@ -88,14 +87,6 @@ public class GeneralBase {
 
     public void setDateLastEdited(Date dateLastEdited) {
         this.dateLastEdited = dateLastEdited;
-    }
-
-    public String getThumbnail() {
-        return thumbnail;
-    }
-
-    public void setThumbnail(String thumbnail) {
-        this.thumbnail = thumbnail;
     }
 
     public ArrayList<String> getChildren() {

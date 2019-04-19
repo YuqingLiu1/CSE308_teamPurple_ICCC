@@ -7,13 +7,7 @@ public class UserInfo
     private String bio;
     private String email;
     private String password;
-
-    public UserInfo(String username,String bio,String email,String password) {
-        this.username = username;
-        this.bio = bio;
-        this.email = email;
-        this.password = password;
-    }
+    private String sketchRef;
 
     public String getUsername() {
         return username;
@@ -46,4 +40,8 @@ public class UserInfo
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public String getSketchRef() { return sketchRef; }
+
+    public void setSketchRef(String sketchRef) { this.sketchRef = sketchRef; }
 }

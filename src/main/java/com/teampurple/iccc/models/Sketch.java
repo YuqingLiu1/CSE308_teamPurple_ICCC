@@ -1,23 +1,13 @@
 package com.teampurple.iccc.models;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
-@Document
+@Document(collection = "Sketch")
 public class Sketch {
     @Id
     private String id;
     private String Thumbnail;
-    @Field
-    private Image image;
-
-    public Image getImage() {
-        return image;
-    }
-
-    public void setImage(Image image) {
-        this.image = image;
-    }
 
     public String getId() {
         return id;
@@ -27,13 +17,11 @@ public class Sketch {
         this.id = id;
     }
 
-    public String Thumbnail() {
+    public String getThumbnail() {
         return Thumbnail;
     }
 
-    public void Thumbnail(String thumbnail) {
-        this.Thumbnail = thumbnail;
+    public void setThumbnail(String thumbnail) {
+        Thumbnail = thumbnail;
     }
-
-
 }

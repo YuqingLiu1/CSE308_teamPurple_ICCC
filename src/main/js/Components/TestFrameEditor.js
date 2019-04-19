@@ -39,6 +39,7 @@ import dataUrl from './data.url';
 import DropZone from 'react-dropzone';
 import Toolbar from '@material-ui/core/Toolbar/Toolbar';
 import Typography from '@material-ui/core/Typography/Typography';
+import UploadImage from "./UploadImage";
 
 const styles = {
     root: {
@@ -591,21 +592,22 @@ class SketchFieldDemo extends React.Component {
                                                 onChange={(e) => this.setState({ stretchedY: !this.state.stretchedY })}/>
                                         }/>
                                     <div>
-                                        <DropZone
-                                            accept='image/*'
-                                            multiple={false}
-                                            style={styles.dropArea}
-                                            activeStyle={styles.activeStyle}
-                                            rejectStyle={styles.rejectStyle}
-                                            onDrop={this._onBackgroundImageDrop}>
-                                            {({getRootProps}) => (
-                                                <div {...getRootProps()}>
-                                                Try dropping an image here,<br/>
-                                                or click<br/>
-                                                to select image as background.
-                                                </div>
-                                            )}
-                                        </DropZone>
+                                        {/*<DropZone*/}
+                                            {/*accept='image/*'*/}
+                                            {/*multiple={false}*/}
+                                            {/*style={styles.dropArea}*/}
+                                            {/*activeStyle={styles.activeStyle}*/}
+                                            {/*rejectStyle={styles.rejectStyle}*/}
+                                            {/*onDrop={this._onBackgroundImageDrop}>*/}
+                                            {/*{({getRootProps}) => (*/}
+                                                {/*<div {...getRootProps()}>*/}
+                                                {/*Try dropping an image here,<br/>*/}
+                                                {/*or click<br/>*/}
+                                                {/*to select image as background.*/}
+                                                {/*</div>*/}
+                                            {/*)}*/}
+                                        {/*</DropZone>*/}
+                                        <UploadImage uploadType='profile'/>
                                     </div>
                                 </CardContent>
                             </Collapse>

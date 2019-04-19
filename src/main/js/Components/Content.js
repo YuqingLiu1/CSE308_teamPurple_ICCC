@@ -18,7 +18,7 @@ class Content extends Component {
                 </Row>
                 <Row>
                     <Col xs={3} className='my-auto' style={{ textAlign: 'right' }}>
-                        <NavButton type='none'/>
+                        <NavButton type='plus'/>
                     </Col>
                     <Col xs={6}>
                         <Image src='https://imgs.xkcd.com/comics/add_2x.png' rounded fluid />

@@ -46,5 +46,12 @@ public class LikeController {
             return new Response(Response.ERROR);
         }
     }
+
+    @GetMapping("/getNumlikes")
+    public String getNumber(@RequestBody String generalBaseID){
+        GeneralBase generalBase = generalBases.findById(generalBaseID).get();
+        Integer num = new Integer(generalBase.getLikers().size());
+        return num.toString();
+    }
 }
 

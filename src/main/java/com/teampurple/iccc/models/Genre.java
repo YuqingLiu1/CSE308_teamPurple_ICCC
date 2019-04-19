@@ -9,7 +9,7 @@ public class Genre {
     @Id
     private String id;
     private String name;
-    private List<String> series;
+    private List<String> series = new ArrayList<>();
 
     public String getId() {
         return id;

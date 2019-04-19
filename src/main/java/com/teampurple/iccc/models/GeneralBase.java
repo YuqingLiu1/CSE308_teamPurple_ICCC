@@ -19,86 +19,75 @@ public class GeneralBase {
     private String sketch;
     private String title;
     private String description;
-    private Date creationDate;
+    private Date dateCreated;
+    private Date dateLastEdited;
     private String thumbnail;
-    private ArrayList<String> children;
-    private ArrayList<String> likers;
-    private ArrayList<String> comments;
+    private ArrayList<String> children = new ArrayList<>();
+    private ArrayList<String> likers = new ArrayList<>();
+    private ArrayList<String> comments = new ArrayList<>();
 
-    public void setTypeRef(String typeRef){
-        this.typeRef = typeRef;
-    }
-
-    public void setType(String type){
-        this.type = type;
-    }
-
-    public void setSketch(String sketch){
-        this.sketch = sketch;
-    }
-
-    public void setTitle(String title){
-        this.title = title;
-    }
-
-    public void setDescription(String description){
-        this.description = description;
-    }
-
-    public void setCreationDate(Date date){
-        creationDate = date;
-    }
-
-    public void setChildren(ArrayList<String> children){
-        this.children = children;
-    }
-
-    public void setLikers(ArrayList<String> likers){
-        this.likers = likers;
-    }
-
-    public void setComments(ArrayList<String> comments){
-        this.comments = comments;
-    }
-
-    public String getId(){
+    public String getId() {
         return id;
     }
 
-    public String getTypeRef(){
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getTypeRef() {
         return typeRef;
     }
 
-    public String getType(){
+    public void setTypeRef(String typeRef) {
+        this.typeRef = typeRef;
+    }
+
+    public String getType() {
         return type;
     }
 
-    public String getSketch(){
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getSketch() {
         return sketch;
     }
 
-    public String getTitle(){
+    public void setSketch(String sketch) {
+        this.sketch = sketch;
+    }
+
+    public String getTitle() {
         return title;
     }
 
-    public String getDescription(){
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
         return description;
     }
 
-    public Date creationDate(){
-        return creationDate;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public ArrayList<String> getChildren(){
-        return children;
+    public Date getDateCreated() {
+        return dateCreated;
     }
 
-    public ArrayList<String> getLikers(){
-        return likers;
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
-    public ArrayList<String> getComments(){
-        return comments;
+    public Date getDateLastEdited() {
+        return dateLastEdited;
+    }
+
+    public void setDateLastEdited(Date dateLastEdited) {
+        this.dateLastEdited = dateLastEdited;
     }
 
     public String getThumbnail() {
@@ -109,4 +98,27 @@ public class GeneralBase {
         this.thumbnail = thumbnail;
     }
 
+    public ArrayList<String> getChildren() {
+        return children;
+    }
+
+    public void setChildren(ArrayList<String> children) {
+        this.children = children;
+    }
+
+    public ArrayList<String> getLikers() {
+        return likers;
+    }
+
+    public void setLikers(ArrayList<String> likers) {
+        this.likers = likers;
+    }
+
+    public ArrayList<String> getComments() {
+        return comments;
+    }
+
+    public void setComments(ArrayList<String> comments) {
+        this.comments = comments;
+    }
 }

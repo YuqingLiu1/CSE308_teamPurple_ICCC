@@ -3,6 +3,8 @@ package com.teampurple.iccc.models;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
+
 @Document(collection = "ContentBase")
 public class ContentBase {
 
@@ -20,6 +22,24 @@ public class ContentBase {
     private Boolean contributable;
     private Boolean _public;
     private Parents parents;
+    private Date dateMadeContributable;
+    private Date dateMadePublic;
+
+    public Date getDateMadeContributable() {
+        return dateMadeContributable;
+    }
+
+    public void setDateMadeContributable(Date dateMadeContributable) {
+        this.dateMadeContributable = dateMadeContributable;
+    }
+
+    public Date getDateMadePublic() {
+        return dateMadePublic;
+    }
+
+    public void setDateMadePublic(Date dateMadePublic) {
+        this.dateMadePublic = dateMadePublic;
+    }
 
     public Parents getParents() {
         return parents;

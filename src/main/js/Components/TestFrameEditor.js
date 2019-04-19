@@ -109,20 +109,20 @@ function eventFire(el, etype) {
         el.dispatchEvent(evObj);
     }
 }
-async function uploadImageToImgur(blob) {
-    var formData = new FormData();
-    formData.append('type', 'file');
-    formData.append('image', blob);
-
-    return await fetch('/frame/upload', {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'multipart/form-data'
-        },
-        body: formData
-    })
-}
+// async function uploadImageToImgur(blob) {
+//     var formData = new FormData();
+//     formData.append('type', 'file');
+//     formData.append('image', blob);
+//
+//     return await fetch('/frame/upload', {
+//         method: 'POST',
+//         headers: {
+//             Accept: 'application/json',
+//             'Content-Type': 'multipart/form-data'
+//         },
+//         body: formData
+//     })
+// }
 
 class SketchFieldDemo extends React.Component {
     constructor(props) {
@@ -174,7 +174,7 @@ class SketchFieldDemo extends React.Component {
         let drawings = this.state.drawings;
         drawings.push(this._sketch.toDataURL());
         this.setState({ drawings: drawings });
-        uploadImageToImgur(this.state.drawings);
+        // uploadImageToImgur(this.state.drawings);
     };
 
     _download = () => {

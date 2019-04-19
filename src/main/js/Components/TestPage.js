@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import UploadImage from "./UploadImage";
+import Content from "./Content";
 
 class TestPage extends Component {
     render() {
         return (
-            <UploadImage />
+            <Content />
         );
     }
 }

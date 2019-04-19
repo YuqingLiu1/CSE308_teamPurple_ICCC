@@ -100,7 +100,7 @@ class App extends Component
 					<Menubar loggedIn={this.state.loggedIn} changePage={this.changePage}/>
 					{pages[this.state.page]}
 				</div>
-				<Likes/>
+				{/*<Likes/>*/}
 			</>
 		)
 	}

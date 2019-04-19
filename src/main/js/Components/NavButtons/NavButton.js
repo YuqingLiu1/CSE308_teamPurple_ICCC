@@ -1,4 +1,5 @@
 import React from 'react'
+import PlusButton from './PlusButton'
 import ArrowButton from './ArrowButton'
 export default ({type, ...props})=>({
 	up   : <ArrowButton {...props} position='up'   />,

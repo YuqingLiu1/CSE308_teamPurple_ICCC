@@ -1,5 +1,6 @@
 package com.teampurple.iccc.controllers;
 
+import com.mongodb.util.JSON;
 import com.teampurple.iccc.models.Response;
 import com.teampurple.iccc.models.Sketch;
 import com.teampurple.iccc.repositories.GeneralBaseRepository;
@@ -22,10 +23,10 @@ public class ImageStoreController {
     private SketchRepository sketchs;
 
     @PostMapping("/frame/upload")
-    public String uploadImage(HttpServletRequest request, @RequestParam("image") MultipartFile image){
+    public String uploadImage(HttpServletRequest request, @RequestParam("image") String image){
         try {
             Sketch sketch = new Sketch();
-            sketch.setImage(new Binary(BsonBinarySubType.BINARY, image.getBytes()));
+            sketch.setImage(image);
             sketchs.insert(sketch);
             String URL=request.getRequestURI()+sketch.getId();
             return URL;
@@ -35,10 +36,10 @@ public class ImageStoreController {
     }
 
     @PostMapping("/frame/save")
-    public Response saveImage(@RequestParam("id") String id,@RequestParam("image") MultipartFile image){
+    public Response saveImage(@RequestParam("id") String id,@RequestParam("image") String image){
         try {
             Sketch sketch = sketchs.findById(id);
-            sketch.setImage(new Binary(BsonBinarySubType.BINARY, image.getBytes()));
+            sketch.setImage(image);
             sketchs.save(sketch);
             return new Response(Response.OK);
         }catch (Exception e){

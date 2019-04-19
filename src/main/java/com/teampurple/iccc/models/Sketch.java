@@ -9,13 +9,13 @@ public class Sketch {
     private String id;
     private String Thumbnail;
     @Field
-    private String image;
+    private Image image;
 
-    public String getImage() {
+    public Image getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(Image image) {
         this.image = image;
     }
 

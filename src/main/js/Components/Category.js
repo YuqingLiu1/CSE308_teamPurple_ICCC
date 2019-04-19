@@ -3,7 +3,7 @@ import EdiText from 'react-editext'
 import React from 'react'
 import {useState} from 'react'
 import {Card, Collapse, Modal} from 'react-bootstrap'
-import Thumbnail from './thumbnail'
+import Thumbnail from './Thumbnail'
 import Button from 'react-bootstrap/Button'
 import DBAwareEdiText from './DBAwareEdiText'
 export default function({thumbnails, editable, title, setTitle, remove, loggedIn=true})

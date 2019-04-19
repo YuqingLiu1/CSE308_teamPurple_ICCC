@@ -1,8 +1,8 @@
 // import Thumbnail from './Components/thumbnail'
-import Category from './category'
+import Category from './Category'
 // import React, {Component} from 'react'
 // import Menubar from './Components/menubar'
-// import UserInfo from './Components/userinfo'
+// import Userinfo from './Components/userinfo'
 //
 // class App extends Component
 // {

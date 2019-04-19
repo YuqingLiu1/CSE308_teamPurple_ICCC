@@ -9,11 +9,10 @@ class CreateAccount extends Component{
             username: '',
             email: '',
             password: '',
-            image: '',
-            errors: false,
-            badCredentials: false
+
         }
         this.handleSubmit = this.handleSubmit.bind(this);
+<<<<<<< HEAD
         this.onImageChange = this.onImageChange.bind(this);
         this.onImageChange2 = this.onImageChange2.bind(this);
 
@@ -59,51 +58,12 @@ class CreateAccount extends Component{
 
             console.log("reach here");
         }
+=======
+
+>>>>>>> master
 
     }
 
-
-
-    async onImageChange(event){
-        event.preventDefault();
-        if (event.target.files && event.target.files[0]){
-            let reader = new FileReader();
-            reader.onload = (e) => {
-                this.setState({image: e.target.result});
-            };
-            console.log(event.target.files);
-            console.log(event.target.files[0].type);
-            console.log(event.target.files[0].type.startsWith("image/"));
-            console.log("image is " + typeof(this.state.image));
-
-            if (event.target.files[0].type.startsWith("image/")){
-                console.log("send");
-                reader.readAsDataURL(event.target.files[0]);
-                //sending the file
-                console.log("in file picker box " + reader.result)
-
-                    let res = await fetch('/frame/upload', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': "string"
-                        },
-                        body: this.state.image
-                    });
-                    res = await res.json();
-                    if (res.status == 'OK'){
-                        console.log("Success");
-                    }
-                    else{
-                        this.setState({badCredentials: true});
-                    }
-                }
-
-
-            }
-            else{
-                alert("You should only upload image");
-            }
-        }
 
     async handleSubmit(event) {
         event.preventDefault();
@@ -150,7 +110,7 @@ class CreateAccount extends Component{
                     </div>
                     <br/>
                     <button type="submit" className="btn btn-primary createButton" style={{"textAlign":"center"}} onClick={this.handleSubmit}>create</button>
-                    <input type="file" onChange={this.onImageChange2} className="filetype" id="group_image"/>
+
                 </form>
             </div>
         );

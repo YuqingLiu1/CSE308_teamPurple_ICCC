@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
+@RestController
 public class LikeController {
     @Autowired
     private GeneralBaseRepository generalBases;
@@ -16,7 +17,7 @@ public class LikeController {
     private Authentication auth;
 
     @GetMapping("/liked")
-    public String getCurrentLikeState(@RequestBody String generalBaseID) {
+    public String getCurrentLikeState(@RequestParam(value="id") String generalBaseID) {
         GeneralBase generalBase = generalBases.findById(generalBaseID).get();
         User currentUser = auth.getCurrentUser();
         ArrayList<String> likedusers = generalBase.getLikers();
@@ -46,9 +47,16 @@ public class LikeController {
             return new Response(Response.ERROR);
         }
     }
+    @GetMapping("/getNumlike")
+    public String getNumber(){
+        User user = auth.getCurrentUser();
+        GeneralBase generalBase= generalBases.findById(user.getGeneralBaseRef()).get();
+        Integer num = new Integer(generalBase.getLikers().size());
+        return num.toString();
+    }
 
-    @PostMapping("/getNumlikes")
-    public String getNumber(@RequestBody String generalBaseID){
+    @GetMapping("/getNumlikes")
+    public String getNumber(@RequestParam(value="id") String generalBaseID) {
         GeneralBase generalBase = generalBases.findById(generalBaseID).get();
         Integer num = new Integer(generalBase.getLikers().size());
         return num.toString();

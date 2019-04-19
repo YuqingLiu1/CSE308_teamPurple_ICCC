@@ -88,7 +88,6 @@ class App extends Component
             editor  : <TestFrameEditor />,
             newContent: <NewContentPage />
         }
-
         return (
             <>
                 <link

@@ -10,11 +10,9 @@ class Content extends Component {
         return (
             <Container style={{ textAlign: 'center' }}>
                 <Row>
-                    <Col xs={3} />
-                    <Col xs={6}>
+                    <Col xs={{ span: 6, offset: 3}}>
                         <NavButton type='up'/>
                     </Col>
-                    <Col xs={3} />
                 </Row>
                 <Row>
                     <Col xs={3} className='my-auto' style={{ textAlign: 'right' }}>

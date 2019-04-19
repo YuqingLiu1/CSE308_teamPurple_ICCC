@@ -74,7 +74,6 @@ class App extends Component
 			this.setState({userInfoError: true})
 		}
 	}
-
 	login()
 	{
 		this.setState({loggedIn: true})

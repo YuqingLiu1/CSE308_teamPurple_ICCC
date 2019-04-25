@@ -1,8 +1,13 @@
 package com.teampurple.iccc.controllers;
 
+import com.teampurple.iccc.models.ContentBase;
+import com.teampurple.iccc.models.Frame;
+import com.teampurple.iccc.models.FrameList;
 import com.teampurple.iccc.models.User;
+import com.teampurple.iccc.repositories.ContentBaseRepository;
 import com.teampurple.iccc.repositories.GeneralBaseRepository;
 import com.teampurple.iccc.repositories.UserRepository;
+import com.teampurple.iccc.utils.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 @RestController
 public class TestController {
@@ -22,7 +29,13 @@ public class TestController {
     private GeneralBaseRepository generalBaseRepository;
 
     @Autowired
+    private ContentBaseRepository contentBaseRepository;
+
+    @Autowired
     private AuthenticationManager am;
+
+    @Autowired
+    private Authentication auth;
 
     @GetMapping("/test/getuser")
     public User getUser(@RequestParam(value="email", defaultValue="testemail") String email) {
@@ -48,6 +61,24 @@ public class TestController {
         } catch (Exception e) {
 
         }
+    }
+
+    @GetMapping("/test/user/frames")
+    public FrameList getCurrentUserFrames() {
+        User currentUser = auth.getCurrentUser();
+
+        FrameList frameList = new FrameList();
+        List<Frame> frames = new ArrayList<>();
+        frameList.setFrames(frames);
+        for (ContentBase contentBase : contentBaseRepository.findAllById(currentUser.getContent())) {
+            if (contentBase.getType().equals(ContentBase.FRAME)) {
+                Frame frame = new Frame();
+                frame.setContentBase(contentBase);
+                frames.add(frame);
+            }
+        }
+
+        return frameList;
     }
 
 }

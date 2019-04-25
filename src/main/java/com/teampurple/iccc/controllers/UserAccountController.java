@@ -2,6 +2,7 @@ package com.teampurple.iccc.controllers;
 
 import com.mongodb.MongoException;
 import com.teampurple.iccc.models.*;
+import com.teampurple.iccc.repositories.CategoryRepository;
 import com.teampurple.iccc.repositories.GeneralBaseRepository;
 import com.teampurple.iccc.repositories.SketchRepository;
 import com.teampurple.iccc.repositories.UserRepository;
@@ -15,8 +16,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 public class UserAccountController {
@@ -29,6 +32,8 @@ public class UserAccountController {
     private Authentication auth;
     @Autowired
     private SketchRepository sketchRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @GetMapping("/user/info")
     public Response getUserInfo() {
@@ -40,11 +45,25 @@ public class UserAccountController {
 
         GeneralBase currentGeneralBase = generalbase.findById(currentUser.getGeneralBaseRef()).get();
 
+        if (currentGeneralBase == null) {
+            return new Response(Response.ERROR);
+        }
+
+        // get the user's categories
+        List<Category> userCategories = getCategories(currentUser.getUserCategories());
+
+        // get the default "home" categories
+        List<Category> homeCategories = getCategories(currentUser.getHomeCategories());
+
         UserInfo userInfo = new UserInfo();
+
         userInfo.setUsername(currentGeneralBase.getTitle());
         userInfo.setBio(currentGeneralBase.getDescription());
         userInfo.setEmail(currentUser.getEmail());
         userInfo.setPassword(currentUser.getPassword());
+        userInfo.setUserCategories(userCategories);
+        userInfo.setUserCategories(userCategories);
+        userInfo.setHomeCategories(homeCategories);
 
         return new Response(Response.OK, userInfo);
     }
@@ -143,21 +162,6 @@ public class UserAccountController {
         return gb.getTitle();
     }
 
-    //After login
-//    @GetMapping(value="")
-//    public @ResponseBody
-//    String getCurrentUserEmail() {
-//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        String email;
-//
-//        if (principal instanceof UserDetails) {
-//            email = ((UserDetails)principal).getUsername();
-//        } else {
-//            email = principal.toString();
-//        }
-//        return email;
-//    }
-
     @GetMapping("/generalBase/id")
     public String getCurrentUserGeneralBaseId() {
         User currentUser = auth.getCurrentUser();
@@ -190,6 +194,19 @@ public class UserAccountController {
         }catch (Exception e){
             return new Response(Response.ERROR);
         }
+    }
+
+    /**
+     * Get a list of categories given a list of category ids.
+     * @param categoryIds The list of category ids.
+     * @return A list of categories corresponding to the category ids.
+     */
+    private List<Category> getCategories(List<String> categoryIds) {
+        List<Category> categories = new ArrayList<>();
+        for (Category category : categoryRepository.findAllById(categoryIds)) {
+            categories.add(category);
+        }
+        return categories;
     }
 
 }

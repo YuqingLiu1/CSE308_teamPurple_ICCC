@@ -8,6 +8,7 @@ import Col from 'react-bootstrap/Col'
 import DBAwareEdiText from "./DBAwareEdiText"
 import ProfileCard from "./ProfileCard"
 import UploadImage from "./UploadImage"
+import Category from './Category'
 
 export default class extends Component
 {
@@ -66,6 +67,9 @@ export default class extends Component
 										value={this.props.bio}
 									/>
 								</Col>
+							</Row>
+							<Row className='mt-5'>
+								<Category />
 							</Row>
 						</Container>
 					</Jumbotron>

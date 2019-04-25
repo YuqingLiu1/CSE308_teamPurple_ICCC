@@ -1,9 +1,6 @@
 package com.teampurple.iccc.controllers;
 
-import com.teampurple.iccc.models.ContentBase;
-import com.teampurple.iccc.models.Frame;
-import com.teampurple.iccc.models.FrameList;
-import com.teampurple.iccc.models.User;
+import com.teampurple.iccc.models.*;
 import com.teampurple.iccc.repositories.ContentBaseRepository;
 import com.teampurple.iccc.repositories.GeneralBaseRepository;
 import com.teampurple.iccc.repositories.UserRepository;
@@ -63,6 +60,55 @@ public class TestController {
         }
     }
 
+    /**
+     * Get all of the current user's series.
+     */
+    @GetMapping("/test/user/series")
+    public SeriesList getCurrentUserSeries() {
+        User currentUser = auth.getCurrentUser();
+
+        SeriesList seriesList = new SeriesList();
+        List<Series> series = new ArrayList<>();
+        seriesList.setSeriesList(series);
+        for (ContentBase contentBase : contentBaseRepository.findAllById(currentUser.getContent())) {
+            if (contentBase.getType().equals(ContentBase.SERIES)) {
+                GeneralBase generalBase = generalBaseRepository.findById(contentBase.getGeneralBaseRef()).get();
+                Series series1 = new Series();
+                series1.setContentBase(contentBase);
+                series1.setGeneralBase(generalBase);
+                series.add(series1);
+            }
+        }
+
+        return seriesList;
+    }
+
+    /**
+     * Get all of the current user's episodes.
+     */
+    @GetMapping("/test/user/episodes")
+    public EpisodeList getCurrentUserEpisodes() {
+        User currentUser = auth.getCurrentUser();
+
+        EpisodeList episodeList = new EpisodeList();
+        List<Episode> episodes = new ArrayList<>();
+        episodeList.setEpisodeList(episodes);
+        for (ContentBase contentBase : contentBaseRepository.findAllById(currentUser.getContent())) {
+            if (contentBase.getType().equals(ContentBase.EPISODE)) {
+                GeneralBase generalBase = generalBaseRepository.findById(contentBase.getGeneralBaseRef()).get();
+                Episode episode = new Episode();
+                episode.setContentBase(contentBase);
+                episode.setGeneralBase(generalBase);
+                episodes.add(episode);
+            }
+        }
+
+        return episodeList;
+    }
+
+    /**
+     * Get all of the current user's frames.
+     */
     @GetMapping("/test/user/frames")
     public FrameList getCurrentUserFrames() {
         User currentUser = auth.getCurrentUser();
@@ -72,8 +118,10 @@ public class TestController {
         frameList.setFrames(frames);
         for (ContentBase contentBase : contentBaseRepository.findAllById(currentUser.getContent())) {
             if (contentBase.getType().equals(ContentBase.FRAME)) {
+                GeneralBase generalBase = generalBaseRepository.findById(contentBase.getGeneralBaseRef()).get();
                 Frame frame = new Frame();
                 frame.setContentBase(contentBase);
+                frame.setGeneralBase(generalBase);
                 frames.add(frame);
             }
         }

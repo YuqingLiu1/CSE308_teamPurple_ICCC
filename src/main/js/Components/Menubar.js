@@ -52,6 +52,13 @@ class Menubar extends Component
                             {
                                 this.props.loggedIn &&
                                     <NavDropdown.Item href='/logout'>Logout</NavDropdown.Item>
+
+                            }
+                            {
+                                this.props.loggedIn &&
+                                    <NavDropdown.Item onClick={() => {this.props.changePage('changePassword')}}>
+                                        Change Password
+                                    </NavDropdown.Item>
                             }
                             {
                                 !this.props.loggedIn &&

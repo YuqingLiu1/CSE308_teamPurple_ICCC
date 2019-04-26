@@ -15,6 +15,7 @@ import NewSeriesPage from './Pages/NewSeriesPage'
 import LoginPage from './Pages/LoginPage'
 import TestPage from './Components/TestPage'
 import ViewContentPage from './Pages/ViewContentPage'
+import ChangePassword from './Components/ChangePassword'
 
 class App extends Component
 {
@@ -89,6 +90,7 @@ class App extends Component
 	render()
 	{
 		const pages={
+			changePassword : <ChangePassword changePage={this.changePage} />,
 			create    : <CreateAccount changePage={this.changePage}/>,
 			homepage  : this.state.loggedIn ? <LoggedInCategories/> : <LoggedOutCategories/>,
 			userInfo  :

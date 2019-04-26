@@ -44,7 +44,7 @@ public class LikeController {
                     return new Response(Response.OK);
                 }
             }
-            likedusers.add(generalBaseID);
+            likedusers.add(currentUser.getGeneralBaseRef());
             generalBase.setLikers(likedusers);
             generalBases.save(generalBase);
             //System.out.println("add");

@@ -1,5 +1,7 @@
 package com.teampurple.iccc.models;
 
+import java.util.List;
+
 public class UserInfo
 {
 
@@ -8,6 +10,34 @@ public class UserInfo
     private String email;
     private String password;
     private String sketchRef;
+    private List<Category> userCategories;
+    private List<Category> homeCategories;
+
+    public GeneralBase getGeneralBase() {
+        return generalBase;
+    }
+
+    public void setGeneralBase(GeneralBase generalBase) {
+        this.generalBase = generalBase;
+    }
+
+    private GeneralBase generalBase;
+
+    public List<Category> getHomeCategories() {
+        return homeCategories;
+    }
+
+    public void setHomeCategories(List<Category> homeCategories) {
+        this.homeCategories = homeCategories;
+    }
+
+    public List<Category> getUserCategories() {
+        return userCategories;
+    }
+
+    public void setUserCategories(List<Category> userCategories) {
+        this.userCategories = userCategories;
+    }
 
     public String getUsername() {
         return username;

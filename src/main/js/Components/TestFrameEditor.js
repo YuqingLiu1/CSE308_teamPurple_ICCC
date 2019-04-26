@@ -171,11 +171,32 @@ class SketchFieldDemo extends React.Component {
         });
     };
 
-    _save = () => {
+    _save = async () => {
         let drawings = this.state.drawings;
         drawings.push(this._sketch.toDataURL());
         this.setState({ drawings: drawings });
         // uploadImageToImgur(this.state.drawings);
+
+        // save the JSON and image versions of the sketch to the database
+        let res = await fetch('/content/save', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: this.props.pageData.sketch.id,
+                thumbnail: this._sketch.toDataURL(),
+                data: JSON.stringify(this._sketch.toJSON()),
+            })
+        });
+        res = await res.json();
+        if (res.status == 'OK') {
+            // do something on okay
+            alert('saved!');
+        } else {
+            // do something on error
+            alert('error');
+        }
     };
 
     _download = () => {

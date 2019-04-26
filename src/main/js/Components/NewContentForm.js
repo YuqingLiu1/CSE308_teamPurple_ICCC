@@ -35,7 +35,7 @@ class NewContentForm extends Component {
         });
         newContentRes = await newContentRes.json();
         if (newContentRes.status === 'OK') {
-            this.props.changePage('editor');
+            this.props.changePage('editor', newContentRes.content);
         } else {
             alert('Sorry, something went wrong :(');
         }

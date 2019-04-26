@@ -3,11 +3,13 @@ package com.teampurple.iccc.controllers;
 import com.teampurple.iccc.models.*;
 import com.teampurple.iccc.repositories.ContentBaseRepository;
 import com.teampurple.iccc.repositories.GeneralBaseRepository;
+import com.teampurple.iccc.repositories.SketchRepository;
 import com.teampurple.iccc.repositories.UserRepository;
 import com.teampurple.iccc.utils.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -27,9 +29,21 @@ public class ContentController {
     private GeneralBaseRepository generalBaseRepository;
 
     @Autowired
+    private SketchRepository sketchRepository;
+
+    @Autowired
     private Authentication authentication;
 
     // TODO: create a new sketch for the new content, and think about what to do with creation date
+
+    /**
+     * Create a new piece of content (series, episode, or frame). Link the new content to the current user, and
+     * return a ContentInfo object describing the newly created content (along with a status code of whether
+     * the content creation was successful or not).
+     *
+     * Notes:
+     *   - must be logged in to access this endpoint
+     */
     @PostMapping("/content/create")
     public Response addContent(@RequestBody ContentInfo contentInfo) {
         // make sure there is a current user and that it has a valid reference to its generalbase
@@ -107,23 +121,49 @@ public class ContentController {
         newContentBase.setPublic(false);
         contentBaseRepository.save(newContentBase);
 
+        // build the sketch for the new content
+        Sketch newSketch = new Sketch();
+        sketchRepository.save(newSketch);
+
         // don't forget to update the parent generalbase's list of children with this new contentbase
         GeneralBase parentGeneralBase = generalBaseRepository.findById(parentGeneralBaseRef).get();
         List<String> oldChildren = parentGeneralBase.getChildren();
         oldChildren.add(newContentBase.getId());
-        generalBaseRepository.save(parentGeneralBase);
+
+        // don't forget to link to the new contentbase from the generalbase
+        newContentGeneralBase.setTypeRef(newContentBase.getId());
+
+
+        // don't forget to link to the new sketch from the generalbase
+        newContentGeneralBase.setSketch(newSketch.getId());
+
+        // save the above changes
+        generalBaseRepository.save(newContentGeneralBase);
 
         // don't forget to update the user's content with the new content
         List<String> oldUserContent = currentUser.getContent();
         oldUserContent.add(newContentBase.getId());
         userRepository.save(currentUser);
 
-        // don't forget to link to the new contentbase from the generalbase
-        newContentGeneralBase.setTypeRef(newContentBase.getId());
-        generalBaseRepository.save(newContentGeneralBase);
+        // add to the content info to return to the user
+        contentInfo.setContentBase(newContentBase);
+        contentInfo.setGeneralBase(newContentGeneralBase);
+        contentInfo.setSketch(newSketch);
 
-        return new Response("OK");
+        return new Response("OK", contentInfo);
     }
 
+    @PostMapping("/content/save")
+    public Response saveContent(@RequestBody Sketch newSketch) {
+        // make sure the sketch exists in the database
+        Sketch oldSketch = sketchRepository.findById(newSketch.getId()).get();
+        if (oldSketch == null) {
+            return new Response(Response.ERROR);
+        }
 
+        // overwrite the old sketch with the new sketch
+        sketchRepository.save(newSketch);
+
+        return new Response(Response.OK);
+    }
 }

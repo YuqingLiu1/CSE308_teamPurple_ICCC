@@ -7,7 +7,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Sketch {
     @Id
     private String id;
-    private String Thumbnail;
+    private String thumbnail;
+    private String data;
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
 
     public String getId() {
         return id;
@@ -18,10 +27,10 @@ public class Sketch {
     }
 
     public String getThumbnail() {
-        return Thumbnail;
+        return thumbnail;
     }
 
     public void setThumbnail(String thumbnail) {
-        Thumbnail = thumbnail;
+        this.thumbnail = thumbnail;
     }
 }

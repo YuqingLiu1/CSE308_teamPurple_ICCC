@@ -1,6 +1,6 @@
 require("@babel/polyfill")
 
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import Jumbotron from 'react-bootstrap/Jumbotron'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
@@ -9,10 +9,33 @@ import DBAwareEdiText from "./DBAwareEdiText"
 import ProfileCard from "./ProfileCard"
 import UploadImage from "./UploadImage"
 import Category from './Category'
+import doFetch from '../Helpers/general.js'
 
 export default function({bio, error, profilePictureUrl, username})
 {
 	const [refresh, setRefresh]=useState('false')
+	const [items, setItems]=useState([{},{},{},{},{}])
+
+	function f()
+	{
+		async function refreshItems()
+		{
+			setItems(JSON.parse(await doFetch("test/user/series")).seriesList.map(x=>
+																				  {
+																					  return {
+																						  title        : x.generalBase.title,
+																						  thumbnail    : x.sketch.thumbnail,
+																						  sketchId     : x.sketch.id,
+																						  generalBaseId: x.generalBase.id,
+																						  contentBaseId: x.contentBase.id
+																					  }
+																				  }))
+		}
+		refreshItems()
+	}
+
+	useEffect(f)
+
 	if(refresh)
 	{
 		setRefresh(false)
@@ -56,7 +79,7 @@ export default function({bio, error, profilePictureUrl, username})
 						</Col>
 					</Row>
 					<Row className='mt-5'>
-						<Category/>
+						<Category items={items}/>
 					</Row>
 				</Container>
 			</Jumbotron>

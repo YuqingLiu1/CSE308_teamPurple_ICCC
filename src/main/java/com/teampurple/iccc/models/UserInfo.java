@@ -12,6 +12,16 @@ public class UserInfo
     private String sketchRef;
     private List<Category> userCategories;
     private List<Category> homeCategories;
+    private User user;
+    private GeneralBase generalBase;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public GeneralBase getGeneralBase() {
         return generalBase;
@@ -20,8 +30,6 @@ public class UserInfo
     public void setGeneralBase(GeneralBase generalBase) {
         this.generalBase = generalBase;
     }
-
-    private GeneralBase generalBase;
 
     public List<Category> getHomeCategories() {
         return homeCategories;

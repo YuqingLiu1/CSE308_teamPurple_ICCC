@@ -16,3 +16,12 @@ export default async function(url,{method='POST',body=undefined}={})
         console.log('fetch failed', err)
     }
 }
+
+// exports.shouldShowRightButton = async (currentContentId) => {
+//     try {
+//
+//     } catch (err) {
+//         // handle error
+//         console.error(err);
+//     }
+// }

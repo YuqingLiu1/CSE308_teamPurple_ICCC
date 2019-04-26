@@ -7,14 +7,42 @@ import Col from 'react-bootstrap/Col';
 import TestFrameEditor from '../Components/TestFrameEditor';
 
 export default class ViewContentPage extends Component {
+    state = {
+        authorName: '',
+        authorBio: '',
+        authorThumbnail: '',
+        contentThumbnail: '',
+        contentData: '',
+        comments: []
+    }
+
+    async componentDidMount() {
+        try {
+            let contentRes = await fetch('/content/info?id=' + this.props.contentBaseId);
+            contentRes = await contentRes.json();
+            if (contentRes.status !== 'OK') throw new Error();
+
+            // TODO: fetch author info
+
+            this.setState({
+                contentThumbnail: contentRes.content.sketch.thumbnail,
+                contentData: contentRes.content.sketch.data,
+            });
+        }
+
+         catch (err) {
+            console.error(err);
+        }
+    }
+
     render() {
         return (
             <Container fluid className='my-3'>
                 {
-                    this.props.loggedIn ?
+                    this.props.loggedIn ? // note: this check needs to change because it's not really what we want
                         <Row>
                             <Col xs={9}>
-                                <TestFrameEditor />
+                                <TestFrameEditor sketch={{ data: this.state.contentData }}/>
                             </Col>
                             <Col xs={3}>
                                 This is where the comments will go

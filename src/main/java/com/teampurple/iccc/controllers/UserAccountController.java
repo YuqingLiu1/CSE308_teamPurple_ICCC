@@ -38,14 +38,9 @@ public class UserAccountController {
     @GetMapping("/user/info")
     public Response getUserInfo() {
         User currentUser = auth.getCurrentUser();
+        GeneralBase currentGeneralBase = auth.getCurrentUserGeneralBase();
 
-        if (currentUser == null) {
-            return new Response(Response.ERROR);
-        }
-
-        GeneralBase currentGeneralBase = generalbase.findById(currentUser.getGeneralBaseRef()).get();
-
-        if (currentGeneralBase == null) {
+        if (currentUser == null || currentGeneralBase == null) {
             return new Response(Response.ERROR);
         }
 
@@ -57,6 +52,7 @@ public class UserAccountController {
 
         UserInfo userInfo = new UserInfo();
 
+        userInfo.setGeneralBase(currentGeneralBase);
         userInfo.setUsername(currentGeneralBase.getTitle());
         userInfo.setBio(currentGeneralBase.getDescription());
         userInfo.setEmail(currentUser.getEmail());

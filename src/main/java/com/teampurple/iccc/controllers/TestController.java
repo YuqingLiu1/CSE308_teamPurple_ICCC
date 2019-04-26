@@ -3,6 +3,7 @@ package com.teampurple.iccc.controllers;
 import com.teampurple.iccc.models.*;
 import com.teampurple.iccc.repositories.ContentBaseRepository;
 import com.teampurple.iccc.repositories.GeneralBaseRepository;
+import com.teampurple.iccc.repositories.SketchRepository;
 import com.teampurple.iccc.repositories.UserRepository;
 import com.teampurple.iccc.utils.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class TestController {
 
     @Autowired
     private ContentBaseRepository contentBaseRepository;
+
+    @Autowired
+    private SketchRepository sketchRepository;
 
     @Autowired
     private AuthenticationManager am;
@@ -73,9 +77,11 @@ public class TestController {
         for (ContentBase contentBase : contentBaseRepository.findAllById(currentUser.getContent())) {
             if (contentBase.getType().equals(ContentBase.SERIES)) {
                 GeneralBase generalBase = generalBaseRepository.findById(contentBase.getGeneralBaseRef()).get();
+                Sketch sketch = sketchRepository.findById(generalBase.getSketch()).get();
                 Series series1 = new Series();
                 series1.setContentBase(contentBase);
                 series1.setGeneralBase(generalBase);
+                series1.setSketch(sketch);
                 series.add(series1);
             }
         }

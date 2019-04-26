@@ -4,6 +4,15 @@ public class Series {
 
     private ContentBase contentBase;
     private GeneralBase generalBase;
+    private Sketch sketch;
+
+    public Sketch getSketch() {
+        return sketch;
+    }
+
+    public void setSketch(Sketch sketch) {
+        this.sketch = sketch;
+    }
 
     public GeneralBase getGeneralBase() {
         return generalBase;

@@ -7,10 +7,7 @@ import com.teampurple.iccc.repositories.SketchRepository;
 import com.teampurple.iccc.repositories.UserRepository;
 import com.teampurple.iccc.utils.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -165,5 +162,38 @@ public class ContentController {
         sketchRepository.save(newSketch);
 
         return new Response(Response.OK);
+    }
+
+    /**
+     * Get information about a piece of content, given its content base ID. The information is the content base
+     * info, the general base info, and the sketch info.
+     */
+    @GetMapping("/content/info")
+    public Response getContentInfo(@RequestParam(value="id") final String contentBaseId) {
+        if (contentBaseId == null) {
+            return new Response(Response.ERROR, "Content base ID cannot be null");
+        }
+
+        ContentBase contentBase = contentBaseRepository.findById(contentBaseId).get();
+        if (contentBase == null) {
+            return new Response(Response.ERROR, "Could not find content base by ID: " + contentBaseId);
+        }
+
+        GeneralBase generalBase = generalBaseRepository.findById(contentBase.getGeneralBaseRef()).get();
+        if (generalBase == null) {
+            return new Response(Response.ERROR, "Could not find general base of the content base");
+        }
+
+        Sketch sketch = sketchRepository.findById(generalBase.getSketch()).get();
+        if (sketch == null) {
+            return new Response(Response.ERROR, "Could not find sketch of the general base");
+        }
+
+        ContentInfo contentInfo = new ContentInfo();
+        contentInfo.setContentBase(contentBase);
+        contentInfo.setGeneralBase(generalBase);
+        contentInfo.setSketch(sketch);
+
+        return new Response(Response.OK, contentInfo);
     }
 }

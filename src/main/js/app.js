@@ -11,7 +11,7 @@ import LoggedOutCategories from './Components/loggedOutCategories'
 import LoggedInCategories from './Components/loggedInCategories'
 import CreateAccount from './Components/CreateAccount'
 import TestFrameEditor from './Components/TestFrameEditor'
-import NewContentPage from './Pages/NewContentPage'
+import NewSeriesPage from './Pages/NewSeriesPage'
 import LoginPage from './Pages/LoginPage'
 import TestPage from './Components/TestPage'
 import ViewContentPage from './Pages/ViewContentPage'
@@ -101,7 +101,7 @@ class App extends Component
 				/>,
 			login     : <LoginPage changePage={this.changePage} login={this.login}/>,
 			editor    : <TestFrameEditor pageData={this.state.pageData}/>,
-			newContent: <NewContentPage changePage={this.changePage} />,
+			newContent: <NewSeriesPage changePage={this.changePage} />,
 			test      : <TestPage />,
 			viewContentPage: <ViewContentPage loggedIn={this.state.loggedIn}/>
 		}

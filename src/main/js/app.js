@@ -27,6 +27,7 @@ class App extends Component
 			username     : '',
 			userInfoError: false,
 			generalBaseId: '',
+			pageData     : null
 		}
 		this.changePage=this.changePage.bind(this)
 		this.login     =this.login.bind(this)
@@ -37,9 +38,12 @@ class App extends Component
 		this.refresh()
 	}
 
-	changePage(page, data)
+	changePage(page, pageData)
 	{
-		this.setState({page: page})
+		this.setState({
+			page: page,
+			pageData: pageData
+		})
 		if(page==='homepage')
 		{
 			this.refresh()
@@ -94,7 +98,7 @@ class App extends Component
 					error={this.state.userInfoError}
 				/>,
 			login     : <LoginPage changePage={this.changePage} login={this.login}/>,
-			editor    : <TestFrameEditor/>,
+			editor    : <TestFrameEditor pageData={this.state.pageData}/>,
 			newContent: <NewContentPage changePage={this.changePage} />,
 			test      : <TestPage />
 		}

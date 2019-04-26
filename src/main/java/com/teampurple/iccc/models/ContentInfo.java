@@ -8,6 +8,33 @@ public class ContentInfo {
     private String parentSeries;
     private String parentEpisode;
     private String parentFrame;
+    private Sketch sketch;
+    private GeneralBase generalBase;
+    private ContentBase contentBase;
+
+    public Sketch getSketch() {
+        return sketch;
+    }
+
+    public void setSketch(Sketch sketch) {
+        this.sketch = sketch;
+    }
+
+    public GeneralBase getGeneralBase() {
+        return generalBase;
+    }
+
+    public void setGeneralBase(GeneralBase generalBase) {
+        this.generalBase = generalBase;
+    }
+
+    public ContentBase getContentBase() {
+        return contentBase;
+    }
+
+    public void setContentBase(ContentBase contentBase) {
+        this.contentBase = contentBase;
+    }
 
     public String getType() {
         return type;

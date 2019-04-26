@@ -47,6 +47,43 @@ public class LikeController {
             return new Response(Response.ERROR);
         }
     }
+
+    /**
+     JSON.parse(await doFetch('/likeSeries?id=5cc261da1c9d4400005308be', {method:'GET'}))
+     {"title":"Suri's Series1"}
+
+     */
+    @GetMapping("/likeSeries")
+    public Response likeSeries(@RequestParam(value="id") String generalBaseID){
+        System.out.println("generalBaseId: " + generalBaseID);
+        try{
+            System.out.println("in here");
+            GeneralBase generalBase = generalBases.findById(generalBaseID).get();
+            System.out.println("generalBase: " + generalBase);
+            User currentUser = auth.getCurrentUser();
+            System.out.println("current User: " + currentUser);
+            ArrayList<String> likers = generalBase.getLikers();
+            System.out.println("likers before liking: " + likers);
+            for (int i = 0; i < likers.size(); i++){
+                System.out.println("current user id: " + currentUser.getId());
+                if (likers.get(i).equals(currentUser.getId())){
+                    System.out.println("unlike");
+                    likers.remove(i);
+                    currentUser.getLiked().remove(generalBaseID);
+                    return new Response(Response.OK);
+                }
+            }
+            System.out.println("like");
+            likers.add(currentUser.getId());
+            currentUser.getLiked().add(generalBaseID);
+            return new Response(Response.OK);
+        }catch(Exception e){
+            return new Response(Response.ERROR);
+
+        }
+
+    }
+
     @GetMapping("/getNumlike")
     public String getNumber(){
         User user = auth.getCurrentUser();

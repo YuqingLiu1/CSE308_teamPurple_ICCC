@@ -6,7 +6,7 @@ import {Card, Collapse, Modal} from 'react-bootstrap'
 import Thumbnail from './Thumbnail'
 import Button from 'react-bootstrap/Button'
 import DBAwareEdiText from './DBAwareEdiText'
-export default function({thumbnails, editable, title, setTitle, remove, loggedIn=true})
+export default function({items=[{},{},{}], editable, title, setTitle, remove, loggedIn=true})
 {
 	const categoryFontSize               ='30px'
 	const [notCollapsed, setNotCollapsed]=useState(true)
@@ -20,39 +20,12 @@ export default function({thumbnails, editable, title, setTitle, remove, loggedIn
 			<Button onClick={()=>setAskIfDelete(false)}>No</Button>
 		</span>
 	</div>
+	// items=JSON.parse(await doFetch("test/user/series")).seriesList.map(x=>{return {title:x.generalBase.title,thumbnail:x.sketch.thumbnail,sketchId:x.sketch.id,generalBaseId:x.generalBase.id,contentBaseId:x.contentBase.id}})
 	const cards      =<Card.Body style={{overflowX: 'scroll'}}>
 		<div>
 			<table>
 				<tbody>
-					<tr>
-						<td>
-							<Thumbnail/>
-						</td>
-						<td>
-							<Thumbnail/>
-						</td>
-						<td>
-							<Thumbnail/>
-						</td>
-						<td>
-							<Thumbnail/>
-						</td>
-						<td>
-							<Thumbnail/>
-						</td>
-						<td>
-							<Thumbnail/>
-						</td>
-						<td>
-							<Thumbnail/>
-						</td>
-						<td>
-							<Thumbnail/>
-						</td>
-						<td>
-							<Thumbnail/>
-						</td>
-					</tr>
+					{items.map(x=><td><Thumbnail imageURL={x.thumbnail||undefined} title={x.title} onClick={x.onClick}/></td>)}
 				</tbody>
 			</table>
 		</div>

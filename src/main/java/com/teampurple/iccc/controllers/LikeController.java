@@ -32,9 +32,9 @@ public class LikeController {
     @GetMapping("/clicklike")
     public Response clickLike(@RequestParam(value="id") String generalBaseID) {
         try {
-            GeneralBase generalBase = generalBases.findById(generalBaseID).get();
+            GeneralBase generalBase = generalBases.findById(generalBaseID).get();//The thing we're about to like
             User currentUser = auth.getCurrentUser();
-            ArrayList<String> likedusers = generalBase.getLikers();
+            ArrayList<String> likedusers = generalBase.getLikers();//A list of generalbaseId's
             for (int i = 0; i < likedusers.size(); i++) {
                 if (likedusers.get(i).equals(currentUser.getId())) {
                     likedusers.remove(i);

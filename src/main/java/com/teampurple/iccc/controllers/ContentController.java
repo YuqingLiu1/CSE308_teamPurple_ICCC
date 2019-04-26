@@ -166,6 +166,4 @@ public class ContentController {
 
         return new Response(Response.OK);
     }
-
-
 }

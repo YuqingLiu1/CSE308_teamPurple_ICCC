@@ -35,6 +35,8 @@ public class UserAccountController {
     @Autowired
     private CategoryRepository categoryRepository;
 
+
+
     @GetMapping("/user/info")
     public Response getUserInfo() {
         User currentUser = auth.getCurrentUser();
@@ -206,5 +208,43 @@ public class UserAccountController {
         }
         return categories;
     }
+
+    @GetMapping("/others/info")
+    public Response getOtherUserInfo(@RequestParam(value="id") String generalBaseID){
+        try{
+            GeneralBase generalBase = generalbase.findById(generalBaseID).get();
+            if (generalBase == null){
+                return new Response(Response.ERROR);
+            }
+            String typeRef = generalBase.getTypeRef();
+            User user = users.findById(typeRef).get();
+            if (user == null){
+                return new Response(Response.ERROR);
+            }
+
+            List<Category> userCategories = getCategories(user.getUserCategories());
+            List<Category> homeCategories = getCategories(user.getHomeCategories());
+
+            UserInfo other = new UserInfo();
+
+            other.setGeneralBase(generalBase);
+            other.setUsername(generalBase.getTitle());
+            other.setBio(generalBase.getDescription());
+            other.setEmail(user.getEmail());
+            other.setPassword(null);
+            other.setUserCategories(userCategories);
+            other.setUserCategories(userCategories);
+            other.setHomeCategories(homeCategories);
+            other.setSketchRef(generalBase.getSketch());
+            other.setUser(user);
+
+            return new Response(Response.OK, other);
+
+
+        }catch(Exception e){
+            return new Response(Response.ERROR);
+        }
+    }
+
 
 }

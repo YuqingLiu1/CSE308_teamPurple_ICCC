@@ -13,6 +13,16 @@ public class UserInfo
     private List<Category> userCategories;
     private List<Category> homeCategories;
 
+    public GeneralBase getGeneralBase() {
+        return generalBase;
+    }
+
+    public void setGeneralBase(GeneralBase generalBase) {
+        this.generalBase = generalBase;
+    }
+
+    private GeneralBase generalBase;
+
     public List<Category> getHomeCategories() {
         return homeCategories;
     }

@@ -399,8 +399,12 @@ class SketchFieldDemo extends React.Component {
                             height={
                                 this.state.controlledSize ? this.state.sketchHeight : null
                             }
-                            // defaultValue={this.props.sketch.data || dataJson}
-                            defaultValue={this.props.sketch.data}
+                            // defaultValue={dataJson}
+                            defaultValue={(()=> {
+                                const c=this.props
+                                console.log("WHAT THE HECK",c)
+                                return c
+                            })()}
                             value={controlledValue}
                             forceValue
                             onChange={this._onSketchChange}

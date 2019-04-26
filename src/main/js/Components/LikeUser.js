@@ -3,22 +3,39 @@ import Heart from './Heart'
 import doFetch from '../Helpers/general.js'
 export default function({generalBaseId='5cb04d907a7a5bf998686c36', likedByCurrentUserColor='red', notLikedByCurrentUserColor='black'})
 {
-    const [likedByCurrentUser, setLikedByCurrentUser]=useState(true)//This should fetch whether a user likedByCurrentUser this or not
+    const [likedByCurrentUser, setLikedByCurrentUser]=useState(true)
+    const [numberOfLikers    , setNumberOfLikers    ]=useState(true)
+
     console.assert(likedByCurrentUser!==undefined && Object.getPrototypeOf(likedByCurrentUser)===Boolean.prototype)//Type checking that likedByCurrentUser is boolean
-    // function toggleLikedByCurrentUser()
-    //     // {
-    //     //     setLikedByCurrentUser(!likedByCurrentUser)
-    //     // }
-    //
-    async function Setcolor() {
-        var re=JSON.parse(await doFetch('/clicklike?id='+generalBaseId,{method:'Get'}))
-        console.log(re)
-        if(re.status==='OK'){
-            console.log('get')
-            setLikedByCurrentUser(!likedByCurrentUser)
-        }
+
+    async function updateNumberOfLikers()
+    {
+        setNumberOfLikers(await doFetch('/getNumlikes?id='+generalBaseId,{method:'Get'}))
     }
 
+    async function updateLikedByCurrentUser()
+    {
+        setLikedByCurrentUser(await doFetch('/liked?id=' + generalBaseId, {method: 'Get'}) === 'True')
+    }
+
+    function update()
+    {
+        updateNumberOfLikers()
+        updateLikedByCurrentUser()
+    }
+
+    async function toggle()
+    {
+        await doFetch('/clicklike?id='+generalBaseId,{method:'Get'})
+    }
+
+    async function onClick()
+    {
+        await toggle()
+        update()
+    }
+
+    update()
 
     return <div
         style={{
@@ -29,8 +46,8 @@ export default function({generalBaseId='5cb04d907a7a5bf998686c36', likedByCurren
             // width          : "30px"
         }}>
         <Heart style={{height:"30px"}}
-               onClick={Setcolor}
+               onClick={onClick}
                color={likedByCurrentUser ? likedByCurrentUserColor : notLikedByCurrentUserColor}/>
-        12389
+        {numberOfLikers}
     </div>
 }

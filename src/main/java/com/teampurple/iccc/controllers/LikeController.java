@@ -22,7 +22,7 @@ public class LikeController {
         User currentUser = auth.getCurrentUser();
         ArrayList<String> likedusers = generalBase.getLikers();
         for (int i = 0; i < likedusers.size(); i++) {
-            if (likedusers.get(i).equals(currentUser.getId())) {
+            if (likedusers.get(i).equals(currentUser.getGeneralBaseRef())) {
                 return "True";
             }
         }

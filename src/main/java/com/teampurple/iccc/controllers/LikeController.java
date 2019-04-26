@@ -39,19 +39,25 @@ public class LikeController {
             GeneralBase generalBase = generalBases.findById(generalBaseID).get();//The thing we're about to like
             User currentUser = auth.getCurrentUser();
             ArrayList<String> likers = generalBase.getLikers();//A list of generalbaseId's
-            ArrayList<String> liked = User.
+            ArrayList<String> liked = currentUser.getLiked();
             for (int i = 0; i < likers.size(); i++) {
                 if (likers.get(i).equals(currentUser.getGeneralBaseRef())) {
                     likers.remove(i);
                     generalBase.setLikers(likers);
                     generalBases.save(generalBase);
                     //System.out.println("Remove");
+                    liked.remove(currentUser.getGeneralBaseRef());
+                    currentUser.setLiked(liked);
+                    users.save(currentUser);
                     return new Response(Response.OK);
                 }
             }
             likers.add(currentUser.getGeneralBaseRef());
             generalBase.setLikers(likers);
             generalBases.save(generalBase);
+            liked.add(currentUser.getGeneralBaseRef());
+            currentUser.setLiked(liked);
+            users.save(currentUser);
             //System.out.println("add");
             return new Response(Response.OK);
         }catch (Exception e ){

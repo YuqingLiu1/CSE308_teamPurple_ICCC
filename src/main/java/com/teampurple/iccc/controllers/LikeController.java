@@ -3,6 +3,7 @@ package com.teampurple.iccc.controllers;
 import com.mongodb.MongoException;
 import com.teampurple.iccc.models.*;
 import com.teampurple.iccc.repositories.GeneralBaseRepository;
+import com.teampurple.iccc.repositories.UserRepository;
 import com.teampurple.iccc.utils.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -34,18 +35,19 @@ public class LikeController {
         try {
             GeneralBase generalBase = generalBases.findById(generalBaseID).get();//The thing we're about to like
             User currentUser = auth.getCurrentUser();
-            ArrayList<String> likedusers = generalBase.getLikers();//A list of generalbaseId's
-            for (int i = 0; i < likedusers.size(); i++) {
-                if (likedusers.get(i).equals(currentUser.getGeneralBaseRef())) {
-                    likedusers.remove(i);
-                    generalBase.setLikers(likedusers);
+            ArrayList<String> likers = generalBase.getLikers();//A list of generalbaseId's
+            ArrayList<String> liked = User.
+            for (int i = 0; i < likers.size(); i++) {
+                if (likers.get(i).equals(currentUser.getGeneralBaseRef())) {
+                    likers.remove(i);
+                    generalBase.setLikers(likers);
                     generalBases.save(generalBase);
                     //System.out.println("Remove");
                     return new Response(Response.OK);
                 }
             }
-            likedusers.add(currentUser.getGeneralBaseRef());
-            generalBase.setLikers(likedusers);
+            likers.add(currentUser.getGeneralBaseRef());
+            generalBase.setLikers(likers);
             generalBases.save(generalBase);
             //System.out.println("add");
             return new Response(Response.OK);

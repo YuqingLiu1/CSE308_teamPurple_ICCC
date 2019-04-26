@@ -35,6 +35,38 @@ public class UserAccountController {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    //TODO Create a function
+    // @SuppressWarnings("Duplicates")
+    // @GetMapping(value="/generalBase/title")
+    // public Response getGeneralBaseInfo(@RequestParam(value="id") final String generalBaseId)
+    // {
+    //     GeneralBase gb=generalbase.findById(generalBaseId).get();
+    //     User currentUser=auth.getCurrentUser();
+    //     GeneralBase currentGeneralBase=gb;
+    //     if(currentUser==null||currentGeneralBase==null)
+    //     {
+    //         return new Response(Response.ERROR);
+    //     }
+    //     // get the user's categories
+    //     List<Category> userCategories=getCategories(currentUser.getUserCategories());
+    //     // get the default "home" categories
+    //     List<Category> homeCategories=getCategories(currentUser.getHomeCategories());
+    //     UserInfo userInfo=new UserInfo();
+    //     userInfo.setGeneralBase(currentGeneralBase);
+    //     userInfo.setUsername(currentGeneralBase.getTitle());
+    //     userInfo.setBio(currentGeneralBase.getDescription());
+    //     userInfo.setEmail(currentUser.getEmail());
+    //     userInfo.setPassword(currentUser.getPassword());
+    //     userInfo.setUserCategories(userCategories);
+    //     userInfo.setUserCategories(userCategories);
+    //     userInfo.setHomeCategories(homeCategories);
+    //     userInfo.setSketchRef(currentGeneralBase.getSketch());
+    //     userInfo.setUser(currentUser);
+    //     return new Response(Response.OK,userInfo);
+    // }
+
+
+    // @GetMapping("/general/info")
 
 
     @GetMapping("/user/info")

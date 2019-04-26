@@ -206,7 +206,7 @@ public class UserAccountController {
     public Response setCurrentUserPassword(@RequestBody final String password) {
         try {
             User currentUser = auth.getCurrentUser();
-            currentUser.setPassword(new BCryptPasswordEncoder(10).encode(currentUser.getPassword()));
+            currentUser.setPassword(new BCryptPasswordEncoder(10).encode(password));
             users.save(currentUser);
             return new Response(Response.OK);
         }catch (Exception e){

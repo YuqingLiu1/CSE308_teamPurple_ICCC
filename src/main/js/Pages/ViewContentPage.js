@@ -12,7 +12,7 @@ export default class ViewContentPage extends Component {
         authorBio: '',
         authorThumbnail: '',
         contentThumbnail: '',
-        contentData: '',
+        contentData: {},
         comments: []
     }
 
@@ -24,13 +24,15 @@ export default class ViewContentPage extends Component {
 
             // TODO: fetch author info
 
+            console.log(JSON.parse(contentRes.content.sketch.data))
+
             this.setState({
                 contentThumbnail: contentRes.content.sketch.thumbnail,
-                contentData: contentRes.content.sketch.data,
+                contentData: JSON.parse(contentRes.content.sketch.data),
             });
         }
 
-         catch (err) {
+        catch (err) {
             console.error(err);
         }
     }
@@ -42,7 +44,7 @@ export default class ViewContentPage extends Component {
                     this.props.loggedIn ? // note: this check needs to change because it's not really what we want
                         <Row>
                             <Col xs={9}>
-                                <TestFrameEditor sketch={{ data: this.state.contentData }}/>
+                                <TestFrameEditor sketch={{ data: this.state.contentData, id: this.props.sketchId }}/>
                             </Col>
                             <Col xs={3}>
                                 This is where the comments will go

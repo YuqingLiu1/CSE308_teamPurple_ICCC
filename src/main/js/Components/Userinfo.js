@@ -11,7 +11,7 @@ import UploadImage from "./UploadImage"
 import Category from './Category'
 import doFetch from '../Helpers/general.js'
 
-export default function({bio, error, profilePictureUrl, username})
+export default function({bio, error, profilePictureUrl, username, changePage})
 {
 	const [refresh, setRefresh]=useState('false')
 	const [items, setItems]=useState([{},{},{},{},{}])
@@ -20,14 +20,18 @@ export default function({bio, error, profilePictureUrl, username})
 	{
 		async function refreshItems()
 		{
-			setItems(JSON.parse(await doFetch("test/user/series")).seriesList.map(x=>
+			setItems(JSON.parse(await doFetch("test/user/series")).content.seriesList.map(x=>
 																				  {
 																					  return {
 																						  title        : x.generalBase.title,
 																						  thumbnail    : x.sketch.thumbnail,
 																						  sketchId     : x.sketch.id,
 																						  generalBaseId: x.generalBase.id,
-																						  contentBaseId: x.contentBase.id
+																						  contentBaseId: x.contentBase.id,
+																						  onClick(){changePage('viewContentPage', {
+																						  	  contentBaseId: x.contentBase.id,
+																							  sketchId: x.sketch.id
+																						  })}
 																					  }
 																				  }))
 		}

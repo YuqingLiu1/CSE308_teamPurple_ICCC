@@ -55,7 +55,7 @@ public class LikeController {
     }
 
     /**
-     JSON.parse(await doFetch('/likeSeries?id=5cc261da1c9d4400005308be', {method:'GET'}))
+     JSON.parse(await doFetch('/likeSeries?id=5cb935a77a7a5b5a319c4216', {method:'GET'}))
      {"title":"Suri's Series1"}
 
      */
@@ -63,25 +63,39 @@ public class LikeController {
     public Response likeSeries(@RequestParam(value="id") String generalBaseID){
         System.out.println("generalBaseId: " + generalBaseID);
         try{
-            System.out.println("in here");
+            //System.out.println("in here");
             GeneralBase generalBase = generalBases.findById(generalBaseID).get();
-            System.out.println("generalBase: " + generalBase);
+            //System.out.println("generalBase: " + generalBase);
             User currentUser = auth.getCurrentUser();
-            System.out.println("current User: " + currentUser);
+            //System.out.println("current User: " + currentUser);
             ArrayList<String> likers = generalBase.getLikers();
-            System.out.println("likers before liking: " + likers);
+            //System.out.println("likers before liking: " + likers);
+            ArrayList<String> userLiked = currentUser.getLiked();
             for (int i = 0; i < likers.size(); i++){
-                System.out.println("current user id: " + currentUser.getId());
+                //System.out.println("current user id: " + currentUser.getId());
                 if (likers.get(i).equals(currentUser.getId())){
-                    System.out.println("unlike");
                     likers.remove(i);
-                    currentUser.getLiked().remove(generalBaseID);
+                    generalBase.setLikers(likers);
+                    generalBases.save(generalBase);
+                    //System.out.println("after deleting, likers are: " + generalBase.getLikers());
+
+                    userLiked.remove(generalBaseID);
+                    currentUser.setLiked(userLiked);
                     return new Response(Response.OK);
                 }
             }
-            System.out.println("like");
+
+            //System.out.println("like");
             likers.add(currentUser.getId());
-            currentUser.getLiked().add(generalBaseID);
+            generalBase.setLikers(likers);
+            generalBases.save(generalBase);
+            //System.out.println("after adding, liker are: " + generalBase.getLikers());
+
+            //content also added to user's liked
+            userLiked.add(generalBaseID);
+            currentUser.setLiked(userLiked);
+
+
             return new Response(Response.OK);
         }catch(Exception e){
             return new Response(Response.ERROR);

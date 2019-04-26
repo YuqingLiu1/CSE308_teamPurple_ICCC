@@ -17,6 +17,9 @@ public class LikeController {
     @Autowired
     private Authentication auth;
 
+    @Autowired
+    private UserRepository users;
+
     @GetMapping("/liked")
     public String getCurrentLikeState(@RequestParam(value="id") String generalBaseID) {
         GeneralBase generalBase = generalBases.findById(generalBaseID).get();
@@ -76,6 +79,7 @@ public class LikeController {
             for (int i = 0; i < likers.size(); i++){
                 //System.out.println("current user id: " + currentUser.getId());
                 if (likers.get(i).equals(currentUser.getId())){
+                    System.out.println("unlike");
                     likers.remove(i);
                     generalBase.setLikers(likers);
                     generalBases.save(generalBase);
@@ -83,11 +87,12 @@ public class LikeController {
 
                     userLiked.remove(generalBaseID);
                     currentUser.setLiked(userLiked);
+                    users.save(currentUser);
                     return new Response(Response.OK);
                 }
             }
 
-            //System.out.println("like");
+            System.out.println("like");
             likers.add(currentUser.getId());
             generalBase.setLikers(likers);
             generalBases.save(generalBase);
@@ -96,6 +101,7 @@ public class LikeController {
             //content also added to user's liked
             userLiked.add(generalBaseID);
             currentUser.setLiked(userLiked);
+            users.save(currentUser);
 
 
             return new Response(Response.OK);

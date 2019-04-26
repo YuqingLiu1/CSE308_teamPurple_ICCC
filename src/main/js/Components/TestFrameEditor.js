@@ -184,7 +184,7 @@ class SketchFieldDemo extends React.Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                id: this.props.pageData.sketch.id,
+                id: this.props.sketch.id,
                 thumbnail: this._sketch.toDataURL(),
                 data: JSON.stringify(this._sketch.toJSON()),
             })
@@ -399,7 +399,8 @@ class SketchFieldDemo extends React.Component {
                             height={
                                 this.state.controlledSize ? this.state.sketchHeight : null
                             }
-                            defaultValue={(this.props.sketch||{}).data || dataJson}
+                            // defaultValue={this.props.sketch.data || dataJson}
+                            defaultValue={this.props.sketch.data}
                             value={controlledValue}
                             forceValue
                             onChange={this._onSketchChange}

@@ -1,14 +1,14 @@
 import React, {useState} from 'react'
 import Heart from './Heart'
 import doFetch from '../Helpers/general.js'
-export default function({generalBaseId='5cb0a38f799a830d030811fe', likedByCurrentUserColor='red', notLikedByCurrentUserColor='black'})
+export default function({generalBaseId='5cb04d907a7a5bf998686c36', likedByCurrentUserColor='red', notLikedByCurrentUserColor='black'})
 {
     const [likedByCurrentUser, setLikedByCurrentUser]=useState(true)//This should fetch whether a user likedByCurrentUser this or not
     console.assert(likedByCurrentUser!==undefined && Object.getPrototypeOf(likedByCurrentUser)===Boolean.prototype)//Type checking that likedByCurrentUser is boolean
-    function toggleLikedByCurrentUser()
-    {
-        setLikedByCurrentUser(!likedByCurrentUser)
-    }
+    // function toggleLikedByCurrentUser()
+    //     // {
+    //     //     setLikedByCurrentUser(!likedByCurrentUser)
+    //     // }
     //
     async function Setcolor() {
         var re=JSON.parse(await doFetch('/clicklike?id='+generalBaseId,{method:'Get'}))

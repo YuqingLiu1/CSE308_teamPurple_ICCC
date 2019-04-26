@@ -36,12 +36,18 @@ public class LikeController {
             User currentUser = auth.getCurrentUser();
             ArrayList<String> likedusers = generalBase.getLikers();//A list of generalbaseId's
             for (int i = 0; i < likedusers.size(); i++) {
-                if (likedusers.get(i).equals(currentUser.getId())) {
+                if (likedusers.get(i).equals(currentUser.getGeneralBaseRef())) {
                     likedusers.remove(i);
+                    generalBase.setLikers(likedusers);
+                    generalBases.save(generalBase);
+                    //System.out.println("Remove");
                     return new Response(Response.OK);
                 }
             }
             likedusers.add(generalBaseID);
+            generalBase.setLikers(likedusers);
+            generalBases.save(generalBase);
+            //System.out.println("add");
             return new Response(Response.OK);
         }catch (Exception e ){
             return new Response(Response.ERROR);

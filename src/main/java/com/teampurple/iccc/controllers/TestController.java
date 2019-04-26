@@ -68,7 +68,7 @@ public class TestController {
      * Get all of the current user's series.
      */
     @GetMapping("/test/user/series")
-    public SeriesList getCurrentUserSeries() {
+    public Response getCurrentUserSeries() {
         User currentUser = auth.getCurrentUser();
 
         SeriesList seriesList = new SeriesList();
@@ -86,7 +86,7 @@ public class TestController {
             }
         }
 
-        return seriesList;
+        return new Response(Response.OK, seriesList);
     }
 
     /**

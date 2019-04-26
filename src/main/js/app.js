@@ -9,11 +9,12 @@ import PlusButton from './Components/NavButtons/PlusButton'
 import UserInfo from "./Components/Userinfo"
 import LoggedOutCategories from './Components/loggedOutCategories'
 import LoggedInCategories from './Components/loggedInCategories'
-import CreateAccount from "./Components/CreateAccount"
+import CreateAccount from './Components/CreateAccount'
 import TestFrameEditor from './Components/TestFrameEditor'
 import NewContentPage from './Pages/NewContentPage'
 import LoginPage from './Pages/LoginPage'
-import TestPage from "./Components/TestPage";
+import TestPage from './Components/TestPage'
+import ViewContentPage from './Pages/ViewContentPage'
 
 class App extends Component
 {
@@ -96,11 +97,13 @@ class App extends Component
 					username={this.state.username}
 					profilePictureUrl={'http://localhost/generalBase/thumbnail?id=' + this.state.generalBaseId}
 					error={this.state.userInfoError}
+					changePage={this.changePage}
 				/>,
 			login     : <LoginPage changePage={this.changePage} login={this.login}/>,
 			editor    : <TestFrameEditor pageData={this.state.pageData}/>,
 			newContent: <NewContentPage changePage={this.changePage} />,
-			test      : <TestPage />
+			test      : <TestPage />,
+			viewContentPage: <ViewContentPage loggedIn={this.state.loggedIn}/>
 		}
 		return (
 			<>

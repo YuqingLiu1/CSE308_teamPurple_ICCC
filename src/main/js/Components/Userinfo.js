@@ -83,7 +83,7 @@ export default function({bio, error, profilePictureUrl, username, changePage})
 						</Col>
 					</Row>
 					<Row className='mt-5'>
-						<Category items={items} title={'My Episodes'}/>
+						<Category items={items} title={'My Episodes'} loggedIn={false}/>
 					</Row>
 				</Container>
 			</Jumbotron>

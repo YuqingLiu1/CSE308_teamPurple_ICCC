@@ -405,7 +405,9 @@ class SketchFieldDemo extends React.Component {
                                 console.log("WHAT THE HECK",c)
                                 return c
                             })()}
-                            value={controlledValue}
+                            // value={controlledValue}
+                            value={this.props.sketch.data}
+
                             forceValue
                             onChange={this._onSketchChange}
                             tool={this.state.tool}

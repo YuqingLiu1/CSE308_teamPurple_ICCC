@@ -15,6 +15,7 @@ export default function({generalBaseId='5cb04d907a7a5bf998686c36', likedByCurren
 
     async function updateLikedByCurrentUser()
     {
+
         setLikedByCurrentUser(await doFetch('/liked?id=' + generalBaseId, {method: 'Get'}) === 'True')
     }
 

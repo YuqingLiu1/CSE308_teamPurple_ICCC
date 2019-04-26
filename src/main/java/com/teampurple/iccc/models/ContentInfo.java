@@ -8,6 +8,7 @@ public class ContentInfo {
     private String parentSeries;
     private String parentEpisode;
     private String parentFrame;
+
     private Sketch sketch;
     private GeneralBase generalBase;
     private ContentBase contentBase;

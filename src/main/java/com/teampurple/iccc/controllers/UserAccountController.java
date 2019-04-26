@@ -64,6 +64,7 @@ public class UserAccountController {
         userInfo.setUserCategories(userCategories);
         userInfo.setUserCategories(userCategories);
         userInfo.setHomeCategories(homeCategories);
+        userInfo.setSketchRef(currentGeneralBase.getSketch());
 
         return new Response(Response.OK, userInfo);
     }

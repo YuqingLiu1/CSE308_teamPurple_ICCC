@@ -1,6 +1,6 @@
 package com.teampurple.iccc.models;
 
-public class Frame {
+public class Series {
 
     private ContentBase contentBase;
     private GeneralBase generalBase;

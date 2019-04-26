@@ -1,6 +1,6 @@
 require("@babel/polyfill")
 
-import React, {Component} from 'react'
+import React, {useEffect, useState} from 'react'
 import Jumbotron from 'react-bootstrap/Jumbotron'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
@@ -9,81 +9,84 @@ import DBAwareEdiText from "./DBAwareEdiText"
 import ProfileCard from "./ProfileCard"
 import UploadImage from "./UploadImage"
 import Category from './Category'
+import doFetch from '../Helpers/general.js'
 
-export default class extends Component
+export default function({bio, error, profilePictureUrl, username, changePage})
 {
-	state = {
-		refresh: false
-	}
+	const [refresh, setRefresh]=useState('false')
+	const [items, setItems]=useState([{},{},{},{},{}])
 
-	async componentDidMount() {
-		try {
-			let seriesListRes = await fetch('/test/user/series');
-			seriesListRes = await seriesListRes.json();
-		} catch (err) {
-
-		}
-	}
-
-	refresh = () => {
-		this.setState({ refresh: true });
-	}
-
-	render()
+	function f()
 	{
-		if (this.state.refresh) {
-			this.setState({ refresh: false });
-			return <></>;
-		}
-		if(this.props.error)
+		async function refreshItems()
 		{
-			return (
-				<Container className="mt-5">
-					<Jumbotron>
-						<Container>
-							<Row className="justify-content-center">
-								<p>Sorry, something went wrong <i className="far fa-frown"></i></p>
-							</Row>
-						</Container>
-					</Jumbotron>
-				</Container>
-			)
+			setItems(JSON.parse(await doFetch("test/user/series")).content.seriesList.map(x=>
+																				  {
+																					  return {
+																						  title        : x.generalBase.title,
+																						  thumbnail    : x.sketch.thumbnail,
+																						  sketchId     : x.sketch.id,
+																						  generalBaseId: x.generalBase.id,
+																						  contentBaseId: x.contentBase.id,
+																						  onClick(){changePage('viewContentPage', {
+																						  	  contentBaseId: x.contentBase.id,
+																							  sketchId: x.sketch.id
+																						  })}
+																					  }
+																				  }))
 		}
-		else
-		{
-			return (
-				<Container className="mt-5">
-					<Jumbotron>
-						<Container>
-							<Row>
-								<Col xs={5}>
-									<div style={{textAlign: "center"}}>
-										<ProfileCard
-											profileThumbnailUrl={this.props.profilePictureUrl}
-											username={this.props.username}
-										/>
-										<UploadImage uploadType='profile' refresh={this.refresh}/>
-									</div>
-								</Col>
-								<Col xs={7}>
-									<h1>Bio:</h1>
-									<DBAwareEdiText
-										inputProps={{
-											rows: 5
-										}}
-										type="textarea"
-										name="bio"
-										value={this.props.bio}
-									/>
-								</Col>
-							</Row>
-							<Row className='mt-5'>
-								<Category onClick={() => {this.props.changePage('viewContentPage')}}/>
-							</Row>
-						</Container>
-					</Jumbotron>
+		refreshItems()
+	}
+
+	useEffect(f)
+
+	if(refresh)
+	{
+		setRefresh(false)
+		return <></>
+	}
+	if(error)
+	{
+		return <Container className="mt-5">
+			<Jumbotron>
+				<Container>
+					<Row className="justify-content-center">
+						<p>Sorry, something went wrong :(<i className="far fa-frown"/></p>
+					</Row>
 				</Container>
-			)
-		}
+			</Jumbotron>
+		</Container>
+	}
+	else
+	{
+		return <Container className="mt-5">
+			<Jumbotron>
+				<Container>
+					<Row>
+						<Col xs={5}>
+							<div style={{textAlign: "center"}}>
+								<ProfileCard
+									profileThumbnailUrl={profilePictureUrl}
+									username={username}
+								/>
+								<UploadImage uploadType='profile' refresh={()=>setRefresh(true)}/>
+							</div>
+						</Col>
+						<Col xs={7}>
+							<h1>Bio:</h1>
+							<DBAwareEdiText
+								inputProps={{rows: 5}}
+								type="textarea"
+								name="bio"
+								value={bio}
+							/>
+						</Col>
+					</Row>
+					<Row className='mt-5'>
+						<Category items={items}/>
+					</Row>
+				</Container>
+			</Jumbotron>
+		</Container>
 	}
 }

@@ -28,7 +28,7 @@ class App extends Component
 			username     : '',
 			userInfoError: false,
 			generalBaseId: '',
-			pageData     : null
+			pageData     : {}
 		}
 		this.changePage=this.changePage.bind(this)
 		this.login     =this.login.bind(this)
@@ -103,7 +103,7 @@ class App extends Component
 			editor    : <TestFrameEditor pageData={this.state.pageData}/>,
 			newContent: <NewSeriesPage changePage={this.changePage} />,
 			test      : <TestPage />,
-			viewContentPage: <ViewContentPage loggedIn={this.state.loggedIn}/>
+			viewContentPage: <ViewContentPage loggedIn={this.state.loggedIn} {...this.state.pageData}/>
 		}
 		return (
 			<>

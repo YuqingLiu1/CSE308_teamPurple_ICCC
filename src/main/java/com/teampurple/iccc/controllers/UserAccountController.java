@@ -34,6 +34,40 @@ public class UserAccountController {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    //TODO Create a function
+    // @SuppressWarnings("Duplicates")
+    // @GetMapping(value="/generalBase/title")
+    // public Response getGeneralBaseInfo(@RequestParam(value="id") final String generalBaseId)
+    // {
+    //     GeneralBase gb=generalbase.findById(generalBaseId).get();
+    //     User currentUser=auth.getCurrentUser();
+    //     GeneralBase currentGeneralBase=gb;
+    //     if(currentUser==null||currentGeneralBase==null)
+    //     {
+    //         return new Response(Response.ERROR);
+    //     }
+    //     // get the user's categories
+    //     List<Category> userCategories=getCategories(currentUser.getUserCategories());
+    //     // get the default "home" categories
+    //     List<Category> homeCategories=getCategories(currentUser.getHomeCategories());
+    //     UserInfo userInfo=new UserInfo();
+    //     userInfo.setGeneralBase(currentGeneralBase);
+    //     userInfo.setUsername(currentGeneralBase.getTitle());
+    //     userInfo.setBio(currentGeneralBase.getDescription());
+    //     userInfo.setEmail(currentUser.getEmail());
+    //     userInfo.setPassword(currentUser.getPassword());
+    //     userInfo.setUserCategories(userCategories);
+    //     userInfo.setUserCategories(userCategories);
+    //     userInfo.setHomeCategories(homeCategories);
+    //     userInfo.setSketchRef(currentGeneralBase.getSketch());
+    //     userInfo.setUser(currentUser);
+    //     return new Response(Response.OK,userInfo);
+    // }
+
+
+    // @GetMapping("/general/info")
+
+
     @GetMapping("/user/info")
     public Response getUserInfo() {
         User currentUser = auth.getCurrentUser();
@@ -60,6 +94,7 @@ public class UserAccountController {
         userInfo.setUserCategories(userCategories);
         userInfo.setHomeCategories(homeCategories);
         userInfo.setSketchRef(currentGeneralBase.getSketch());
+        userInfo.setUser(currentUser);
 
         return new Response(Response.OK, userInfo);
     }
@@ -204,5 +239,43 @@ public class UserAccountController {
         }
         return categories;
     }
+
+    @GetMapping("/others/info")
+    public Response getOtherUserInfo(@RequestParam(value="id") String generalBaseID){
+        try{
+            GeneralBase generalBase = generalbase.findById(generalBaseID).get();
+            if (generalBase == null){
+                return new Response(Response.ERROR);
+            }
+            String typeRef = generalBase.getTypeRef();
+            User user = users.findById(typeRef).get();
+            if (user == null){
+                return new Response(Response.ERROR);
+            }
+
+            List<Category> userCategories = getCategories(user.getUserCategories());
+            List<Category> homeCategories = getCategories(user.getHomeCategories());
+
+            UserInfo other = new UserInfo();
+
+            other.setGeneralBase(generalBase);
+            other.setUsername(generalBase.getTitle());
+            other.setBio(generalBase.getDescription());
+            other.setEmail(user.getEmail());
+            other.setPassword(null);
+            other.setUserCategories(userCategories);
+            other.setUserCategories(userCategories);
+            other.setHomeCategories(homeCategories);
+            other.setSketchRef(generalBase.getSketch());
+            other.setUser(user);
+
+            return new Response(Response.OK, other);
+
+
+        }catch(Exception e){
+            return new Response(Response.ERROR);
+        }
+    }
+
 
 }

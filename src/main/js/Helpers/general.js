@@ -1,4 +1,4 @@
-export default async function(url,{method='POST',body=undefined}={})
+export default async function(url,{method='GET',body=undefined}={})
 {
     //ALWAYS returns a string (NOT an object) (via a promise, so you have to use await to get it)
     //Example usages:

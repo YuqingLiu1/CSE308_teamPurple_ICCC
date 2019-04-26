@@ -30,7 +30,7 @@ class ChangePassword extends Component
 		console.log("password is: " + this.state.password);
 		console.log("password again is: " + this.state.passwordAgain);
 
-
+		
 		console.log("in sending password");
 		let result = await doFetch('/user/setpassword', {method: 'POST', body: this.state.password})
 		console.log(result);

@@ -60,7 +60,6 @@ public class LikeController {
 
     /**
      JSON.parse(await doFetch('/likeSeries?id=5cb935a77a7a5b5a319c4216', {method:'GET'}))
-     {"title":"Suri's Series1"}
 
      */
     @GetMapping("/likeSeries")
@@ -77,7 +76,7 @@ public class LikeController {
             ArrayList<String> userLiked = currentUser.getLiked();
             for (int i = 0; i < likers.size(); i++){
                 //System.out.println("current user id: " + currentUser.getId());
-                if (likers.get(i).equals(currentUser.getId())){
+                if (likers.get(i).equals(currentUser.getGeneralBaseRef())){
                     System.out.println("unlike");
                     likers.remove(i);
                     generalBase.setLikers(likers);
@@ -92,7 +91,7 @@ public class LikeController {
             }
 
             System.out.println("like");
-            likers.add(currentUser.getId());
+            likers.add(currentUser.getGeneralBaseRef());
             generalBase.setLikers(likers);
             generalBases.save(generalBase);
             //System.out.println("after adding, liker are: " + generalBase.getLikers());
@@ -110,6 +109,10 @@ public class LikeController {
         }
 
     }
+
+
+
+
 
     @GetMapping("/getNumlike")
     public String getNumber(){

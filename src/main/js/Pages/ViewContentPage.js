@@ -6,14 +6,10 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import TestFrameEditor from '../Components/TestFrameEditor';
 
-function printed(x)
-{
-    console.log("PRINTED",x)
-    return x
-}
-
+import dataJson from '../Components/data.json';
 
 export default class ViewContentPage extends Component {
+
     state = {
         authorName: '',
         authorBio: '',
@@ -31,12 +27,11 @@ export default class ViewContentPage extends Component {
 
             // TODO: fetch author info
 
-            window.anything = JSON.parse(contentRes.content.sketch.data);
-            const vvgggv=JSON.parse(contentRes.content.sketch.data)
-            window.thingy=vvgggv
+            let data = JSON.parse(contentRes.content.sketch.data);
+
             this.setState({
                 contentThumbnail: contentRes.content.sketch.thumbnail,
-                contentData: vvgggv,
+                contentData: data,
             });
         }
 
@@ -52,7 +47,7 @@ export default class ViewContentPage extends Component {
                     this.props.loggedIn ? // note: this check needs to change because it's not really what we want
                         <Row>
                             <Col xs={9}>
-                                <TestFrameEditor sketch={{ data: printed(window.thingy), id: this.props.sketchId }}/>
+                                <TestFrameEditor sketchData={this.state.contentData} sketchId={this.props.sketchId} />
                             </Col>
                             <Col xs={3}>
                                 This is where the comments will go

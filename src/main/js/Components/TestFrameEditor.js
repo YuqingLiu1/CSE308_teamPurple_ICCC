@@ -32,7 +32,6 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
-import dataJson from './data.json';
 import dataJsonControlled from './data.json.controlled';
 import {SketchField, Tools} from '../react-sketch';
 import dataUrl from './data.url';
@@ -184,7 +183,7 @@ class SketchFieldDemo extends React.Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                id: this.props.sketch.id,
+                id: this.props.sketchId,
                 thumbnail: this._sketch.toDataURL(),
                 data: JSON.stringify(this._sketch.toJSON()),
             })
@@ -399,14 +398,9 @@ class SketchFieldDemo extends React.Component {
                             height={
                                 this.state.controlledSize ? this.state.sketchHeight : null
                             }
-                            // defaultValue={dataJson}
-                            defaultValue={(()=> {
-                                const c=this.props
-                                console.log("WHAT THE HECK",c)
-                                return c
-                            })()}
-                            value={controlledValue}
-                            forceValue
+                            defaultValue={this.props.sketchData}
+                            value={this.props.sketchData}
+                            // forceValue
                             onChange={this._onSketchChange}
                             tool={this.state.tool}
                         />

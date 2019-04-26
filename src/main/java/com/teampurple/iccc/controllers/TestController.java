@@ -1,10 +1,7 @@
 package com.teampurple.iccc.controllers;
 
 import com.teampurple.iccc.models.*;
-import com.teampurple.iccc.repositories.ContentBaseRepository;
-import com.teampurple.iccc.repositories.GeneralBaseRepository;
-import com.teampurple.iccc.repositories.SketchRepository;
-import com.teampurple.iccc.repositories.UserRepository;
+import com.teampurple.iccc.repositories.*;
 import com.teampurple.iccc.utils.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,7 +9,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -37,6 +33,9 @@ public class TestController {
 
     @Autowired
     private Authentication auth;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @GetMapping("/test/getuser")
     public User getUser(@RequestParam(value="email", defaultValue="testemail") String email) {
@@ -133,6 +132,33 @@ public class TestController {
         }
 
         return frameList;
+    }
+
+    @GetMapping("/test/userlist")
+    public UserList getAllUserList(){
+        UserList userList = new UserList();
+        List<UserItem> users = new ArrayList<>();
+        for (User user : userRepository.findAll()){
+            UserItem userItem = new UserItem();
+            userItem.setUsername(generalBaseRepository.findById(user.getGeneralBaseRef()).get().getTitle());
+            userItem.setBio(generalBaseRepository.findById(user.getGeneralBaseRef()).get().getDescription());
+            userItem.setemail(user.getEmail());
+            userItem.setThumbnail(sketchRepository.findById(generalBaseRepository.findById(user.getGeneralBaseRef()).get().getSketch()).get().getThumbnail());
+            userItem.setgeneralbase(user.getGeneralBaseRef());
+            userItem.setUserCategories(getCategories(user.getUserCategories()));
+            userItem.setHomeCategories(getCategories(user.getHomeCategories()));
+            users.add(userItem);
+        }
+        userList.setUserlist(users);
+        return userList;
+    }
+
+    private List<Category> getCategories(List<String> categoryIds) {
+        List<Category> categories = new ArrayList<>();
+        for (Category category : categoryRepository.findAllById(categoryIds)) {
+            categories.add(category);
+        }
+        return categories;
     }
 
 }

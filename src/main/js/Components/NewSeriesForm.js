@@ -34,7 +34,11 @@ class NewSeriesForm extends Component {
         });
         newContentRes = await newContentRes.json();
         if (newContentRes.status === 'OK') {
-            this.props.changePage('editor', newContentRes.content);
+            // this.props.changePage('editor', newContentRes.content);
+            this.props.changePage('viewContentPage', {
+                contentBaseId: newContentRes.content.contentBase.id,
+                sketchId: newContentRes.content.sketch.id
+            });
         } else {
             alert('Sorry, something went wrong :(');
         }

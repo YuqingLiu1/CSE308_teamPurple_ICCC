@@ -53,6 +53,57 @@ public class LikeController {
             return new Response(Response.ERROR);
         }
     }
+
+    /**
+     JSON.parse(await doFetch('/likeSeries?id=5cb935a77a7a5b5a319c4216', {method:'GET'}))
+     {"title":"Suri's Series1"}
+
+     */
+    @GetMapping("/likeSeries")
+    public Response likeSeries(@RequestParam(value="id") String generalBaseID){
+        System.out.println("generalBaseId: " + generalBaseID);
+        try{
+            //System.out.println("in here");
+            GeneralBase generalBase = generalBases.findById(generalBaseID).get();
+            //System.out.println("generalBase: " + generalBase);
+            User currentUser = auth.getCurrentUser();
+            //System.out.println("current User: " + currentUser);
+            ArrayList<String> likers = generalBase.getLikers();
+            //System.out.println("likers before liking: " + likers);
+            ArrayList<String> userLiked = currentUser.getLiked();
+            for (int i = 0; i < likers.size(); i++){
+                //System.out.println("current user id: " + currentUser.getId());
+                if (likers.get(i).equals(currentUser.getId())){
+                    likers.remove(i);
+                    generalBase.setLikers(likers);
+                    generalBases.save(generalBase);
+                    //System.out.println("after deleting, likers are: " + generalBase.getLikers());
+
+                    userLiked.remove(generalBaseID);
+                    currentUser.setLiked(userLiked);
+                    return new Response(Response.OK);
+                }
+            }
+
+            //System.out.println("like");
+            likers.add(currentUser.getId());
+            generalBase.setLikers(likers);
+            generalBases.save(generalBase);
+            //System.out.println("after adding, liker are: " + generalBase.getLikers());
+
+            //content also added to user's liked
+            userLiked.add(generalBaseID);
+            currentUser.setLiked(userLiked);
+
+
+            return new Response(Response.OK);
+        }catch(Exception e){
+            return new Response(Response.ERROR);
+
+        }
+
+    }
+
     @GetMapping("/getNumlike")
     public String getNumber(){
         User user = auth.getCurrentUser();

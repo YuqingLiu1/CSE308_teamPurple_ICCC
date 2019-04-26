@@ -16,6 +16,15 @@ export default class extends Component
 		refresh: false
 	}
 
+	async componentDidMount() {
+		try {
+			let seriesListRes = await fetch('/test/user/series');
+			seriesListRes = await seriesListRes.json();
+		} catch (err) {
+
+		}
+	}
+
 	refresh = () => {
 		this.setState({ refresh: true });
 	}
@@ -69,7 +78,7 @@ export default class extends Component
 								</Col>
 							</Row>
 							<Row className='mt-5'>
-								<Category />
+								<Category onClick={() => {this.props.changePage('viewContentPage')}}/>
 							</Row>
 						</Container>
 					</Jumbotron>

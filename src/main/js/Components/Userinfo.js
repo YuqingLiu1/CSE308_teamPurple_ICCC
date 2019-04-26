@@ -13,13 +13,22 @@ import Category from './Category'
 export default class extends Component
 {
 	state = {
-		refresh: false
+		refresh: false,
+		series: []
 	}
 
 	async componentDidMount() {
 		try {
 			let seriesListRes = await fetch('/test/user/series');
 			seriesListRes = await seriesListRes.json();
+			if (seriesListRes.status !== 'OK') throw new Error();
+			this.setState({
+				series: seriesListRes.content.seriesList.map(series => { return {
+					title: series.generalBase.title,
+					thumbnail: series.sketch.thumbnail,
+					onClick(){this.props.changePage('viewContentPage', { contentBaseId: series.contentBase.id })}
+				}})
+			})
 		} catch (err) {
 
 		}
@@ -78,7 +87,7 @@ export default class extends Component
 								</Col>
 							</Row>
 							<Row className='mt-5'>
-								<Category onClick={() => {this.props.changePage('viewContentPage')}}/>
+								<Category items={this.state.series} />
 							</Row>
 						</Container>
 					</Jumbotron>

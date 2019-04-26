@@ -124,6 +124,4 @@ public class ContentController {
 
         return new Response("OK");
     }
-
-
 }

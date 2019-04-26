@@ -6,7 +6,7 @@ import {Card, Collapse, Modal} from 'react-bootstrap'
 import Thumbnail from './Thumbnail'
 import Button from 'react-bootstrap/Button'
 import DBAwareEdiText from './DBAwareEdiText'
-export default function({thumbnails, editable, title, setTitle, remove, loggedIn=true})
+export default function({thumbnails, editable, title, setTitle, remove, loggedIn=true, onClick})
 {
 	const categoryFontSize               ='30px'
 	const [notCollapsed, setNotCollapsed]=useState(true)
@@ -26,7 +26,7 @@ export default function({thumbnails, editable, title, setTitle, remove, loggedIn
 				<tbody>
 					<tr>
 						<td>
-							<Thumbnail/>
+							<Thumbnail onClick={onClick}/>
 						</td>
 						<td>
 							<Thumbnail/>

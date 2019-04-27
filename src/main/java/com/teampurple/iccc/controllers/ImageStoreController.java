@@ -30,7 +30,7 @@ public class ImageStoreController {
      *   - use multipart/form-data upload to send the image file
      *
      * Returns:
-     *   - status: 'OK' or 'error'
+     *   - status: String ('OK' or 'error')
      */
     @PostMapping("/profilePicture/edit")
     public Response setProfilePicture(@RequestParam("file") MultipartFile file) {

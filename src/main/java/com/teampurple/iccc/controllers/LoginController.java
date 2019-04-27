@@ -18,6 +18,17 @@ public class LoginController {
     @Autowired
     private AuthenticationManager am;
 
+    /**
+     * Description:
+     *   - log in a user
+     *
+     * Request params:
+     *   - email: String (email of the user to log in)
+     *   - password: String (password of the user to log in)
+     *
+     * Returns:
+     *   - status: String ('OK' or 'error')
+     */
     @PostMapping("/login")
     public Response login(@RequestBody User user) {
         try {

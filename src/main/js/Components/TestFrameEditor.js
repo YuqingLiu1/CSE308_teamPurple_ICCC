@@ -38,7 +38,6 @@ import dataUrl from './data.url';
 import DropZone from 'react-dropzone';
 import Toolbar from '@material-ui/core/Toolbar/Toolbar';
 import Typography from '@material-ui/core/Typography/Typography';
-import UploadImage from "./UploadImage";
 
 const styles = {
     root: {
@@ -601,32 +600,32 @@ class SketchFieldDemo extends React.Component {
                                     <CompactPicker
                                         color={this.state.backgroundColor}
                                         onChange={(color) => this.setState({ backgroundColor: color.hex })}/>
-                                    <br/>
-                                    <br/>
-                                    <label htmlFor='lineColor'>Set Image Background</label>
-                                    <br/>
-                                    <FormControlLabel
-                                        label="Fit canvas (X,Y)"
-                                        control={
-                                            <Switch
-                                                value={this.state.stretched}
-                                                onChange={(e) => this.setState({ stretched: !this.state.stretched })}/>
-                                        }/>
-                                    <FormControlLabel
-                                        label="Fit canvas (X)"
-                                        control={
-                                            <Switch
-                                                value={this.state.stretchedX}
-                                                onChange={(e) => this.setState({ stretchedX: !this.state.stretchedX })}/>
-                                        }/>
-                                    <FormControlLabel
-                                        label="Fit canvas (Y)"
-                                        control={
-                                            <Switch
-                                                value={this.state.stretchedY}
-                                                onChange={(e) => this.setState({ stretchedY: !this.state.stretchedY })}/>
-                                        }/>
-                                    <div>
+                                    {/*<br/>*/}
+                                    {/*<br/>*/}
+                                    {/*<label htmlFor='lineColor'>Set Image Background</label>*/}
+                                    {/*<br/>*/}
+                                    {/*<FormControlLabel*/}
+                                        {/*label="Fit canvas (X,Y)"*/}
+                                        {/*control={*/}
+                                            {/*<Switch*/}
+                                                {/*value={this.state.stretched}*/}
+                                                {/*onChange={(e) => this.setState({ stretched: !this.state.stretched })}/>*/}
+                                        {/*}/>*/}
+                                    {/*<FormControlLabel*/}
+                                        {/*label="Fit canvas (X)"*/}
+                                        {/*control={*/}
+                                            {/*<Switch*/}
+                                                {/*value={this.state.stretchedX}*/}
+                                                {/*onChange={(e) => this.setState({ stretchedX: !this.state.stretchedX })}/>*/}
+                                        {/*}/>*/}
+                                    {/*<FormControlLabel*/}
+                                        {/*label="Fit canvas (Y)"*/}
+                                        {/*control={*/}
+                                            {/*<Switch*/}
+                                                {/*value={this.state.stretchedY}*/}
+                                                {/*onChange={(e) => this.setState({ stretchedY: !this.state.stretchedY })}/>*/}
+                                        {/*}/>*/}
+                                    {/*<div>*/}
                                         {/*<DropZone*/}
                                             {/*accept='image/*'*/}
                                             {/*multiple={false}*/}
@@ -642,8 +641,7 @@ class SketchFieldDemo extends React.Component {
                                                 {/*</div>*/}
                                             {/*)}*/}
                                         {/*</DropZone>*/}
-                                        <UploadImage uploadType='profile'/>
-                                    </div>
+                                    {/*</div>*/}
                                 </CardContent>
                             </Collapse>
                         </Card>

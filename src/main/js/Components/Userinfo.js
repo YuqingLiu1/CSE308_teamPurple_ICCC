@@ -7,7 +7,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import DBAwareEdiText from "./DBAwareEdiText"
 import ProfileCard from "./ProfileCard"
-import UploadImage from "./UploadImage"
+import UploadProfilePicture from "./UploadProfilePicture"
 import Category from './Category'
 import doFetch from '../Helpers/general.js'
 
@@ -69,7 +69,7 @@ export default function({bio, error, profilePictureUrl, username, changePage})
 									profileThumbnailUrl={profilePictureUrl}
 									username={username}
 								/>
-								<UploadImage uploadType='profile' refresh={()=>setRefresh(true)}/>
+								<UploadProfilePicture uploadType='profile' refresh={()=>setRefresh(true)}/>
 							</div>
 						</Col>
 						<Col xs={7}>

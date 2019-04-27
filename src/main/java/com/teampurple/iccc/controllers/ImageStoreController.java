@@ -1,9 +1,10 @@
 package com.teampurple.iccc.controllers;
 
+import com.teampurple.iccc.models.GeneralBase;
 import com.teampurple.iccc.models.Response;
 import com.teampurple.iccc.models.Sketch;
-import com.teampurple.iccc.repositories.GeneralBaseRepository;
 import com.teampurple.iccc.repositories.SketchRepository;
+import com.teampurple.iccc.utils.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,34 +16,42 @@ import java.util.Base64;
 public class ImageStoreController {
 
     @Autowired
-    private GeneralBaseRepository generalBaseRepository;
-
-    @Autowired
     private SketchRepository sketchRepository;
 
-    @PostMapping("/profilePicture/upload")
-    public Response uploadImage(@RequestParam("file") MultipartFile file) {
+    @Autowired
+    private Authentication auth;
+
+    /**
+     * Description:
+     *   - set the profile picture for the current logged in user
+     *   - must be logged in
+     *
+     * Request params:
+     *   - use multipart/form-data upload to send the image file
+     *
+     * Returns:
+     *   - status: 'OK' or 'error'
+     */
+    @PostMapping("/profilePicture/edit")
+    public Response setProfilePicture(@RequestParam("file") MultipartFile file) {
         try {
+            GeneralBase currentGeneralBase = auth.getCurrentUserGeneralBase();
+            if (currentGeneralBase == null) {
+                return new Response(Response.ERROR);
+            }
+
+            Sketch userSketch = sketchRepository.findById(currentGeneralBase.getSketch()).get();
+            if (userSketch == null) {
+                return new Response(Response.ERROR);
+            }
+
             String encodedImage = Base64.getEncoder().encodeToString(file.getBytes());
-            Sketch sketch = new Sketch();
-            sketch.setThumbnail(encodedImage);
-            sketchRepository.save(sketch);
-            return new Response("OK", sketch.getId());
+            userSketch.setThumbnail(encodedImage);
+            sketchRepository.save(userSketch);
+            return new Response(Response.OK);
         } catch (Exception e) {
-            return new Response("error");
+            return new Response(Response.ERROR);
         }
     }
-
-//    @PostMapping("/frame/save")
-//    public Response saveImage(@RequestParam("id") String id,@RequestBody Image image){
-//        try {
-//            Sketch sketch = sketchs.findById(id);
-//            sketch.setImage(image);
-//            sketchs.save(sketch);
-//            return new Response(Response.OK);
-//        }catch (Exception e){
-//            return new Response(Response.ERROR);
-//        }
-//    }
 
 }

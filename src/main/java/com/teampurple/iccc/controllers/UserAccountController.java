@@ -140,6 +140,7 @@ public class UserAccountController {
         return new Response("OK");
     }
 
+    // TODO: create a new sketch for the new user's profile picture upon creation
     @PostMapping(value = "/user/add")
     public Response addUserAccount(@RequestBody NewUser user) {
         try {

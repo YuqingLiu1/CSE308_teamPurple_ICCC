@@ -73,7 +73,7 @@ class LoginForm extends Component
 	render()
 	{
 		return (
-			<Container>
+			<>
 				{(this.state.badCredentials || this.state.errors) &&
 				<Alert variant="danger">Invalid Credentials</Alert>}
 				<Form>
@@ -95,7 +95,7 @@ class LoginForm extends Component
 						Submit
 					</Button>
 				</Form>
-			</Container>
+			</>
 		)
 	}
 }

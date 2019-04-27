@@ -31,15 +31,85 @@ public class ContentController {
     @Autowired
     private Authentication authentication;
 
-    // TODO: create a new sketch for the new content, and think about what to do with creation date
-
     /**
-     * Create a new piece of content (series, episode, or frame). Link the new content to the current user, and
-     * return a ContentInfo object describing the newly created content (along with a status code of whether
-     * the content creation was successful or not).
+     * Description:
+     *   - create a new piece of content (series, episode, or frame)
+     *   - must be logged in to use this endpoint
+     *   - associate the new content with the current user
      *
-     * Notes:
-     *   - must be logged in to access this endpoint
+     * Request params:
+     *   - type: String (either "Series", "Episode", or "Frame", note the capitalization)
+     *   - title: String
+     *   - description: String
+     *   - parentSeries: String (GeneralBase ID)
+     *     - only if the new content will be an episode
+     *   - parentEpisode: String (GeneralBase ID)
+     *     - only if the new content will be a frame
+     *   - parentFrame: String (GeneralBase ID)
+     *     - only if the new content will be a frame
+     *
+     * Returns:
+     *   - status: 'OK' or 'error'
+     *   - content (if status is 'OK'):
+     *       {
+     *           type: String (the type of the new content),
+     *           title: String (the title of the new content),
+     *           description: String (the description of the new content),
+     *           parentSeries: String (GeneralBase ID of the series this content belongs to; doesn't apply if the new
+     *                                 content is a series itself),
+     *           parentEpisode: String (GeneralBase ID of the episode this content belongs to; only applies if the new
+     *                                  content is a frame),
+     *           parentFrame: String (GeneralBase ID of the immediate parent frame this content belongs to; only applies
+     *                                if the new content is a frame)
+     *           sketch:
+     *             {
+     *                 id: String (Sketch ID of the sketch associated with the new content),
+     *                 thumbnail: String (base 64 encoded image data of the sketch; initially null),
+     *                 data: String (JSON stringified sketch data that can be used by react-sketch; initially null)
+     *             },
+     *           generalBase:
+     *             {
+     *                 id: String (GeneralBase ID of the GeneralBase associated with the new content),
+     *                 typeRef: String (ContentBase ID of the ContentBase associated with the new content),
+     *                 type: String ("ContentBase", because new content is being created, not a user),
+     *                 sketch: String (Sketch ID of the sketch associated with the new content),
+     *                 title: String (title of the new content),
+     *                 description: String (description of the new content),
+     *                 dateCreated: String (ISO 8601 datetime of when the content was created),
+     *                 dateLastEdited: String (ISO 8601 datetime of when the content was last edited; same as above on
+     *                                         creation),
+     *                 children: [ array of GeneralBase IDs of the immediate children of the new content; initially
+     *                             an empty array ],
+     *                 likers: [ array of GeneralBase IDs of users who liked the new content; initially an empty
+     *                           array ],
+     *                 comments: [ array of Comment IDs of the comments on the new content; initially an empty array ]
+     *             },
+     *           contentBase:
+     *             {
+     *                 id: String (ContentBase ID of the ContentBase associated with the new content),
+     *                 generalBaseRef: String (GeneralBase ID of the GeneralBase associated with the new content),
+     *                 author: String (User ID of the user who created the new content),
+     *                 type: String (either "Series", "Episode", or "Frame", depending on the type of the new content),
+     *                 contributable: Boolean (whether users other than the author can child content to the new content;
+     *                                         false by default for the new content),
+     *                 public: Boolean (whether users other than the author can view the new content; false by default
+     *                                  for the new content),
+     *                 parents:
+     *                   {
+     *                       user: String (User ID of the user who created the new content),
+     *                       series: String (GeneralBase ID of the series this content belongs to; doesn't apply if the
+     *                                       new content is a series itself),
+     *                       episode: String (GeneralBase ID of the episode this content belongs to; only applies if the
+     *                                        new content is a frame),
+     *                       frame: String (GeneralBase ID of the immediate parent frame this content belongs to; only
+     *                                      applies if the new content is a frame)
+     *                   }
+     *                 dateMadeContributable: String (ISO 8601 datetime of when the content was made contributable;
+     *                                                null for the new content),
+     *                 dateMadePublic: String (ISO 8601 datetime of when the content was made public; null for the new
+     *                                         content)
+     *             }
+     *       }
      */
     @PostMapping("/content/create")
     public Response addContent(@RequestBody ContentInfo contentInfo) {
@@ -150,6 +220,22 @@ public class ContentController {
         return new Response("OK", contentInfo);
     }
 
+    // TODO: make sure that the current logged in user is the author of the sketch they are trying to save
+    /**
+     * Description:
+     *   - save the current version of a sketch
+     *   - must be logged in as the author who owns the sketch data
+     *   - overwrites the old thumbnail and data of the sketch currently in the database
+     *
+     * Request params:
+     *   - id: String (Sketch ID of the sketch to save),
+     *   - thumbnail: String (base 64 encoded image data of the sketch),
+     *   - data: String (JSON stringified sketch data that can be used by react-sketch)
+     *
+     * Returns:
+     *   - status: 'OK' or 'error'
+     *   - content: null
+     */
     @PostMapping("/content/save")
     public Response saveContent(@RequestBody Sketch newSketch) {
         // make sure the sketch exists in the database
@@ -165,8 +251,58 @@ public class ContentController {
     }
 
     /**
-     * Get information about a piece of content, given its content base ID. The information is the content base
-     * info, the general base info, and the sketch info.
+     * Description:
+     *   - get information about a piece of content given a ContentBase ID
+     *
+     * Request params:
+     *   - id: String (ContentBase ID of the content to get info for; query string field)
+     *
+     * Returns:
+     *   - status: 'OK' or 'error'
+     *   - content (if status is 'OK'):
+     *       {
+     *           sketch:
+     *             {
+     *                 id: String (Sketch ID of the sketch associated with the content),
+     *                 thumbnail: String (base 64 encoded image data of the sketch),
+     *                 data: String (JSON stringified sketch data that can be used by react-sketch)
+     *             },
+     *           generalBase:
+     *             {
+     *                 id: String (GeneralBase ID of the GeneralBase associated with the content),
+     *                 typeRef: String (ContentBase ID of the ContentBase associated with the content),
+     *                 type: String ("ContentBase"),
+     *                 sketch: String (Sketch ID of the sketch associated with the content),
+     *                 title: String (title of the content),
+     *                 description: String (description of the content),
+     *                 dateCreated: String (ISO 8601 datetime of when the content was created),
+     *                 dateLastEdited: String (ISO 8601 datetime of when the content was last edited),
+     *                 children: [ array of GeneralBase IDs of the immediate children of the content ],
+     *                 likers: [ array of GeneralBase IDs of users who liked the content ],
+     *                 comments: [ array of Comment IDs of the comments on the content ]
+     *             },
+     *           contentBase:
+     *             {
+     *                 id: String (ContentBase ID of the ContentBase associated with the content),
+     *                 generalBaseRef: String (GeneralBase ID of the GeneralBase associated with the content),
+     *                 author: String (User ID of the user who created the content),
+     *                 type: String (either "Series", "Episode", or "Frame", depending on the type of the content),
+     *                 contributable: Boolean (whether users other than the author can child content to the content),
+     *                 public: Boolean (whether users other than the author can view the content),
+     *                 parents:
+     *                   {
+     *                       user: String (User ID of the user who created the content),
+     *                       series: String (GeneralBase ID of the series this content belongs to; doesn't apply if the
+     *                                       content is a series itself),
+     *                       episode: String (GeneralBase ID of the episode this content belongs to; only applies if the
+     *                                        content is a frame),
+     *                       frame: String (GeneralBase ID of the immediate parent frame this content belongs to; only
+     *                                      applies if the content is a frame)
+     *                   }
+     *                 dateMadeContributable: String (ISO 8601 datetime of when the content was made contributable),
+     *                 dateMadePublic: String (ISO 8601 datetime of when the content was made public)
+     *             }
+     *       }
      */
     @GetMapping("/content/info")
     public Response getContentInfo(@RequestParam(value="id") final String contentBaseId) {

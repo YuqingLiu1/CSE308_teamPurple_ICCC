@@ -20,7 +20,8 @@ public class ContentBase {
     private String author;
     private String type;
     private Boolean contributable;
-    private Boolean _public;
+    private Boolean _public;   // note that the underscore here is just to avoid conflict with the keyword "public";
+                               // it still shows up as "public" when sent through an HTTP request/response
     private Parents parents;
     private Date dateMadeContributable;
     private Date dateMadePublic;

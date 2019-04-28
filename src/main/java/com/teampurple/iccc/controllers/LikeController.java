@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class LikeController {
@@ -24,7 +25,7 @@ public class LikeController {
     public String getCurrentLikeState(@RequestParam(value="id") String generalBaseID) {
         GeneralBase generalBase = generalBases.findById(generalBaseID).get();
         User currentUser = auth.getCurrentUser();
-        ArrayList<String> likedusers = generalBase.getLikers();
+        List<String> likedusers = generalBase.getLikers();
         for (int i = 0; i < likedusers.size(); i++) {
             if (likedusers.get(i).equals(currentUser.getGeneralBaseRef())) {
                 return "True";
@@ -38,8 +39,8 @@ public class LikeController {
         try {
             GeneralBase generalBase = generalBases.findById(generalBaseID).get();//The thing we're about to like
             User currentUser = auth.getCurrentUser();
-            ArrayList<String> likers = generalBase.getLikers();//A list of generalbaseId's
-            ArrayList<String> liked = currentUser.getLiked();
+            List<String> likers = generalBase.getLikers();//A list of generalbaseId's
+            List<String> liked = currentUser.getLiked();
             for (int i = 0; i < likers.size(); i++) {
                 if (likers.get(i).equals(currentUser.getGeneralBaseRef())) {
                     likers.remove(i);
@@ -78,9 +79,9 @@ public class LikeController {
             //System.out.println("generalBase: " + generalBase);
             User currentUser = auth.getCurrentUser();
             //System.out.println("current User: " + currentUser);
-            ArrayList<String> likers = generalBase.getLikers();
+            List<String> likers = generalBase.getLikers();
             //System.out.println("likers before liking: " + likers);
-            ArrayList<String> userLiked = currentUser.getLiked();
+            List<String> userLiked = currentUser.getLiked();
             for (int i = 0; i < likers.size(); i++){
                 //System.out.println("current user id: " + currentUser.getId());
                 if (likers.get(i).equals(currentUser.getGeneralBaseRef())){

@@ -33,8 +33,8 @@ import DownloadIcon from '@material-ui/icons/CloudDownload';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
 import dataJsonControlled from './data.json.controlled';
-import {SketchField, Tools} from '../react-sketch';
 import dataUrl from './data.url';
+import {SketchField, Tools} from '../react-sketch';
 import DropZone from 'react-dropzone';
 import Toolbar from '@material-ui/core/Toolbar/Toolbar';
 import Typography from '@material-ui/core/Typography/Typography';
@@ -680,28 +680,28 @@ class SketchFieldDemo extends React.Component {
                                 </CardContent>
                             </Collapse>
                         </Card>
-                        <Card style={styles.card}>
-                            <CardHeader
-                                title="Controlled value"
-                                subheader="Control Component externally"
-                                action={
-                                    <IconButton
-                                        onClick={(e) => this.setState({ expandControlled: !this.state.expandControlled })}>
-                                        <ExpandMore/>
-                                    </IconButton>
-                                }/>
-                            <Collapse in={this.state.expandControlled}>
-                                <CardContent>
-                                    <Button
-                                        variant="outlined"
-                                        onClick={(e) => this.setState({
-                                            controlledValue: dataJsonControlled
-                                        })}>
-                                        Load controlled Value
-                                    </Button>
-                                </CardContent>
-                            </Collapse>
-                        </Card>
+                        {/*<Card style={styles.card}>*/}
+                            {/*<CardHeader*/}
+                                {/*title="Controlled value"*/}
+                                {/*subheader="Control Component externally"*/}
+                                {/*action={*/}
+                                    {/*<IconButton*/}
+                                        {/*onClick={(e) => this.setState({ expandControlled: !this.state.expandControlled })}>*/}
+                                        {/*<ExpandMore/>*/}
+                                    {/*</IconButton>*/}
+                                {/*}/>*/}
+                            {/*<Collapse in={this.state.expandControlled}>*/}
+                                {/*<CardContent>*/}
+                                    {/*<Button*/}
+                                        {/*variant="outlined"*/}
+                                        {/*onClick={(e) => this.setState({*/}
+                                            {/*controlledValue: dataJsonControlled*/}
+                                        {/*})}>*/}
+                                        {/*Load controlled Value*/}
+                                    {/*</Button>*/}
+                                {/*</CardContent>*/}
+                            {/*</Collapse>*/}
+                        {/*</Card>*/}
                     </div>
                 </div>
                 <div style={{ width: 0 }}>

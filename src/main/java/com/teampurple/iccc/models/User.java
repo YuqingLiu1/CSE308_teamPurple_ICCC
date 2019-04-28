@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Document(collection = "User")
 public class User {
@@ -14,10 +15,10 @@ public class User {
     @Indexed(unique = true)
     private String email;
     private String password;
-    private ArrayList<String> liked = new ArrayList<>();
-    private ArrayList<String> content = new ArrayList<>();
-    private ArrayList<String> userCategories = new ArrayList<>();
-    private ArrayList<String> homeCategories = new ArrayList<>();
+    private List<String> liked = new ArrayList<>();
+    private List<String> content = new ArrayList<>();
+    private List<String> userCategories = new ArrayList<>();
+    private List<String> homeCategories = new ArrayList<>();
 
     public User(String email, String password) {
         // TODO: actually implement this constructor
@@ -37,19 +38,19 @@ public class User {
 
     public String getPassword(){ return password; }
 
-    public ArrayList<String> getLiked() {
+    public List<String> getLiked() {
         return liked;
     }
 
-    public ArrayList<String> getContent() {
+    public List<String> getContent() {
         return content;
     }
 
-    public ArrayList<String> getUserCategories(){
+    public List<String> getUserCategories(){
         return userCategories;
     }
 
-    public ArrayList<String> getHomeCategories(){
+    public List<String> getHomeCategories(){
         return homeCategories;
     }
 
@@ -65,19 +66,19 @@ public class User {
         this.password = password;
     }
 
-    public void setLiked(ArrayList<String> liked){
+    public void setLiked(List<String> liked){
         this.liked = liked;
     }
 
-    public void setHomeCategories(ArrayList<String> categories){
+    public void setHomeCategories(List<String> categories){
         this.homeCategories = categories;
     }
 
-    public void setUserCategories(ArrayList<String> userCategories){
+    public void setUserCategories(List<String> userCategories){
         this.userCategories = userCategories;
     }
 
-    public void setContent(ArrayList<String> content){
+    public void setContent(List<String> content){
         this.content = content;
     }
 

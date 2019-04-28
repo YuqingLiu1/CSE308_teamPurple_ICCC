@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class ContentController {
@@ -196,10 +197,10 @@ public class ContentController {
         GeneralBase parentGeneralBase = generalBaseRepository.findById(parentGeneralBaseRef).get();
         List<String> oldChildren = parentGeneralBase.getChildren();
         oldChildren.add(newContentBase.getId());
+        generalBaseRepository.save(parentGeneralBase);
 
         // don't forget to link to the new contentbase from the generalbase
         newContentGeneralBase.setTypeRef(newContentBase.getId());
-
 
         // don't forget to link to the new sketch from the generalbase
         newContentGeneralBase.setSketch(newSketch.getId());
@@ -331,5 +332,126 @@ public class ContentController {
         contentInfo.setSketch(sketch);
 
         return new Response(Response.OK, contentInfo);
+    }
+
+    /**
+     * Description:
+     *   - get the immediate surrounding ContentBase IDs (parent, child, left, and right) of a given ContentBase ID
+     *   - only returns ContentBase IDs, so if the given ContentBase ID is for a series then the parent would be null
+     *     (since it would be a user, which does not have an associated ContentBase)
+     *   - only returns ContentBase IDs of content that the current user is allowed to see
+     *     - if the user is logged in, then this means public content from all users as well as all of their own content
+     *     - if the user is logged out, then this means only the public content from all users
+     *
+     * Request params:
+     *   - id: String (ContentBase ID to find surroundings of; query string field)
+     *
+     * Returns:
+     *   - status: String ('OK' or 'error')
+     *   - parent: String (ContentBase ID of the parent content; null if the parent is a user)
+     *   - child: String (ContentBase ID of the child content; null if there is no child content)
+     *   - left: String (ContentBase ID of the content immediately to the left; null if there is none)
+     *   - right: String (ContentBase ID of the content immediately to the right; null if there is none)
+     */
+    @GetMapping("/content/surroundings")
+    public Response getSurroundingContent(@RequestParam("id") final String contentBaseId) {
+        Optional<ContentBase> currentContentBaseOptional = contentBaseRepository.findById(contentBaseId);
+        if (!currentContentBaseOptional.isPresent()) {
+            return new Response(Response.ERROR);
+        }
+        ContentBase currentContentBase = currentContentBaseOptional.get();
+
+        // create surrounding content object to build up over the course of this function
+        SurroundingContent surroundingContent = new SurroundingContent();
+
+        // go to the parent GeneralBase to get the list of child content on this level
+        String parentGeneralBaseRef = null;
+        Optional<ContentBase> parentContentBaseOptional;
+        ContentBase parentContentBase;
+        switch (currentContentBase.getType()) {
+            case ContentBase.SERIES:
+                Optional<User> parentUserOptional = userRepository.findById(currentContentBase.getParents().getUser());
+                if (!parentUserOptional.isPresent()) {
+                    return new Response(Response.ERROR);
+                }
+                User parentUser = parentUserOptional.get();
+                parentGeneralBaseRef = parentUser.getGeneralBaseRef();
+                break;
+            case ContentBase.EPISODE:
+                parentContentBaseOptional = contentBaseRepository.findById(currentContentBase.getParents().getSeries());
+                if (!parentContentBaseOptional.isPresent()) {
+                    return new Response(Response.ERROR);
+                }
+                parentContentBase = parentContentBaseOptional.get();
+                parentGeneralBaseRef = parentContentBase.getGeneralBaseRef();
+                break;
+            case ContentBase.FRAME:
+                String parentContentBaseRef = null;
+                if (currentContentBase.getParents().getSeries() != null) {
+                    parentContentBaseRef = currentContentBase.getParents().getSeries();
+                } else {
+                    parentContentBaseRef = currentContentBase.getParents().getFrame();
+                }
+                parentContentBaseOptional = contentBaseRepository.findById(parentContentBaseRef);
+                if (!parentContentBaseOptional.isPresent()) {
+                    return new Response(Response.ERROR);
+                }
+                parentContentBase = parentContentBaseOptional.get();
+                parentGeneralBaseRef = parentContentBase.getGeneralBaseRef();
+                break;
+            default:
+                return new Response(Response.ERROR);
+        }
+        Optional<GeneralBase> parentGeneralBaseOptional = generalBaseRepository.findById(parentGeneralBaseRef);
+        if (!parentGeneralBaseOptional.isPresent()) {
+            return new Response(Response.ERROR);
+        }
+        GeneralBase parentGeneralBase = parentGeneralBaseOptional.get();
+        System.out.println(parentGeneralBaseRef);
+        List<String> childContent = parentGeneralBase.getChildren();
+
+        // get the content to the right
+        Response rightResponse = getNextContent(contentBaseId, childContent);
+        if (rightResponse.getStatus() == Response.ERROR) {
+            return new Response(Response.ERROR);
+        }
+        surroundingContent.setRightContentBaseRef((String)rightResponse.getContent());
+
+        return new Response(Response.OK, surroundingContent);
+    }
+
+    /**
+     * Find the next "visible" ContentBase ID to the right of the current ContentBase. Content is "visible" when it is
+     * public, or when it is private but belongs to the current logged in user.
+     * @param currentContentBaseRef The ContentBase ID of the current content.
+     * @param contentBaseRefs A list of ContentBase IDs on the same level.
+     * @return A response object that indicates success or failure. Failure occurs when contentBaseRefs does not contain
+     *         currentContentBaseRef, or there is a database error. Success occurs otherwise. On success, the returned
+     *         response also contains either the next "visible" ContentBase ID, or null if there is none.
+     */
+    private Response getNextContent(String currentContentBaseRef, List<String> contentBaseRefs) {
+        System.out.println(contentBaseRefs);
+        System.out.println(currentContentBaseRef);
+        if (!contentBaseRefs.contains(currentContentBaseRef)) {
+            return new Response(Response.ERROR);
+        }
+
+        User currentUser = authentication.getCurrentUser();
+        boolean loggedIn = currentUser != null;
+
+        for (int i = contentBaseRefs.indexOf(currentContentBaseRef) + 1; i < contentBaseRefs.size(); i++) {
+            String contentBaseRef = contentBaseRefs.get(i);
+            System.out.println(contentBaseRef);
+            Optional<ContentBase> contentBaseOptional = contentBaseRepository.findById(contentBaseRef);
+            if (!contentBaseOptional.isPresent()) {
+                return new Response(Response.ERROR);
+            }
+            ContentBase contentBase = contentBaseOptional.get();
+            if (contentBase.getPublic() || (loggedIn && contentBase.getAuthor().equals(currentUser.getId()))) {
+                return new Response(Response.OK, contentBaseRef);
+            }
+        }
+        // didn't find next "visible" content
+        return new Response(Response.OK, null);
     }
 }

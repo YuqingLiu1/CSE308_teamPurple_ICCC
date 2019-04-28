@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Document(collection = "GeneralBase")
 public class GeneralBase {
@@ -21,9 +22,9 @@ public class GeneralBase {
     private String description;
     private Date dateCreated;
     private Date dateLastEdited;
-    private ArrayList<String> children = new ArrayList<>();
-    private ArrayList<String> likers = new ArrayList<>();
-    private ArrayList<String> comments = new ArrayList<>();
+    private List<String> children = new ArrayList<>();
+    private List<String> likers = new ArrayList<>();
+    private List<String> comments = new ArrayList<>();
 
     public String getId() {
         return id;
@@ -89,27 +90,27 @@ public class GeneralBase {
         this.dateLastEdited = dateLastEdited;
     }
 
-    public ArrayList<String> getChildren() {
+    public List<String> getChildren() {
         return children;
     }
 
-    public void setChildren(ArrayList<String> children) {
+    public void setChildren(List<String> children) {
         this.children = children;
     }
 
-    public ArrayList<String> getLikers() {
+    public List<String> getLikers() {
         return likers;
     }
 
-    public void setLikers(ArrayList<String> likers) {
+    public void setLikers(List<String> likers) {
         this.likers = likers;
     }
 
-    public ArrayList<String> getComments() {
+    public List<String> getComments() {
         return comments;
     }
 
-    public void setComments(ArrayList<String> comments) {
+    public void setComments(List<String> comments) {
         this.comments = comments;
     }
 }

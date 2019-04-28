@@ -258,6 +258,17 @@ public class UserAccountController {
         return new Response(Response.OK);
     }
 
+    // TODO: think about returning a Response instead so that a status ('OK' or 'error') can be produced
+    /**
+     * Description:
+     *   - get the thumbnail image associated with a given GeneralBase ID
+     *
+     * Request params:
+     *   - id: String (GeneralBase ID to find the image for; query string field)
+     *
+     * Returns:
+     *   - the decoded thumbnail image data associated with the given GeneralBase ID
+     */
     @GetMapping(value="/generalBase/thumbnail")
     public ResponseEntity<byte[]> getThumbnail(@RequestParam(value="id") final String generalBaseId) {
         GeneralBase gb = generalbase.findById(generalBaseId).get();
@@ -271,12 +282,34 @@ public class UserAccountController {
         return new ResponseEntity<>(media, headers, HttpStatus.OK);
     }
 
+    // TODO: return a Response so that a status ('OK' or 'error') can be produced
+    /**
+     * Description:
+     *   - get the title field of the GeneralBase with the given GeneralBase ID
+     *
+     * Request params:
+     *   - id: String (GeneralBase ID to search for; query string field)
+     *
+     * Returns:
+     *   - title: String (the title of the GeneralBase with the given GeneralBase ID)
+     */
     @GetMapping(value="/generalBase/title")
     public String getTitle(@RequestParam(value="id") final String generalBaseId) {
         GeneralBase gb = generalbase.findById(generalBaseId).get();
         return gb.getTitle();
     }
 
+    // TODO: return a Response so that a status ('OK' or 'error') can be produced
+    /**
+     * Description:
+     *   - get the GeneralBase ID of the current logged in user
+     *
+     * Request params:
+     *   - none
+     *
+     * Returns:
+     *   - id: String (GeneralBase ID of the current logged in user)
+     */
     @GetMapping("/generalBase/id")
     public String getCurrentUserGeneralBaseId() {
         User currentUser = auth.getCurrentUser();
@@ -286,6 +319,18 @@ public class UserAccountController {
         return "{\"id\":\"" + currentUser.getGeneralBaseRef() + "\"}";
     }
 
+    // TODO: remove this, as the functionality already exists in /user/edit
+    /**
+     * Description:
+     *   - set the password of the current logged in user
+     *   - must be logged in
+     *
+     * Request params:
+     *   - password: String (the new plaintext password to set for the current logged in user)
+     *
+     * Returns:
+     *   - status: String ('OK' or 'error')
+     */
     @PostMapping("/user/setpassword")
     public Response setCurrentUserPassword(@RequestBody final String password) {
         try {
@@ -298,6 +343,18 @@ public class UserAccountController {
         }
     }
 
+    // TODO: remove this, as the functionality already exists in /user/edit
+    /**
+     * Description:
+     *   - set the username of the current logged in user
+     *   - must be logged in
+     *
+     * Request params:
+     *   - username: String (new username to set for the current logged in user)
+     *
+     * Returns:
+     *   - status: String ('OK' or 'error')
+     */
     @PostMapping("/user/username")
     public Response setCurrentUserName(@RequestBody final String username) {
         try {
@@ -306,7 +363,7 @@ public class UserAccountController {
             gb.setTitle(username);
             generalbase.save(gb);
             return new Response(Response.OK);
-        }catch (Exception e){
+        } catch (Exception e){
             return new Response(Response.ERROR);
         }
     }

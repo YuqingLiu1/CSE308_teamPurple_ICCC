@@ -438,7 +438,7 @@ public class ContentController {
         GeneralBase parentGeneralBase = parentGeneralBaseOptional.get();
         List<String> childContent = parentGeneralBase.getChildren();
 
-        // get the parent content (there is any)
+        // get the parent content (if there is any)
         switch (currentContentBase.getType()) {
             case ContentBase.SERIES:
                 // series do not have parent ContentBase (their parent is a user)
@@ -451,16 +451,23 @@ public class ContentController {
                 return new Response(Response.ERROR, "Given content somehow has an invalid type");
         }
 
+        // get the child content (if there is any)
+        Response childResponse = getChildContent(contentBaseId);
+        if (childResponse.getStatus().equals(Response.ERROR)) {
+            return childResponse;
+        }
+        surroundingContent.setChildContentBaseRef((String)childResponse.getContent());
+
         // get the content to the right (if there is any)
         Response rightResponse = getAdjacentVisibleContent(contentBaseId, childContent, true);
-        if (rightResponse.getStatus() == Response.ERROR) {
+        if (rightResponse.getStatus().equals(Response.ERROR)) {
             return new Response(Response.ERROR);
         }
         surroundingContent.setRightContentBaseRef((String)rightResponse.getContent());
 
         // get the content to the left (if there is any)
         Response leftResponse = getAdjacentVisibleContent(contentBaseId, childContent, false);
-        if (leftResponse.getStatus() == Response.ERROR) {
+        if (leftResponse.getStatus().equals(Response.ERROR)) {
             return new Response(Response.ERROR);
         }
         surroundingContent.setLeftContentBaseRef((String)leftResponse.getContent());
@@ -505,5 +512,48 @@ public class ContentController {
         }
         // didn't find next "visible" content
         return new Response(Response.OK, null);
+    }
+
+    /**
+     * Find the "visible" child ContentBase ID (if there is one) of the current ContentBase. Content is "visible" when
+     * it is public, or when it is private but belongs to the current logged in user.
+     * @param currentContentBaseRef The ContentBase ID of the current content.
+     * @returns A response object that indicates success or failure. Failure occurs when there is a database error.
+     *          Success occurs otherwise. On success, the returned response also contains either the next "visible"
+     *          child ContentBase ID, or null if there is none.
+     */
+    private Response getChildContent(String currentContentBaseRef) {
+        User currentUser = authentication.getCurrentUser();
+        boolean loggedIn = currentUser != null;
+
+        Optional<ContentBase> currentContentBaseOptional = contentBaseRepository.findById(currentContentBaseRef);
+        if (!currentContentBaseOptional.isPresent()) {
+            return new Response(Response.ERROR, "Could not find content for given ContentBase ID");
+        }
+        ContentBase currentContentBase = currentContentBaseOptional.get();
+
+        Optional<GeneralBase> currentGeneralBaseOptional = generalBaseRepository.findById(currentContentBase.getGeneralBaseRef());
+        if (!currentGeneralBaseOptional.isPresent()) {
+            return new Response(Response.ERROR, "Could not find GeneralBase for given content");
+        }
+        GeneralBase currentGeneralBase = currentGeneralBaseOptional.get();
+
+        List<String> childContentBaseIDs = currentGeneralBase.getChildren();
+        // if there are no children we can return early
+        if (childContentBaseIDs.size() == 0) {
+            return new Response(Response.OK, null);
+        }
+        // have to check if the first child is eligible to be returned before performing the general case
+        Optional<ContentBase> contentBaseOptional = contentBaseRepository.findById(childContentBaseIDs.get(0));
+        if (!contentBaseOptional.isPresent()) {
+            return new Response(Response.ERROR, "Could not find ContentBase for a given ContentBase ID");
+        }
+        ContentBase contentBase = contentBaseOptional.get();
+        if (contentBase.getPublic() || (loggedIn && contentBase.getAuthor().equals(currentUser.getId()))) {
+            return new Response(Response.OK, contentBase.getId());
+        }
+        // if we are here then we know the first child is not eligible to returned, so we can check the general case
+        // as if we were just finding the next visible content to the right of the first child that we tested
+        return getAdjacentVisibleContent(childContentBaseIDs.get(0), childContentBaseIDs, true);
     }
 }

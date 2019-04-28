@@ -377,10 +377,13 @@ public class ContentController {
      *
      * Returns:
      *   - status: String ('OK' or 'error')
-     *   - parent: String (ContentBase ID of the parent content; null if the parent is a user)
-     *   - child: String (ContentBase ID of the child content; null if there is no child content)
-     *   - left: String (ContentBase ID of the content immediately to the left; null if there is none)
-     *   - right: String (ContentBase ID of the content immediately to the right; null if there is none)
+     *   - content (if status is 'OK'):
+     *       {
+     *           parentContentBaseRef: String (ContentBase ID of the parent content; null if the parent is a user),
+     *           childContentBaseRef: String (ContentBase ID of the child content; null if there is no child content),
+     *           leftContentBaseRef: String (ContentBase ID of the content immediately to the left; null if there is none),
+     *           rightContentBaseRef: String (ContentBase ID of the content immediately to the right; null if there is none)
+     *       }
      */
     @GetMapping("/content/surroundings")
     public Response getSurroundingContent(@RequestParam("id") final String contentBaseId) {

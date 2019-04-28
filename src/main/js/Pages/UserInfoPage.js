@@ -29,8 +29,8 @@ export default function({bio, error, profilePictureUrl, username, changePage})
 																						  generalBaseId: x.generalBase.id,
 																						  contentBaseId: x.contentBase.id,
 																						  onClick(){changePage('viewContentPage', {
-																						  	  contentBaseId: x.contentBase.id,
-																							  sketchId: x.sketch.id
+																						  	  initialContentBaseId: x.contentBase.id,
+																							  initialSketchId: x.sketch.id
 																						  })}
 																					  }
 																				  }))

@@ -396,7 +396,7 @@ public class ContentController {
         // go to the parent GeneralBase to get the list of child content on this level
         String parentGeneralBaseRef = null;
         Optional<ContentBase> parentContentBaseOptional;
-        ContentBase parentContentBase;
+        ContentBase parentContentBase = null;
         switch (currentContentBase.getType()) {
             case ContentBase.SERIES:
                 Optional<User> parentUserOptional = userRepository.findById(currentContentBase.getParents().getUser());
@@ -429,7 +429,7 @@ public class ContentController {
                 parentGeneralBaseRef = parentContentBase.getGeneralBaseRef();
                 break;
             default:
-                return new Response(Response.ERROR);
+                return new Response(Response.ERROR, "Given content somehow has an invalid type");
         }
         Optional<GeneralBase> parentGeneralBaseOptional = generalBaseRepository.findById(parentGeneralBaseRef);
         if (!parentGeneralBaseOptional.isPresent()) {
@@ -438,14 +438,27 @@ public class ContentController {
         GeneralBase parentGeneralBase = parentGeneralBaseOptional.get();
         List<String> childContent = parentGeneralBase.getChildren();
 
-        // get the content to the right
+        // get the parent content (there is any)
+        switch (currentContentBase.getType()) {
+            case ContentBase.SERIES:
+                // series do not have parent ContentBase (their parent is a user)
+                break;
+            case ContentBase.EPISODE:
+            case ContentBase.FRAME:
+                surroundingContent.setParentContentBaseRef(parentContentBase.getId());
+                break;
+            default:
+                return new Response(Response.ERROR, "Given content somehow has an invalid type");
+        }
+
+        // get the content to the right (if there is any)
         Response rightResponse = getAdjacentVisibleContent(contentBaseId, childContent, true);
         if (rightResponse.getStatus() == Response.ERROR) {
             return new Response(Response.ERROR);
         }
         surroundingContent.setRightContentBaseRef((String)rightResponse.getContent());
 
-        // get the content to the left
+        // get the content to the left (if there is any)
         Response leftResponse = getAdjacentVisibleContent(contentBaseId, childContent, false);
         if (leftResponse.getStatus() == Response.ERROR) {
             return new Response(Response.ERROR);

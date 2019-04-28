@@ -9,10 +9,7 @@ import com.teampurple.iccc.utils.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 public class ContentController {
@@ -407,31 +404,37 @@ public class ContentController {
             return new Response(Response.ERROR);
         }
         GeneralBase parentGeneralBase = parentGeneralBaseOptional.get();
-        System.out.println(parentGeneralBaseRef);
         List<String> childContent = parentGeneralBase.getChildren();
 
         // get the content to the right
-        Response rightResponse = getNextContent(contentBaseId, childContent);
+        Response rightResponse = getAdjacentVisibleContent(contentBaseId, childContent, true);
         if (rightResponse.getStatus() == Response.ERROR) {
             return new Response(Response.ERROR);
         }
         surroundingContent.setRightContentBaseRef((String)rightResponse.getContent());
 
+        // get the content to the left
+        Response leftResponse = getAdjacentVisibleContent(contentBaseId, childContent, false);
+        if (leftResponse.getStatus() == Response.ERROR) {
+            return new Response(Response.ERROR);
+        }
+        surroundingContent.setLeftContentBaseRef((String)leftResponse.getContent());
+
         return new Response(Response.OK, surroundingContent);
     }
 
     /**
-     * Find the next "visible" ContentBase ID to the right of the current ContentBase. Content is "visible" when it is
-     * public, or when it is private but belongs to the current logged in user.
+     * Find the next "visible" ContentBase ID to the right or left of the current ContentBase. Content is "visible" when
+     * it is public, or when it is private but belongs to the current logged in user.
      * @param currentContentBaseRef The ContentBase ID of the current content.
      * @param contentBaseRefs A list of ContentBase IDs on the same level.
+     * @param toTheRight Whether to find content to the right or to the left of the current content.
      * @return A response object that indicates success or failure. Failure occurs when contentBaseRefs does not contain
      *         currentContentBaseRef, or there is a database error. Success occurs otherwise. On success, the returned
-     *         response also contains either the next "visible" ContentBase ID, or null if there is none.
+     *         response also contains either the next "visible" ContentBase ID (to the right or left of the current
+     *         content), or null if there is none.
      */
-    private Response getNextContent(String currentContentBaseRef, List<String> contentBaseRefs) {
-        System.out.println(contentBaseRefs);
-        System.out.println(currentContentBaseRef);
+    private Response getAdjacentVisibleContent(String currentContentBaseRef, List<String> contentBaseRefs, boolean toTheRight) {
         if (!contentBaseRefs.contains(currentContentBaseRef)) {
             return new Response(Response.ERROR);
         }
@@ -439,9 +442,13 @@ public class ContentController {
         User currentUser = authentication.getCurrentUser();
         boolean loggedIn = currentUser != null;
 
-        for (int i = contentBaseRefs.indexOf(currentContentBaseRef) + 1; i < contentBaseRefs.size(); i++) {
-            String contentBaseRef = contentBaseRefs.get(i);
-            System.out.println(contentBaseRef);
+        List<String> orderedContentBaseRefs = contentBaseRefs;
+        if (!toTheRight) {
+            Collections.reverse(orderedContentBaseRefs);
+        }
+
+        for (int i = orderedContentBaseRefs.indexOf(currentContentBaseRef) + 1; i < orderedContentBaseRefs.size(); i++) {
+            String contentBaseRef = orderedContentBaseRefs.get(i);
             Optional<ContentBase> contentBaseOptional = contentBaseRepository.findById(contentBaseRef);
             if (!contentBaseOptional.isPresent()) {
                 return new Response(Response.ERROR);

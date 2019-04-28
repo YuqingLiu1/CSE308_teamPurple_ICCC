@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom'
 import Menubar from './Components/Menubar'
 import ArrowButton from './Components/NavButtons/ArrowButton'
 import PlusButton from './Components/NavButtons/PlusButton'
-import UserInfo from "./Components/Userinfo"
+import UserInfo from "./Pages/UserInfoPage"
 import LoggedOutCategories from './Components/loggedOutCategories'
 import LoggedInCategories from './Components/loggedInCategories'
 import CreateAccount from './Components/CreateAccount'

@@ -5,10 +5,10 @@ import Jumbotron from 'react-bootstrap/Jumbotron'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import DBAwareEdiText from "./DBAwareEdiText"
-import ProfileCard from "./ProfileCard"
-import UploadProfilePicture from "./UploadProfilePicture"
-import Category from './Category'
+import DBAwareEdiText from "../Components/DBAwareEdiText"
+import ProfileCard from "../Components/ProfileCard"
+import UploadProfilePicture from "../Components/UploadProfilePicture"
+import Category from '../Components/Category'
 import doFetch from '../Helpers/general.js'
 
 export default function({bio, error, profilePictureUrl, username, changePage})

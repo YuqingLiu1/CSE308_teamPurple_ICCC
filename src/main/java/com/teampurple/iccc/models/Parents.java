@@ -1,9 +1,14 @@
 package com.teampurple.iccc.models;
 
 public class Parents {
+
+    // User ID of parent user
     private String user;
+    // ContentBase ID of parent series, if there is one
     private String series;
+    // ContentBase ID of parent episode, if there is one
     private String episode;
+    // ContentBase ID of parent frame, if there is one
     private String frame;
 
     public String getUser() {

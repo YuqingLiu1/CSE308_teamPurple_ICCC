@@ -5,8 +5,11 @@ public class ContentInfo {
     private String type;
     private String title;
     private String description;
+    // ContentBase ID of parent series, if there is one
     private String parentSeries;
+    // ContentBase ID of parent episode, if there is one
     private String parentEpisode;
+    // ContentBase ID of parent frame, if there is one
     private String parentFrame;
 
     private Sketch sketch;

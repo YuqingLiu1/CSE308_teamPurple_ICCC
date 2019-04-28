@@ -39,11 +39,11 @@ public class ContentController {
      *   - type: String (either "Series", "Episode", or "Frame", note the capitalization)
      *   - title: String
      *   - description: String
-     *   - parentSeries: String (GeneralBase ID)
+     *   - parentSeries: String (ContentBase ID)
      *     - only if the new content will be an episode
-     *   - parentEpisode: String (GeneralBase ID)
+     *   - parentEpisode: String (ContentBase ID)
      *     - only if the new content will be a frame
-     *   - parentFrame: String (GeneralBase ID)
+     *   - parentFrame: String (ContentBase ID)
      *     - only if the new content will be a frame
      *
      * Returns:
@@ -53,11 +53,11 @@ public class ContentController {
      *           type: String (the type of the new content),
      *           title: String (the title of the new content),
      *           description: String (the description of the new content),
-     *           parentSeries: String (GeneralBase ID of the series this content belongs to; doesn't apply if the new
+     *           parentSeries: String (ContentBase ID of the series this content belongs to; doesn't apply if the new
      *                                 content is a series itself),
-     *           parentEpisode: String (GeneralBase ID of the episode this content belongs to; only applies if the new
+     *           parentEpisode: String (ContentBase ID of the episode this content belongs to; only applies if the new
      *                                  content is a frame),
-     *           parentFrame: String (GeneralBase ID of the immediate parent frame this content belongs to; only applies
+     *           parentFrame: String (ContentBase ID of the immediate parent frame this content belongs to; only applies
      *                                if the new content is a frame)
      *           sketch:
      *             {
@@ -95,11 +95,11 @@ public class ContentController {
      *                 parents:
      *                   {
      *                       user: String (User ID of the user who created the new content),
-     *                       series: String (GeneralBase ID of the series this content belongs to; doesn't apply if the
+     *                       series: String (ContentBase ID of the series this content belongs to; doesn't apply if the
      *                                       new content is a series itself),
-     *                       episode: String (GeneralBase ID of the episode this content belongs to; only applies if the
+     *                       episode: String (ContentBase ID of the episode this content belongs to; only applies if the
      *                                        new content is a frame),
-     *                       frame: String (GeneralBase ID of the immediate parent frame this content belongs to; only
+     *                       frame: String (ContentBase ID of the immediate parent frame this content belongs to; only
      *                                      applies if the new content is a frame)
      *                   }
      *                 dateMadeContributable: String (ISO 8601 datetime of when the content was made contributable;
@@ -115,10 +115,10 @@ public class ContentController {
         User currentUser = authentication.getCurrentUser();
         GeneralBase currentUserGeneralbase = authentication.getCurrentUserGeneralBase();
         if (currentUser == null || currentUserGeneralbase == null) {
-            return new Response("error");
+            return new Response(Response.ERROR);
         }
 
-        // build the generalbase for the new content
+        // build the GeneralBase for the new content
         GeneralBase newContentGeneralBase = new GeneralBase();
         newContentGeneralBase.setType(GeneralBase.CONTENT_BASE_TYPE);
         newContentGeneralBase.setTitle(contentInfo.getTitle());
@@ -135,48 +135,56 @@ public class ContentController {
         String parentFrame = contentInfo.getParentFrame();
         String parentEpisode = contentInfo.getParentEpisode();
         String parentSeries = contentInfo.getParentSeries();
-        String parentGeneralBaseRef = null;
+        String parentContentBaseRef = null;
         switch (contentInfo.getType()) {
             case ContentBase.SERIES:
-                // the new content is a series
-                parentGeneralBaseRef = currentUserGeneralbase.getId();
+                // the parent user is already set for for the new series, so nothing more needs to be done
                 break;
             case ContentBase.EPISODE:
                 // the new content is an episode, and must have a series as a parent
                 if (parentSeries != null) {
                     parents.setSeries(parentSeries);
-                    parentGeneralBaseRef = parentSeries;
+                    parentContentBaseRef = parentSeries;
                 } else {
-                    return new Response("error");
+                    return new Response(Response.ERROR, "Parent series not specified for new episode");
                 }
                 break;
             case ContentBase.FRAME:
                 // the new content is a frame, and must have either an episode or another frame as a parent
                 if (parentFrame != null) {
-                    // the new frame is a child of a frame
+                    // the new frame is a child of an existing frame
                     parents.setFrame(parentFrame);
-                    ContentBase parentContentBase = contentBaseRepository.findById(parentFrame).get();
+                    Optional<ContentBase> parentContentBaseOptional = contentBaseRepository.findById(parentFrame);
+                    if (!parentContentBaseOptional.isPresent()) {
+                        return new Response(Response.ERROR, "Could not find parent frame for new frame");
+                    }
+                    ContentBase parentContentBase = parentContentBaseOptional.get();
                     parents.setEpisode(parentContentBase.getParents().getEpisode());
                     parents.setSeries(parentContentBase.getParents().getSeries());
-                    parentGeneralBaseRef = parentFrame;
+                    parentContentBaseRef = parentFrame;
                 } else if (parentEpisode != null) {
-                    // the new frame is a child of an episode
+                    // the new frame is a child of an existing episode
                     parents.setEpisode(parentEpisode);
-                    ContentBase parentContentBase = contentBaseRepository.findById(parentEpisode).get();
+                    Optional<ContentBase> parentContentBaseOptional = contentBaseRepository.findById(parentEpisode);
+                    if (!parentContentBaseOptional.isPresent()) {
+                        return new Response(Response.ERROR, "Could not find parent episode for new frame");
+                    }
+                    ContentBase parentContentBase = parentContentBaseOptional.get();
                     parents.setSeries(parentContentBase.getParents().getSeries());
-                    parentGeneralBaseRef = parentEpisode;
+                    parentContentBaseRef = parentEpisode;
                 } else {
-                    return new Response("error");
+                    return new Response(Response.ERROR, "Trying to add new frame without specifying parent frame or episode");
                 }
+                break;
             default:
                 // reaching the default case indicates an invalid content type
-                return new Response("error");
+                return new Response(Response.ERROR, "Invalid type for new content");
         }
 
-        // save the general base to the database to get the ID generated for it
+        // save the new content's GeneralBase to the database to get the ID generated for it
         generalBaseRepository.save(newContentGeneralBase);
 
-        // build the contentbase for the new content
+        // build the ContentBase for the new content
         ContentBase newContentBase = new ContentBase();
         newContentBase.setGeneralBaseRef(newContentGeneralBase.getId());
         newContentBase.setAuthor(currentUser.getId());
@@ -186,20 +194,41 @@ public class ContentController {
         newContentBase.setPublic(false);
         contentBaseRepository.save(newContentBase);
 
-        // build the sketch for the new content
+        // build the Sketch for the new content
         Sketch newSketch = new Sketch();
         sketchRepository.save(newSketch);
 
-        // don't forget to update the parent generalbase's list of children with this new contentbase
-        GeneralBase parentGeneralBase = generalBaseRepository.findById(parentGeneralBaseRef).get();
-        List<String> oldChildren = parentGeneralBase.getChildren();
+        // don't forget to update the parent GeneralBase's list of children with the new ContentBase
+        String parentGeneralBaseRef = null;
+        switch (contentInfo.getType()) {
+            case ContentBase.SERIES:
+                parentGeneralBaseRef = currentUser.getGeneralBaseRef();
+                break;
+            case ContentBase.EPISODE:
+            case ContentBase.FRAME:
+                Optional<ContentBase> parentContentBaseOptional = contentBaseRepository.findById(parentContentBaseRef);
+                if (!parentContentBaseOptional.isPresent()) {
+                    return new Response(Response.ERROR, "Could not find parent ContentBase reference for new content");
+                }
+                ContentBase parentContentBase = parentContentBaseOptional.get();
+                parentGeneralBaseRef = parentContentBase.getGeneralBaseRef();
+                break;
+            default:
+                return new Response(Response.ERROR, "Invalid type for new content");
+        }
+        Optional<GeneralBase> parentGeneralBaseOptional = generalBaseRepository.findById(parentGeneralBaseRef);
+        if (!parentGeneralBaseOptional.isPresent()) {
+            return new Response(Response.ERROR, "Could not find parent GeneralBase reference for new content");
+        }
+        GeneralBase parentGeneralBase = parentGeneralBaseOptional.get();
+        List<String> oldChildren =  parentGeneralBase.getChildren();
         oldChildren.add(newContentBase.getId());
         generalBaseRepository.save(parentGeneralBase);
 
-        // don't forget to link to the new contentbase from the generalbase
+        // don't forget to link to the new ContentBase from the new GeneralBase
         newContentGeneralBase.setTypeRef(newContentBase.getId());
 
-        // don't forget to link to the new sketch from the generalbase
+        // don't forget to link to the new Sketch from the new GeneralBase
         newContentGeneralBase.setSketch(newSketch.getId());
 
         // save the above changes
@@ -211,11 +240,14 @@ public class ContentController {
         userRepository.save(currentUser);
 
         // add to the content info to return to the user
+        contentInfo.setParentSeries(parents.getSeries());
+        contentInfo.setParentEpisode(parents.getEpisode());
+        contentInfo.setParentFrame(parents.getFrame());
         contentInfo.setContentBase(newContentBase);
         contentInfo.setGeneralBase(newContentGeneralBase);
         contentInfo.setSketch(newSketch);
 
-        return new Response("OK", contentInfo);
+        return new Response(Response.OK, contentInfo);
     }
 
     // TODO: make sure that the current logged in user is the author of the sketch they are trying to save

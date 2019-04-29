@@ -14,26 +14,27 @@ import doFetch from '../Helpers/general.js'
 export default function({bio, error, profilePictureUrl, username, changePage})
 {
 	const [refresh, setRefresh]=useState('false')
-	const [items, setItems]=useState([{},{},{},{},{}])
+	const [items, setItems]=useState([])
 
 	function f()
 	{
 		async function refreshItems()
 		{
 			setItems(JSON.parse(await doFetch("test/user/series")).content.seriesList.map(x=>
-																				  {
-																					  return {
-																						  title        : x.generalBase.title,
-																						  thumbnail    : x.sketch.thumbnail,
-																						  sketchId     : x.sketch.id,
-																						  generalBaseId: x.generalBase.id,
-																						  contentBaseId: x.contentBase.id,
-																						  onClick(){changePage('viewContentPage', {
-																						  	  initialContentBaseId: x.contentBase.id,
-																							  initialSketchId: x.sketch.id
-																						  })}
-																					  }
-																				  }))
+				{
+					return {
+						title        : x.generalBase.title,
+						thumbnail    : x.sketch.thumbnail,
+						sketchId     : x.sketch.id,
+						generalBaseId: x.generalBase.id,
+						contentBaseId: x.contentBase.id,
+						onClick(){changePage('viewContentPage', {
+							initialContentBaseId: x.contentBase.id,
+							initialSketchId: x.sketch.id
+						})}
+					}
+				})
+			)
 		}
 		refreshItems()
 	}

@@ -94,8 +94,8 @@ public class ContentBase {
         return _public;
     }
 
-    public void setPublic(Boolean publication) {
-        this._public = publication;
+    public void setPublic(Boolean _public) {
+        this._public = _public;
     }
 }
 

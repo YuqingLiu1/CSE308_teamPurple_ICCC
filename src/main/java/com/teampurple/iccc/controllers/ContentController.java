@@ -1,5 +1,6 @@
 package com.teampurple.iccc.controllers;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.teampurple.iccc.models.*;
 import com.teampurple.iccc.repositories.ContentBaseRepository;
 import com.teampurple.iccc.repositories.GeneralBaseRepository;
@@ -250,7 +251,126 @@ public class ContentController {
         return new Response(Response.OK, contentInfo);
     }
 
+    // TODO: check if the content actually changed instead of just assuming that it changed if values have been provided
+    /**
+     * Description:
+     *   - edit a piece of content
+     *   - must be logged in
+     *   - edit is only allowed if the author of the content is the current logged in user
+     *   - dateLastEdited is updated to reflect the new change
+     *   - dateMadeContributable and dateMadePublic may be set if the content is made contributable and/or public
+     *
+     * Request params:
+     *   - id: String (the ContentBase ID of the content to edit)
+     *   - title: String (the new title of the content; optional)
+     *   - description: String (the new description of the content; optional)
+     *   - contributable: Boolean (whether others are allowed to add content after the current content; optional)
+     *     - note that this flag cannot be set to false once it is set to true
+     *     - note that this flag cannot be set to true until _public has been set to true
+     *   - public: Boolean (whether others are allowed to view this content; optional)
+     *     - note that setting this flag to true means that the content is no longer editable, and also this flag
+     *       cannot be set to false again
+     *
+     * Returns:
+     *   - status: String ('OK' or 'error')
+     *   - content: Boolean (true if the content changed, false otherwise)
+     */
+    @PostMapping("/content/edit")
+    public Response editContent(@RequestBody ContentInfo contentInfo) {
+        // get the current user to check that they are allowed to edit the content
+        User currentUser = authentication.getCurrentUser();
+        if (currentUser == null) {
+            return new Response(Response.ERROR, "Cannot edit content if not logged in");
+        }
+
+        // make sure the content exists
+        Optional<ContentBase> contentBaseOptional = contentBaseRepository.findById(contentInfo.getId());
+        if (!contentBaseOptional.isPresent()) {
+            return new Response(Response.ERROR, "Could not find content with ID: " + contentInfo.getId());
+        }
+        ContentBase contentBase = contentBaseOptional.get();
+        Optional<GeneralBase> generalBaseOptional = generalBaseRepository.findById(contentBase.getGeneralBaseRef());
+        if (!generalBaseOptional.isPresent()) {
+            return new Response(Response.ERROR, "Could not find GeneralBase for given ContentBase");
+        }
+        GeneralBase generalBase = generalBaseOptional.get();
+
+        // make sure the the current logged in user is the author of the content
+        if (!contentBase.getAuthor().equals(currentUser.getId())) {
+            return new Response(Response.ERROR, "Only the author of the content is allowed to edit it");
+        }
+
+        String newTitle = contentInfo.getTitle();
+        String newDescription = contentInfo.getDescription();
+        Boolean setContributable = contentInfo.getContributable();
+        Boolean setPublic = contentInfo.getPublic();
+        boolean contentChanged = false;
+
+        // change the title if there is a new one
+        if (newTitle != null) {
+            contentChanged = true;
+            generalBase.setTitle(newTitle);
+        }
+
+        // change the description if there is a new one
+        if (newDescription != null) {
+            contentChanged = true;
+            generalBase.setDescription(newDescription);
+        }
+
+        // make the content public if requested
+        Boolean isPublic = contentBase.getPublic();
+        if (setPublic != null) {
+            if (setPublic) {
+                if (isPublic != null && !isPublic) {
+                    // trying to make the content public when it wasn't before
+                    contentChanged = true;
+                    contentBase.setPublic(true);
+                    contentBase.setDateMadePublic(new Date());
+                }
+            } else {  // trying to make the content explicitly not public
+                if (isPublic != null && isPublic) {
+                    return new Response(Response.ERROR, "Cannot make content not public once it has been made public");
+                }
+            }
+        }
+
+        // make the content contributable if requested (must already be public)
+        isPublic = contentBase.getPublic();   // note that this line is not redundant, since it's possible that the
+                                              // content was just made public in this request
+        Boolean isContributable = contentBase.getContributable();
+        if (setContributable != null) {
+            if (setContributable) {
+                if (isContributable != null && !isContributable) {
+                    // trying to make the content contributable when it wasn't before
+                    if (isPublic != null && isPublic) {
+                        contentChanged = true;
+                        contentBase.setContributable(true);
+                        contentBase.setDateMadeContributable(new Date());
+                    } else {
+                        return new Response(Response.ERROR, "Cannot make content contributable if it is not public");
+                    }
+                }
+            } else {  // trying to make the content explicitly not contributable
+                if (isContributable != null && isContributable) {
+                    return new Response(Response.ERROR, "Cannot make content not contributable once it has been made contributable");
+                }
+            }
+        }
+
+        // update the date of when the content was last edited if the content changed
+        if (contentChanged) {
+            generalBase.setDateLastEdited(new Date());
+            generalBaseRepository.save(generalBase);
+            contentBaseRepository.save(contentBase);
+            return new Response(Response.OK, true);
+        } else {
+            return new Response(Response.OK, false);
+        }
+    }
+
     // TODO: make sure that the current logged in user is the author of the sketch they are trying to save
+    // TODO: change the dateLastEdited to reflect the new change
     /**
      * Description:
      *   - save the current version of a sketch

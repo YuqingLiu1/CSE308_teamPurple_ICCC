@@ -161,4 +161,15 @@ public class TestController {
         return categories;
     }
 
+    @PostMapping("/test/boolean")
+    public Response testBoolean(@RequestBody ContentInfo contentInfo) {
+        if (contentInfo.getPublic() == null) {
+            return new Response(Response.OK, "I think public is null");
+        } else if (contentInfo.getPublic()) {
+            return new Response(Response.OK, "I think public is true");
+        } else {
+            return new Response(Response.OK, "I think public is false");
+        }
+    }
+
 }

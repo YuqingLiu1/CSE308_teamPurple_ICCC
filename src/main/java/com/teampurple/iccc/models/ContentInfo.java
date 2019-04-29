@@ -2,6 +2,8 @@ package com.teampurple.iccc.models;
 
 public class ContentInfo {
 
+    // ContentBase ID of this content
+    private String id;
     private String type;
     private String title;
     private String description;
@@ -11,10 +13,36 @@ public class ContentInfo {
     private String parentEpisode;
     // ContentBase ID of parent frame, if there is one
     private String parentFrame;
+    private Boolean contributable;
+    private Boolean _public;
 
     private Sketch sketch;
     private GeneralBase generalBase;
     private ContentBase contentBase;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Boolean getContributable() {
+        return contributable;
+    }
+
+    public void setContributable(Boolean contributable) {
+        this.contributable = contributable;
+    }
+
+    public Boolean getPublic() {
+        return _public;
+    }
+
+    public void setPublic(Boolean _public) {
+        this._public = _public;
+    }
 
     public Sketch getSketch() {
         return sketch;

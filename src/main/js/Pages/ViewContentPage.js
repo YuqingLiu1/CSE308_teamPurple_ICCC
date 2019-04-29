@@ -6,6 +6,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import TestFrameEditor from '../Components/TestFrameEditor';
 import Fab from '@material-ui/core/Fab';
+import Image from 'react-bootstrap/Image';
 
 export default class ViewContentPage extends Component {
     constructor(props) {
@@ -23,7 +24,8 @@ export default class ViewContentPage extends Component {
             authorThumbnail: '',
             contentThumbnail: '',
             contentData: {},
-            comments: []
+            comments: [],
+            editable: false
         }
     }
 
@@ -41,6 +43,7 @@ export default class ViewContentPage extends Component {
 
             let contentData = JSON.parse(contentRes.content.sketch.data);
             let contentThumbnail = contentRes.content.sketch.thumbnail;
+            let editable = !contentRes.content.contentBase.public;
 
             let leftContentBaseId = surroundingsRes.content.leftContentBaseRef;
             let rightContentBaseId = surroundingsRes.content.rightContentBaseRef;
@@ -53,7 +56,8 @@ export default class ViewContentPage extends Component {
                 rightContentBaseId: rightContentBaseId,
                 leftContentBaseId: leftContentBaseId,
                 parentContentBaseId: parentContentBaseId,
-                childContentBaseId: childContentBaseId
+                childContentBaseId: childContentBaseId,
+                editable: editable
             });
         }
 
@@ -76,6 +80,7 @@ export default class ViewContentPage extends Component {
                 let contentData = JSON.parse(contentRes.content.sketch.data);
                 let contentThumbnail = contentRes.content.sketch.thumbnail;
                 let sketchId = contentRes.content.sketch.id;
+                let editable = !contentRes.content.contentBase.public;
 
                 let leftContentBaseId = surroundingsRes.content.leftContentBaseRef;
                 let rightContentBaseId = surroundingsRes.content.rightContentBaseRef;
@@ -89,7 +94,8 @@ export default class ViewContentPage extends Component {
                     rightContentBaseId: rightContentBaseId,
                     leftContentBaseId: leftContentBaseId,
                     parentContentBaseId: parentContentBaseId,
-                    childContentBaseId: childContentBaseId
+                    childContentBaseId: childContentBaseId,
+                    editable: editable
                 });
             }
         } catch (err) {
@@ -107,7 +113,8 @@ export default class ViewContentPage extends Component {
         return (
             <Container fluid className='my-3'>
                 {
-                    this.props.loggedIn ? // note: this check needs to change because it's not really what we want
+                    // check if we should show an editable version of the content
+                    this.state.editable ? // note: this check needs to change because it's not really what we want
                         <Row>
                             <Col xs={9} style={{ textAlign: 'center' }}>
                                 <Row>
@@ -157,7 +164,39 @@ export default class ViewContentPage extends Component {
                                 This is where the author info will go
                             </Col>
                             <Col>
-                                This is where the content will go
+                                <Row>
+                                    <Col xs={1} className='my-auto'>
+                                        {
+                                            this.state.leftContentBaseId &&
+                                            <Fab onClick={() => {this.changeContent(this.state.leftContentBaseId)}}>
+                                                <i className="fas fa-arrow-left fa-2x"></i>
+                                            </Fab>
+                                        }
+                                    </Col>
+                                    <Col xs={10}>
+                                        {
+                                            this.state.parentContentBaseId &&
+                                            <Fab onClick={() => {this.changeContent(this.state.parentContentBaseId)}} className='mb-3'>
+                                                <i className="fas fa-arrow-up fa-2x"></i>
+                                            </Fab>
+                                        }
+                                        <Image src={this.state.contentThumbnail} />
+                                        {
+                                            this.state.childContentBaseId &&
+                                            <Fab onClick={() => {this.changeContent(this.state.childContentBaseId)}}>
+                                                <i className="fas fa-arrow-down fa-2x"></i>
+                                            </Fab>
+                                        }
+                                    </Col>
+                                    <Col xs={1} className='my-auto'>
+                                        {
+                                            this.state.rightContentBaseId &&
+                                            <Fab onClick={() => {this.changeContent(this.state.rightContentBaseId)}}>
+                                                <i className="fas fa-arrow-right fa-2x"></i>
+                                            </Fab>
+                                        }
+                                    </Col>
+                                </Row>
                             </Col>
                             <Col>
                                 This is where the comments will go

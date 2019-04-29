@@ -400,6 +400,7 @@ public class ContentController {
         return new Response(Response.OK);
     }
 
+    // TODO: use Optionals instead of blindly calling .get()
     /**
      * Description:
      *   - get information about a piece of content given a ContentBase ID

@@ -15,6 +15,6 @@ export default function({profileThumbnailUrl, username}) {
                 />
             </div>
         </div>
-        <Likes/>
+        {/*<Likes/>*/}
     </div>
 }

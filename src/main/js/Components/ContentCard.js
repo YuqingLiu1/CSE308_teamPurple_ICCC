@@ -10,8 +10,8 @@ export default class ContentCard extends Component {
 
         this.state = {
             contentBaseId: props.contentBaseId,
-            title: props.initialTitle,
-            description: props.initialDescription
+            // title: props.initialTitle,
+            // description: props.initialDescription
         }
     }
 
@@ -76,27 +76,26 @@ export default class ContentCard extends Component {
 
     render() {
         let editable = this.props.editable;
-        let title = this.state.title;
-        let description = this.state.description;
+        let title = this.props.title;
+        let description = this.props.description;
+        console.log(title)
         return (
             <Card>
+                <Card.Header>
+                    {
+                        editable ?
+                            <DBAwareEdiText type='text' value={title} onSave={this.onSaveTitle} />
+                                :
+                            <>{title}</>
+                    }
+                </Card.Header>
                 <Card.Body>
-                    {/*<Card.Title>*/}
-                        {
-                            editable ?
-                                <DBAwareEdiText type='text' value={title} onSave={this.onSaveTitle} />
-                                    :
-                                <>{title}</>
-                        }
-                    {/*</Card.Title>*/}
-                    {/*<Card.Text>*/}
-                        {
-                            editable ?
-                                <DBAwareEdiText type='textarea' value={description} onSave={this.onSaveDescription} />
-                                    :
-                                <>{description}</>
-                        }
-                    {/*</Card.Text>*/}
+                    {
+                        editable ?
+                            <DBAwareEdiText type='textarea' value={description} onSave={this.onSaveDescription} />
+                                :
+                            <>{description}</>
+                    }
                 </Card.Body>
             </Card>
         );

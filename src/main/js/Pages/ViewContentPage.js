@@ -131,8 +131,8 @@ export default class ViewContentPage extends Component {
                                 <ContentCard
                                     contentBaseId={this.state.contentBaseId}
                                     editable={true}
-                                    initialTitle={this.state.title}
-                                    initialDescription={this.state.description}
+                                    title={this.state.title}
+                                    description={this.state.description}
                                 />
                             </Col>
                             <Col xs={9} style={{ textAlign: 'center' }}>

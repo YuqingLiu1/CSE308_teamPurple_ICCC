@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import Heart from './Heart'
 import doFetch from '../Helpers/general.js'
-export default function({generalBaseId='5cb04d907a7a5bf998686c36', likedByCurrentUserColor='red', notLikedByCurrentUserColor='black'})
+export default function({generalBaseId='', likedByCurrentUserColor='red', notLikedByCurrentUserColor='black'})
 {
     const [likedByCurrentUser, setLikedByCurrentUser]=useState(true)
     const [numberOfLikers    , setNumberOfLikers    ]=useState(true)

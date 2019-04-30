@@ -31,14 +31,15 @@ export default class DBAwareEdiText extends Component
 	{
 		return (
 			<EdiText {...{...this.props, onSave: this.props.onSave ? this.props.onSave : this.onSave}}
-					 hideIcons={true}
-					 editButtonContent={<i className="far fa-edit"></i>}
-					 editButtonClassName="transparent-button"
-					 saveButtonContent={<i className="fas fa-check"></i>}
-					 saveButtonClassName="transparent-button green"
-					 cancelButtonContent={<i className="fas fa-times"></i>}
-					 cancelButtonClassName="transparent-button red"
+				hideIcons={true}
+				editButtonContent={<i className="far fa-edit"></i>}
+				editButtonClassName="transparent-button"
+				saveButtonContent={<i className="fas fa-check"></i>}
+				saveButtonClassName="transparent-button green"
+				cancelButtonContent={<i className="fas fa-times"></i>}
+				cancelButtonClassName="transparent-button red"
 			/>
 		)
 	}
 }
+

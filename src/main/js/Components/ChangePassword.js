@@ -13,19 +13,17 @@ class ChangePassword extends Component
 			badCredentials: false,
 			errors        : false
 		}
-
-		this.handleSubmit=this.handleSubmit.bind(this)
 	}
 
-	handlePassword(event){
+	handlePassword = (event) => {
 		this.setState({password : event.target.value})
 	}
 
-	handlePass(event){
+	handlePass = (event) => {
 		this.setState({passwordAgain : event.target.value})
 	}
 
-	async handleSubmit(event){
+	handleSubmit = async (event) => {
 		event.preventDefault()
 		console.log("password is: " + this.state.password);
 		console.log("password again is: " + this.state.passwordAgain);
@@ -34,8 +32,6 @@ class ChangePassword extends Component
 		console.log("in sending password");
 		let result = await doFetch('/user/setpassword', {method: 'POST', body: this.state.password})
 		console.log(result);
-
-
 	}
 
 	render()
@@ -43,7 +39,7 @@ class ChangePassword extends Component
 		return (
 			<div className="form1">
 				<form>
-					<h3 style={{"text-align": "center", "color": "black"}}>Change Password</h3>
+					<h3 style={{textAlign: "center", color: "black"}}>Change Password</h3>
 					<div className="changePasswordDiv">
 						<label className="changePasswordLabel">Password</label>
 						<br/>

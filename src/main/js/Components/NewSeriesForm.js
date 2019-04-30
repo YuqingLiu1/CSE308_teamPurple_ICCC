@@ -47,7 +47,7 @@ class NewSeriesForm extends Component {
     render() {
         return (
             <>
-                <h1>Create a New Episode</h1>
+                <h1>Create a New Series</h1>
                 <Form>
                     <Form.Group>
                         <Form.Label>Title</Form.Label>

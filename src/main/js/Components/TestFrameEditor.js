@@ -391,12 +391,14 @@ class SketchFieldDemo extends React.Component {
                                     ? this.state.backgroundColor
                                     : 'transparent'
                             }
-                            width={
-                                this.state.controlledSize ? this.state.sketchWidth : null
-                            }
-                            height={
-                                this.state.controlledSize ? this.state.sketchHeight : null
-                            }
+                            // width={
+                            //     this.state.controlledSize ? this.state.sketchWidth : null
+                            // }
+                            // height={
+                            //     this.state.controlledSize ? this.state.sketchHeight : null
+                            // }
+                            width='600px'
+                            height='600px'
                             defaultValue={this.props.sketchData}
                             value={this.props.sketchData}
                             // forceValue

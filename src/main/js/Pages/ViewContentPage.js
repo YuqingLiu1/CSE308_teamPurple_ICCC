@@ -7,6 +7,7 @@ import Col from 'react-bootstrap/Col';
 import TestFrameEditor from '../Components/TestFrameEditor';
 import Fab from '@material-ui/core/Fab';
 import Image from 'react-bootstrap/Image';
+import ContentCard from '../Components/ContentCard';
 
 export default class ViewContentPage extends Component {
     constructor(props) {
@@ -25,7 +26,9 @@ export default class ViewContentPage extends Component {
             contentThumbnail: '',
             contentData: {},
             comments: [],
-            editable: false
+            editable: false,
+            title: '',
+            description: ''
         }
     }
 
@@ -44,6 +47,8 @@ export default class ViewContentPage extends Component {
             let contentData = JSON.parse(contentRes.content.sketch.data);
             let contentThumbnail = contentRes.content.sketch.thumbnail;
             let editable = !contentRes.content.contentBase.public;
+            let title = contentRes.content.generalBase.title;
+            let description = contentRes.content.generalBase.description;
 
             let leftContentBaseId = surroundingsRes.content.leftContentBaseRef;
             let rightContentBaseId = surroundingsRes.content.rightContentBaseRef;
@@ -57,7 +62,9 @@ export default class ViewContentPage extends Component {
                 leftContentBaseId: leftContentBaseId,
                 parentContentBaseId: parentContentBaseId,
                 childContentBaseId: childContentBaseId,
-                editable: editable
+                editable: editable,
+                title: title,
+                description: description
             });
         }
 
@@ -81,6 +88,8 @@ export default class ViewContentPage extends Component {
                 let contentThumbnail = contentRes.content.sketch.thumbnail;
                 let sketchId = contentRes.content.sketch.id;
                 let editable = !contentRes.content.contentBase.public;
+                let title = contentRes.content.generalBase.title;
+                let description = contentRes.content.generalBase.description;
 
                 let leftContentBaseId = surroundingsRes.content.leftContentBaseRef;
                 let rightContentBaseId = surroundingsRes.content.rightContentBaseRef;
@@ -95,7 +104,9 @@ export default class ViewContentPage extends Component {
                     leftContentBaseId: leftContentBaseId,
                     parentContentBaseId: parentContentBaseId,
                     childContentBaseId: childContentBaseId,
-                    editable: editable
+                    editable: editable,
+                    title: title,
+                    description: description
                 });
             }
         } catch (err) {
@@ -116,6 +127,14 @@ export default class ViewContentPage extends Component {
                     // check if we should show an editable version of the content
                     this.state.editable ? // note: this check needs to change because it's not really what we want
                         <Row>
+                            <Col xs={3}>
+                                <ContentCard
+                                    contentBaseId={this.state.contentBaseId}
+                                    editable={true}
+                                    initialTitle={this.state.title}
+                                    initialDescription={this.state.description}
+                                />
+                            </Col>
                             <Col xs={9} style={{ textAlign: 'center' }}>
                                 <Row>
                                     <Col xs={1} className='my-auto'>
@@ -153,9 +172,6 @@ export default class ViewContentPage extends Component {
                                         }
                                     </Col>
                                 </Row>
-                            </Col>
-                            <Col xs={3}>
-                                This is where the comments will go
                             </Col>
                         </Row>
                             :

@@ -3,16 +3,9 @@ require("@babel/polyfill")
 import React, {Component} from 'react'
 import EdiText from "react-editext"
 
-class DBAwareEdiText extends Component
+export default class DBAwareEdiText extends Component
 {
-	constructor(props)
-	{
-		super(props)
-
-		this.onSave=this.onSave.bind(this)
-	}
-
-	async onSave(val)
+	onSave = async (val) =>
 	{
 		let userInfoRes=await fetch('/user/edit', {
 			method : 'POST',
@@ -37,7 +30,7 @@ class DBAwareEdiText extends Component
 	render()
 	{
 		return (
-			<EdiText {...{...this.props, onSave: this.onSave}}
+			<EdiText {...{...this.props, onSave: this.props.onSave ? this.props.onSave : this.onSave}}
 					 hideIcons={true}
 					 editButtonContent={<i className="far fa-edit"></i>}
 					 editButtonClassName="transparent-button"
@@ -49,5 +42,3 @@ class DBAwareEdiText extends Component
 		)
 	}
 }
-
-export default DBAwareEdiText

@@ -1,6 +1,7 @@
 package com.teampurple.iccc.models;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -18,7 +19,9 @@ public class GeneralBase {
     private String typeRef;
     private String type;
     private String sketch;
+    @TextIndexed(weight = 2)
     private String title;
+    @TextIndexed
     private String description;
     private Date dateCreated;
     private Date dateLastEdited;

@@ -4,6 +4,6 @@ import NewSeriesForm from "../Components/NewSeriesForm";
 
 export default function(props) {
     return <Container className='my-5'>
-        <NewSeriesForm changePage={props.changePage}/>
+        <NewSeriesForm {...props} />
     </Container>
 }

@@ -105,7 +105,7 @@ class App extends Component
 				/>,
 			login     : <LoginPage changePage={this.changePage} login={this.login}/>,
 			editor    : <TestFrameEditor pageData={this.state.pageData}/>,
-			newContent: <NewSeriesPage changePage={this.changePage} />,
+			newContent: <NewSeriesPage changePage={this.changePage} {...this.state.pageData} />,
 			test      : <TestPage />,
 			viewContentPage: <ViewContentPage loggedIn={this.state.loggedIn} {...this.state.pageData} />,
 			searchResultsPage: <SearchResultsPage {...this.state.pageData} />

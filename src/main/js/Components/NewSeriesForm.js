@@ -9,6 +9,7 @@ class NewSeriesForm extends Component {
         super(props);
 
         this.state = {
+            type: props.type,
             title: '',
             description: '',
         }
@@ -21,33 +22,40 @@ class NewSeriesForm extends Component {
     handleSubmit = async (event) => {
         event.preventDefault();
 
-        let newContentRes = await fetch('/content/create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                type: 'Series',
-                title: this.state.title,
-                description: this.state.description,
-            })
-        });
-        newContentRes = await newContentRes.json();
-        if (newContentRes.status === 'OK') {
-            // this.props.changePage('editor', newContentRes.content);
-            this.props.changePage('viewContentPage', {
-                initialContentBaseId: newContentRes.content.contentBase.id,
-                initialSketchId: newContentRes.content.sketch.id
-            });
-        } else {
-            alert('Sorry, something went wrong :(');
+        let type = this.state.type;
+
+        switch (type) {
+            case 'Series':
+                let newContentRes = await fetch('/content/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        type: 'Series',
+                        title: this.state.title,
+                        description: this.state.description,
+                    })
+                });
+                newContentRes = await newContentRes.json();
+                if (newContentRes.status === 'OK') {
+                    this.props.changePage('viewContentPage', {
+                        initialContentBaseId: newContentRes.content.contentBase.id,
+                        initialSketchId: newContentRes.content.sketch.id
+                    });
+                } else {
+                    console.error('Could not create new content');
+                }
+                break;
+            default:
+                console.error('Invalid content type: ' + type);
         }
     }
 
     render() {
         return (
             <>
-                <h1>Create a New Series</h1>
+                <h1>Create a New {this.state.type}</h1>
                 <Form>
                     <Form.Group>
                         <Form.Label>Title</Form.Label>

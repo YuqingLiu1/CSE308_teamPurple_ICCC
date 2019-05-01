@@ -120,6 +120,10 @@ export default class ViewContentPage extends Component {
         });
     }
 
+    createContent = (type, parentContentBaseId) => {
+
+    }
+
     render() {
         return (
             <Container fluid className='my-3'>
@@ -157,9 +161,13 @@ export default class ViewContentPage extends Component {
                                             sketchId={this.state.sketchId}
                                         />
                                         {
-                                            this.state.childContentBaseId &&
+                                            this.state.childContentBaseId ?
                                             <Fab onClick={() => {this.changeContent(this.state.childContentBaseId)}}>
                                                 <i className="fas fa-arrow-down fa-2x"></i>
+                                            </Fab>
+                                                :
+                                            <Fab>
+                                                <i className="fas fa-plus fa-2x"></i>
                                             </Fab>
                                         }
                                     </Col>

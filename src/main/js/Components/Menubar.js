@@ -77,7 +77,7 @@ class Menubar extends Component
                         }
                         {
                             this.props.loggedIn ?
-                                <Nav.Link onClick={() => {this.props.changePage('newContent')}}>
+                                <Nav.Link onClick={() => {this.props.changePage('newContent', { type: 'Series' })}}>
                                     <i className="fas fa-plus-circle fa-2x"/>
                                 </Nav.Link>
                                     :

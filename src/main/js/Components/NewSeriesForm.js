@@ -54,6 +54,35 @@ class NewSeriesForm extends Component {
                         })
                     });
                     break;
+                case 'Frame':
+                    if (this.props.firstFrame) {
+                        newContentRes = await fetch('/content/create', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                type: 'Frame',
+                                title: this.state.title,
+                                description: this.state.description,
+                                parentEpisode: this.props.parentContentBaseId
+                            })
+                        });
+                    } else {
+                        newContentRes = await fetch('/content/create', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                type: 'Frame',
+                                title: this.state.title,
+                                description: this.state.description,
+                                parentFrame: this.props.parentContentBaseId
+                            })
+                        });
+                    }
+                    break;
                 default:
                     throw new Error('Invalid content type: ' + type);
             }

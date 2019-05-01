@@ -131,13 +131,17 @@ export default class ViewContentPage extends Component {
         let parentContentBaseId = this.state.contentBaseId;
         let currentContentType = this.state.type;
         let newContentType = '';
+        let firstFrame = true;
         switch (currentContentType) {
             case 'Series':
                 newContentType = 'Episode';
                 break;
             case 'Episode':
+                newContentType = 'Frame';
+                break;
             case 'Frame':
                 newContentType = 'Frame';
+                firstFrame = false;
                 break;
             default:
                 console.error('Failed to create new content');
@@ -145,7 +149,8 @@ export default class ViewContentPage extends Component {
         }
         this.props.changePage('newContent', {
             type: newContentType,
-            parentContentBaseId: parentContentBaseId
+            parentContentBaseId: parentContentBaseId,
+            firstFrame: firstFrame
         });
     }
 

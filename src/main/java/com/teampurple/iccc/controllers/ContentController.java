@@ -539,8 +539,8 @@ public class ContentController {
                 break;
             case ContentBase.FRAME:
                 String parentContentBaseRef = null;
-                if (currentContentBase.getParents().getSeries() != null) {
-                    parentContentBaseRef = currentContentBase.getParents().getSeries();
+                if (currentContentBase.getParents().getEpisode() != null) {
+                    parentContentBaseRef = currentContentBase.getParents().getEpisode();
                 } else {
                     parentContentBaseRef = currentContentBase.getParents().getFrame();
                 }

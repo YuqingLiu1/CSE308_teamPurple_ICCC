@@ -35,6 +35,9 @@ public class SearchController {
      */
     @PostMapping("/search")
     public Response search(@RequestBody SearchCriteria searchCriteria) {
+        if (searchCriteria.getSearchText().length() == 0) {
+            return new Response(Response.ERROR, "Can't search for empty string");
+        }
         TextCriteria criteria = TextCriteria.forDefaultLanguage().matchingAny(searchCriteria.getSearchText());
         List<GeneralBase> generalBases = generalBaseRepository.findAllBy(criteria);
 

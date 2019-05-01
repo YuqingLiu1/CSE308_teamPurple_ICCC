@@ -16,6 +16,7 @@ import LoginPage from './Pages/LoginPage'
 import TestPage from './Components/TestPage'
 import ViewContentPage from './Pages/ViewContentPage'
 import ChangePassword from './Components/ChangePassword'
+import SearchResultsPage from './Pages/SearchResultsPage'
 
 class App extends Component
 {
@@ -106,7 +107,8 @@ class App extends Component
 			editor    : <TestFrameEditor pageData={this.state.pageData}/>,
 			newContent: <NewSeriesPage changePage={this.changePage} />,
 			test      : <TestPage />,
-			viewContentPage: <ViewContentPage loggedIn={this.state.loggedIn} {...this.state.pageData} />
+			viewContentPage: <ViewContentPage loggedIn={this.state.loggedIn} {...this.state.pageData} />,
+			searchResultsPage: <SearchResultsPage {...this.state.pageData} />
 		}
 		return (
 			<>

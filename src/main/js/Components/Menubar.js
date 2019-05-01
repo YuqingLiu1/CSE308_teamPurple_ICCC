@@ -8,6 +8,45 @@ import NavDropdown from "react-bootstrap/es/NavDropdown";
 
 class Menubar extends Component
 {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            searchText: ''
+        };
+    }
+
+    search = async (e) => {
+        e.preventDefault();
+
+        let searchText = this.state.searchText;
+
+        let searchRes = await fetch('/search', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                searchText: searchText
+            })
+        });
+        searchRes = await searchRes.json();
+
+        if (searchRes.status !== 'OK') {
+            console.error('Search failed');
+        } else {
+            this.props.changePage('searchResultsPage', {
+                content: searchRes.content
+            });
+        }
+    }
+
+    handleSearchChange = (e) => {
+        this.setState({
+            searchText: e.target.value
+        });
+    }
+
     render()
     {
         return (
@@ -21,13 +60,9 @@ class Menubar extends Component
                 <Nav>
                     <Form inline>
                         <InputGroup>
-                            <Form.Control
-                                type="text"
-                                placeholder="Search..."
-                                required
-                            />
+                            <Form.Control type="text" placeholder="Search..." onChange={this.handleSearchChange} required />
                             <InputGroup.Append>
-                                <Button><i className="fas fa-search"/></Button>
+                                <Button type='submit' onClick={this.search}><i className="fas fa-search"/></Button>
                             </InputGroup.Append>
                         </InputGroup>
                     </Form>

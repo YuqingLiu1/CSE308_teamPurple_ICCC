@@ -8,6 +8,7 @@ import TestFrameEditor from '../Components/TestFrameEditor';
 import Fab from '@material-ui/core/Fab';
 import Image from 'react-bootstrap/Image';
 import ContentCard from '../Components/ContentCard';
+import Button from 'react-bootstrap/Button';
 
 export default class ViewContentPage extends Component {
     constructor(props) {
@@ -125,6 +126,38 @@ export default class ViewContentPage extends Component {
         });
     }
 
+    handlePublishButtonClick = async (e) => {
+        e.preventDefault();
+
+        try {
+            let id = this.state.contentBaseId;
+
+            let publishRes = await fetch('/content/edit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: id,
+                    public: true
+                })
+            });
+            publishRes = await publishRes.json();
+
+            if (publishRes.status !== 'OK') throw new Error('Could not make sketch public');
+
+            let sketchId = this.state.sketchId;
+
+            this.props.refresh();
+            this.props.changePage('viewContentPage', {
+                initialContentBaseId: id,
+                initialSketchId: sketchId
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     createContent = (e) => {
         e.preventDefault();
 
@@ -159,7 +192,7 @@ export default class ViewContentPage extends Component {
             <Container fluid className='my-3'>
                 {
                     // check if we should show an editable version of the content
-                    this.state.editable ? // note: this check needs to change because it's not really what we want
+                    this.state.editable ?
                         <Row>
                             <Col xs={3}>
                                 <ContentCard
@@ -168,6 +201,7 @@ export default class ViewContentPage extends Component {
                                     title={this.state.title}
                                     description={this.state.description}
                                 />
+                                <Button variant='primary' onClick={this.handlePublishButtonClick} className='mt-3'>Publish</Button>
                             </Col>
                             <Col xs={9} style={{ textAlign: 'center' }}>
                                 <Row>
@@ -213,11 +247,17 @@ export default class ViewContentPage extends Component {
                             </Col>
                         </Row>
                             :
+                        // non-editable version
                         <Row>
-                            <Col>
-                                This is where the author info will go
+                            <Col xs={3}>
+                                <ContentCard
+                                    contentBaseId={this.state.contentBaseId}
+                                    editable={false}
+                                    title={this.state.title}
+                                    description={this.state.description}
+                                />
                             </Col>
-                            <Col>
+                            <Col xs={6} style={{ textAlign: 'center' }}>
                                 <Row>
                                     <Col xs={1} className='my-auto'>
                                         {
@@ -228,19 +268,21 @@ export default class ViewContentPage extends Component {
                                         }
                                     </Col>
                                     <Col xs={10}>
-                                        {
-                                            this.state.parentContentBaseId &&
-                                            <Fab onClick={() => {this.changeContent(this.state.parentContentBaseId)}} className='mb-3'>
-                                                <i className="fas fa-arrow-up fa-2x"></i>
-                                            </Fab>
-                                        }
-                                        <Image src={this.state.contentThumbnail} />
-                                        {
-                                            this.state.childContentBaseId &&
-                                            <Fab onClick={() => {this.changeContent(this.state.childContentBaseId)}}>
-                                                <i className="fas fa-arrow-down fa-2x"></i>
-                                            </Fab>
-                                        }
+                                        <Container>
+                                            {
+                                                this.state.parentContentBaseId &&
+                                                <Fab onClick={() => {this.changeContent(this.state.parentContentBaseId)}} className='mb-3'>
+                                                    <i className="fas fa-arrow-up fa-2x"></i>
+                                                </Fab>
+                                            }
+                                            <Image src={this.state.contentThumbnail} fluid />
+                                            {
+                                                this.state.childContentBaseId &&
+                                                <Fab onClick={() => {this.changeContent(this.state.childContentBaseId)}}>
+                                                    <i className="fas fa-arrow-down fa-2x"></i>
+                                                </Fab>
+                                            }
+                                        </Container>
                                     </Col>
                                     <Col xs={1} className='my-auto'>
                                         {
@@ -252,7 +294,7 @@ export default class ViewContentPage extends Component {
                                     </Col>
                                 </Row>
                             </Col>
-                            <Col>
+                            <Col xs={3}>
                                 This is where the comments will go
                             </Col>
                         </Row>

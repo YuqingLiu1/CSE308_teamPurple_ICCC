@@ -64,14 +64,14 @@ export default function({bio, error, profilePictureUrl, username, changePage})
 			<Jumbotron>
 				<Container>
 					<Row>
-						<Col xs={5}>
-							<div style={{textAlign: "center"}}>
+						<Col xs={5} style={{textAlign: "center"}}>
+							<Row>
 								<ProfileCard
 									profileThumbnailUrl={profilePictureUrl}
 									username={username}
 								/>
 								<UploadProfilePicture uploadType='profile' refresh={()=>setRefresh(true)}/>
-							</div>
+							</Row>
 						</Col>
 						<Col xs={7}>
 							<h1>Bio:</h1>

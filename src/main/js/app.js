@@ -107,7 +107,7 @@ class App extends Component
 			editor    : <TestFrameEditor pageData={this.state.pageData}/>,
 			newContent: <NewSeriesPage changePage={this.changePage} {...this.state.pageData} />,
 			test      : <TestPage />,
-			viewContentPage: <ViewContentPage changePage={this.changePage} loggedIn={this.state.loggedIn} {...this.state.pageData} />,
+			viewContentPage: <ViewContentPage changePage={this.changePage} refresh={this.refresh} {...this.state.pageData} />,
 			searchResultsPage: <SearchResultsPage changePage={this.changePage} {...this.state.pageData} />
 		}
 		return (

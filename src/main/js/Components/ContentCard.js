@@ -78,7 +78,6 @@ export default class ContentCard extends Component {
         let editable = this.props.editable;
         let title = this.props.title;
         let description = this.props.description;
-        console.log(title)
         return (
             <Card>
                 <Card.Header>

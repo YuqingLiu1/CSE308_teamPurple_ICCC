@@ -99,7 +99,7 @@ class App extends Component
 					bio={this.state.bio}
 					username={this.state.username}
 					// profilePictureUrl={'http://35.227.70.138/generalBase/thumbnail?id=' + this.state.generalBaseId}
-					profilePictureUrl={'http://localhost:8080/generalBase/thumbnail?id=' + this.state.generalBaseId}
+					profilePictureUrl={'http://localhost:80/generalBase/thumbnail?id=' + this.state.generalBaseId}
 					error={this.state.userInfoError}
 					changePage={this.changePage}
 				/>,

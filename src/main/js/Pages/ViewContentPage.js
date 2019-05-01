@@ -16,6 +16,7 @@ export default class ViewContentPage extends Component {
         this.state = {
             contentBaseId: props.initialContentBaseId,
             sketchId: props.initialSketchId,
+            type: '',
             rightContentBaseId: '',
             leftContentBaseId: '',
             parentContentBaseId: '',
@@ -47,6 +48,7 @@ export default class ViewContentPage extends Component {
             let contentData = JSON.parse(contentRes.content.sketch.data);
             let contentThumbnail = contentRes.content.sketch.thumbnail;
             let editable = !contentRes.content.contentBase.public;
+            let type = contentRes.content.contentBase.type;
             let title = contentRes.content.generalBase.title;
             let description = contentRes.content.generalBase.description;
 
@@ -56,6 +58,7 @@ export default class ViewContentPage extends Component {
             let childContentBaseId = surroundingsRes.content.childContentBaseRef;
 
             this.setState({
+                type: type,
                 contentThumbnail: contentThumbnail,
                 contentData: contentData,
                 rightContentBaseId: rightContentBaseId,
@@ -88,6 +91,7 @@ export default class ViewContentPage extends Component {
                 let contentThumbnail = contentRes.content.sketch.thumbnail;
                 let sketchId = contentRes.content.sketch.id;
                 let editable = !contentRes.content.contentBase.public;
+                let type = contentRes.content.contentBase.type;
                 let title = contentRes.content.generalBase.title;
                 let description = contentRes.content.generalBase.description;
 
@@ -98,6 +102,7 @@ export default class ViewContentPage extends Component {
 
                 this.setState({
                     sketchId: sketchId,
+                    type: type,
                     contentThumbnail: contentThumbnail,
                     contentData: contentData,
                     rightContentBaseId: rightContentBaseId,
@@ -120,8 +125,28 @@ export default class ViewContentPage extends Component {
         });
     }
 
-    createContent = (type, parentContentBaseId) => {
+    createContent = (e) => {
+        e.preventDefault();
 
+        let parentContentBaseId = this.state.contentBaseId;
+        let currentContentType = this.state.type;
+        let newContentType = '';
+        switch (currentContentType) {
+            case 'Series':
+                newContentType = 'Episode';
+                break;
+            case 'Episode':
+            case 'Frame':
+                newContentType = 'Frame';
+                break;
+            default:
+                console.error('Failed to create new content');
+                return;
+        }
+        this.props.changePage('newContent', {
+            type: newContentType,
+            parentContentBaseId: parentContentBaseId
+        });
     }
 
     render() {
@@ -166,7 +191,7 @@ export default class ViewContentPage extends Component {
                                                 <i className="fas fa-arrow-down fa-2x"></i>
                                             </Fab>
                                                 :
-                                            <Fab>
+                                            <Fab onClick={this.createContent}>
                                                 <i className="fas fa-plus fa-2x"></i>
                                             </Fab>
                                         }

@@ -22,33 +22,50 @@ class NewSeriesForm extends Component {
     handleSubmit = async (event) => {
         event.preventDefault();
 
-        let type = this.state.type;
+        try {
+            let type = this.state.type;
+            let newContentRes;
 
-        switch (type) {
-            case 'Series':
-                let newContentRes = await fetch('/content/create', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        type: 'Series',
-                        title: this.state.title,
-                        description: this.state.description,
-                    })
-                });
-                newContentRes = await newContentRes.json();
-                if (newContentRes.status === 'OK') {
-                    this.props.changePage('viewContentPage', {
-                        initialContentBaseId: newContentRes.content.contentBase.id,
-                        initialSketchId: newContentRes.content.sketch.id
+            switch (type) {
+                case 'Series':
+                    newContentRes = await fetch('/content/create', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            type: 'Series',
+                            title: this.state.title,
+                            description: this.state.description,
+                        })
                     });
-                } else {
-                    console.error('Could not create new content');
-                }
-                break;
-            default:
-                console.error('Invalid content type: ' + type);
+                    break;
+                case 'Episode':
+                    newContentRes = await fetch('/content/create', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            type: 'Episode',
+                            title: this.state.title,
+                            description: this.state.description,
+                            parentSeries: this.props.parentContentBaseId
+                        })
+                    });
+                    break;
+                default:
+                    throw new Error('Invalid content type: ' + type);
+            }
+
+            newContentRes = await newContentRes.json();
+            if (newContentRes.status !== 'OK') throw new Error('Failed to create new content');
+            this.props.changePage('viewContentPage', {
+                initialContentBaseId: newContentRes.content.contentBase.id,
+                initialSketchId: newContentRes.content.sketch.id
+            });
+        } catch (err) {
+            console.error(err);
         }
     }
 

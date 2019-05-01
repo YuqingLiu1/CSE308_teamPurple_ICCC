@@ -5,7 +5,6 @@ import CardDeck from 'react-bootstrap/CardDeck';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
-import Row from 'react-bootstrap/Row';
 
 export default class SearchResultsPage extends Component {
     render() {

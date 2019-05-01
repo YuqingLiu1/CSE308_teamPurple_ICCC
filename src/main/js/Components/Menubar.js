@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form'
 import InputGroup from 'react-bootstrap/InputGroup'
 import Button from 'react-bootstrap/Button'
 import NavDropdown from "react-bootstrap/es/NavDropdown";
+import Spinner from 'react-bootstrap/Spinner';
 
 class Menubar extends Component
 {
@@ -12,12 +13,17 @@ class Menubar extends Component
         super(props);
 
         this.state = {
-            searchText: ''
+            searchText: '',
+            searchLoading: false
         };
     }
 
     search = async (e) => {
         e.preventDefault();
+
+        this.setState({
+            searchLoading: true
+        });
 
         let searchText = this.state.searchText;
 
@@ -31,6 +37,10 @@ class Menubar extends Component
             })
         });
         searchRes = await searchRes.json();
+
+        this.setState({
+            searchLoading: false
+        });
 
         if (searchRes.status !== 'OK') {
             console.error('Search failed');
@@ -62,7 +72,23 @@ class Menubar extends Component
                         <InputGroup>
                             <Form.Control type="text" placeholder="Search..." onChange={this.handleSearchChange} required />
                             <InputGroup.Append>
-                                <Button type='submit' onClick={this.search}><i className="fas fa-search"/></Button>
+                                {
+                                    this.state.searchLoading ?
+                                        <Button variant="primary" disabled>
+                                            <Spinner
+                                                as="span"
+                                                animation="border"
+                                                size="sm"
+                                                role="status"
+                                                aria-hidden="true"
+                                            />
+                                            <span className="sr-only">Loading...</span>
+                                        </Button>
+                                            :
+                                        <Button type='submit' onClick={this.search}>
+                                            <i className="fas fa-search"/>
+                                        </Button>
+                                }
                             </InputGroup.Append>
                         </InputGroup>
                     </Form>

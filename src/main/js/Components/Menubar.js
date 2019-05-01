@@ -21,6 +21,7 @@ class Menubar extends Component
     search = async (e) => {
         e.preventDefault();
 
+        // show search spinner
         this.setState({
             searchLoading: true
         });
@@ -38,6 +39,7 @@ class Menubar extends Component
         });
         searchRes = await searchRes.json();
 
+        // stop showing search spinner
         this.setState({
             searchLoading: false
         });

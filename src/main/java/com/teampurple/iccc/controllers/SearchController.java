@@ -134,7 +134,7 @@ public class SearchController {
     public Response search(@RequestBody Category category) {
         if (category.getType() == null && category.getCreator() == null) {
             // for now this means a general search from the search bar is being performed, e.g. not from a category
-            String searchText = category.getSearchText();
+            String searchText = category.getSearchText().trim();
             if (searchText.length() == 0) {
                 return new Response(Response.ERROR, "Can't search for empty string");
             }

@@ -5,6 +5,7 @@ import CardDeck from 'react-bootstrap/CardDeck';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
+import Button from 'react-bootstrap/Button';
 
 export default class SearchResultsPage extends Component {
     render() {
@@ -42,7 +43,14 @@ export default class SearchResultsPage extends Component {
                             <CardDeck>
                                 {seriesContent.map((seriesContent) => {
                                     return (
-                                        <Card key={seriesContent.contentBase.id}>
+                                        <Card
+                                            key={seriesContent.contentBase.id}
+                                            onClick={() => {this.props.changePage('viewContentPage', {
+                                                initialContentBaseId: seriesContent.contentBase.id,
+                                                initialSketchId: seriesContent.sketch.id
+                                            })}}
+                                        >
+                                            <Card.Img variant='top' src={seriesContent.sketch.thumbnail} />
                                             <Card.Body>
                                                 <Card.Title>{seriesContent.generalBase.title}</Card.Title>
                                                 <Card.Text>{seriesContent.generalBase.description}</Card.Text>

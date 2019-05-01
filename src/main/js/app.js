@@ -108,7 +108,7 @@ class App extends Component
 			newContent: <NewSeriesPage changePage={this.changePage} {...this.state.pageData} />,
 			test      : <TestPage />,
 			viewContentPage: <ViewContentPage changePage={this.changePage} loggedIn={this.state.loggedIn} {...this.state.pageData} />,
-			searchResultsPage: <SearchResultsPage {...this.state.pageData} />
+			searchResultsPage: <SearchResultsPage changePage={this.changePage} {...this.state.pageData} />
 		}
 		return (
 			<>

@@ -1,3 +1,13 @@
+input.createInput{
+  text-align: center;
+  border-radius: 18px;
+  border: solid 1px lightgray;
+  padding: 23px;
+  height: 15px;
+  min-width: 20px;
+  width: 50%;
+  resize: horizontal;
+}
 div.changePasswordDiv{
   text-align: center;
   color: black;

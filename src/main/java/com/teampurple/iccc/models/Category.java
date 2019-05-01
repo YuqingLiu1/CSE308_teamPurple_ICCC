@@ -8,9 +8,25 @@ import java.util.*;
 public class Category {
     @Id
     private String id;
-    private String user;
+    // User ID of the user this category belongs to
+    private String userRef;
+    // the name of this category as it appears on the frontend
     private String name;
-    private List<String> filters = new ArrayList<>();
+    // the type of content defined by this category; either "User", "Series", "Episode", "Frame", or null for all
+    // content
+    private String type;
+    // User ID of the user who created the content found by this category
+    private String creator;
+    // the text used for searching in user names/bios and/or content titles/descriptions
+    private String searchText;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getId() {
         return id;
@@ -20,12 +36,12 @@ public class Category {
         this.id = id;
     }
 
-    public String getUser() {
-        return user;
+    public String getUserRef() {
+        return userRef;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setUserRef(String userRef) {
+        this.userRef = userRef;
     }
 
     public String getName() {
@@ -36,12 +52,19 @@ public class Category {
         this.name = name;
     }
 
-    public List<String> getFilters() {
-        return filters;
+    public String getCreator() {
+        return creator;
     }
 
-    public void setFilters(List<String> filters) {
-        this.filters = filters;
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 
+    public String getSearchText() {
+        return searchText;
+    }
+
+    public void setSearchText(String searchText) {
+        this.searchText = searchText;
+    }
 }

@@ -145,9 +145,26 @@ public class SearchController {
             loggedIn = false;
         }
 
-        if (category.getType() == null && category.getCreator() == null) {
+        // create the empty search result to populate and return
+        List<AggregateInfo> users = new ArrayList<>();
+        List<AggregateInfo> series = new ArrayList<>();
+        List<AggregateInfo> episodes = new ArrayList<>();
+        List<AggregateInfo> frames = new ArrayList<>();
+        SearchResult searchResult = new SearchResult();
+        searchResult.setUsers(users);
+        searchResult.setSeries(series);
+        searchResult.setEpisodes(episodes);
+        searchResult.setFrames(frames);
+
+        String type = category.getType();
+        String creatorUserId = category.getCreator();
+        String searchText = category.getSearchText();
+        if (searchText != null) {
+            searchText = searchText.trim();
+        }
+
+        if (type == null && creatorUserId == null) {
             // for now this means a general search from the search bar is being performed, e.g. not from a category
-            String searchText = category.getSearchText().trim();
             if (searchText.length() == 0) {
                 return new Response(Response.ERROR, "Can't search for empty string");
             }
@@ -155,17 +172,6 @@ public class SearchController {
 
             // get all the GeneralBases that match the search
             List<GeneralBase> allGeneralBases = generalBaseRepository.findAllBy(criteria);
-
-            // create the empty search result to populate and return
-            List<AggregateInfo> users = new ArrayList<>();
-            List<AggregateInfo> series = new ArrayList<>();
-            List<AggregateInfo> episodes = new ArrayList<>();
-            List<AggregateInfo> frames = new ArrayList<>();
-            SearchResult searchResult = new SearchResult();
-            searchResult.setUsers(users);
-            searchResult.setSeries(series);
-            searchResult.setEpisodes(episodes);
-            searchResult.setFrames(frames);
 
             // create the AggregateInfo items for each search result
             List<AggregateInfo> aggregateInfoItems = new ArrayList<>();
@@ -240,9 +246,83 @@ public class SearchController {
             }
 
             return new Response(Response.OK, searchResult);
-        }
+        } else {
+            // search from a category is being requested
 
-        return new Response(Response.ERROR);   // dummy return
+            if (type == null) {
+                // search for all type of content (but not users)
+                List<ContentBase> allContentBases = null;
+                if (creatorUserId != null) {
+                    // look for all content by a specific user
+                    allContentBases = contentBaseRepository.findVisibleByAuthor(creatorUserId);
+                    if (loggedIn && currentUser.getId().equals(creatorUserId)) {
+                        // if the creator is the current logged in user, then even their private content is "visible"
+                        allContentBases.addAll(contentBaseRepository.findByAuthor(creatorUserId));
+                    }
+
+                    List<AggregateInfo> aggregateInfoItems = new ArrayList<>();
+                    for (ContentBase contentBase : allContentBases) {
+                        AggregateInfo aggregateInfo = new AggregateInfo();
+                        aggregateInfo.setContentBase(contentBase);
+                        aggregateInfoItems.add(aggregateInfo);
+                    }
+
+                    for (AggregateInfo aggregateInfoItem : aggregateInfoItems) {
+                        ContentBase contentBase = aggregateInfoItem.getContentBase();
+
+                        Optional<GeneralBase> generalBaseOptional = generalBaseRepository.findById(contentBase.getGeneralBaseRef());
+                        if (!generalBaseOptional.isPresent()) {
+                            return new Response(Response.ERROR, "Could not find GeneralBase for ContentBase");
+                        }
+                        GeneralBase generalBase = generalBaseOptional.get();
+                        aggregateInfoItem.setGeneralBase(generalBase);
+
+                        Optional<Sketch> sketchOptional = sketchRepository.findById(generalBase.getSketch());
+                        if (!sketchOptional.isPresent()) {
+                            return new Response(Response.ERROR, "Could not find Sketch for GeneralBase");
+                        }
+                        Sketch sketch = sketchOptional.get();
+                        aggregateInfoItem.setSketch(sketch);
+
+                        aggregateInfoItem.setType(contentBase.getType());
+
+                        switch (aggregateInfoItem.getType()) {
+                            case ContentBase.SERIES:
+                                series.add(aggregateInfoItem);
+                                break;
+                            case ContentBase.EPISODE:
+                                episodes.add(aggregateInfoItem);
+                                break;
+                            case ContentBase.FRAME:
+                                frames.add(aggregateInfoItem);
+                                break;
+                            default:
+                                return new Response(Response.ERROR, "Invalid type: " + aggregateInfoItem.getType());
+                        }
+                    }
+
+                    return new Response(Response.OK, searchResult);
+                } else {
+                    // look for all content regardless of who created it
+                }
+            } else {
+                // search for users or for a specific type of content
+                switch (type) {
+                    case GeneralBase.USER_TYPE:
+                        break;
+                    case ContentBase.SERIES:
+                        break;
+                    case ContentBase.EPISODE:
+                        break;
+                    case ContentBase.FRAME:
+                        break;
+                    default:
+                        return new Response(Response.ERROR, "Invalid search type: " + type);
+                }
+            }
+
+            return new Response(Response.ERROR);   // dummy return
+        }
     }
 
 }

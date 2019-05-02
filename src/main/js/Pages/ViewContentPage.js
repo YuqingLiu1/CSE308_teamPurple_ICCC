@@ -30,7 +30,8 @@ export default class ViewContentPage extends Component {
             comments: [],
             editable: false,
             title: '',
-            description: ''
+            description: '',
+            reload: false
         }
     }
 
@@ -80,7 +81,7 @@ export default class ViewContentPage extends Component {
     async componentDidUpdate(prevProps, prevState, snapshot) {
         try {
             // only re-fetch data if the ContentBase ID has changed
-            if (this.state.contentBaseId !== prevState.contentBaseId) {
+            if (this.state.reload || this.state.contentBaseId !== prevState.contentBaseId) {
                 let contentRes = await fetch('/content/info?id=' + this.state.contentBaseId);
                 contentRes = await contentRes.json();
                 if (contentRes.status !== 'OK') throw new Error('Something went wrong fetching content info');
@@ -112,7 +113,8 @@ export default class ViewContentPage extends Component {
                     childContentBaseId: childContentBaseId,
                     editable: editable,
                     title: title,
-                    description: description
+                    description: description,
+                    reload: false
                 });
             }
         } catch (err) {
@@ -148,7 +150,9 @@ export default class ViewContentPage extends Component {
 
             let sketchId = this.state.sketchId;
 
-            this.props.refresh();
+            this.setState({
+                reload: true
+            });
             this.props.changePage('viewContentPage', {
                 initialContentBaseId: id,
                 initialSketchId: sketchId

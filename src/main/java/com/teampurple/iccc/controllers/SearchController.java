@@ -248,60 +248,17 @@ public class SearchController {
             return new Response(Response.OK, searchResult);
         } else {
             // search from a category is being requested
+            List<ContentBase> allContentBases = null;
 
             if (type == null) {
                 // search for all type of content (but not users)
-                List<ContentBase> allContentBases = null;
                 if (creatorUserId != null) {
                     // look for all content by a specific user
-                    allContentBases = contentBaseRepository.findVisibleByAuthor(creatorUserId);
+                    allContentBases = contentBaseRepository.findByPublicAndAuthor(false, creatorUserId);
                     if (loggedIn && currentUser.getId().equals(creatorUserId)) {
                         // if the creator is the current logged in user, then even their private content is "visible"
                         allContentBases.addAll(contentBaseRepository.findByAuthor(creatorUserId));
                     }
-
-                    List<AggregateInfo> aggregateInfoItems = new ArrayList<>();
-                    for (ContentBase contentBase : allContentBases) {
-                        AggregateInfo aggregateInfo = new AggregateInfo();
-                        aggregateInfo.setContentBase(contentBase);
-                        aggregateInfoItems.add(aggregateInfo);
-                    }
-
-                    for (AggregateInfo aggregateInfoItem : aggregateInfoItems) {
-                        ContentBase contentBase = aggregateInfoItem.getContentBase();
-
-                        Optional<GeneralBase> generalBaseOptional = generalBaseRepository.findById(contentBase.getGeneralBaseRef());
-                        if (!generalBaseOptional.isPresent()) {
-                            return new Response(Response.ERROR, "Could not find GeneralBase for ContentBase");
-                        }
-                        GeneralBase generalBase = generalBaseOptional.get();
-                        aggregateInfoItem.setGeneralBase(generalBase);
-
-                        Optional<Sketch> sketchOptional = sketchRepository.findById(generalBase.getSketch());
-                        if (!sketchOptional.isPresent()) {
-                            return new Response(Response.ERROR, "Could not find Sketch for GeneralBase");
-                        }
-                        Sketch sketch = sketchOptional.get();
-                        aggregateInfoItem.setSketch(sketch);
-
-                        aggregateInfoItem.setType(contentBase.getType());
-
-                        switch (aggregateInfoItem.getType()) {
-                            case ContentBase.SERIES:
-                                series.add(aggregateInfoItem);
-                                break;
-                            case ContentBase.EPISODE:
-                                episodes.add(aggregateInfoItem);
-                                break;
-                            case ContentBase.FRAME:
-                                frames.add(aggregateInfoItem);
-                                break;
-                            default:
-                                return new Response(Response.ERROR, "Invalid type: " + aggregateInfoItem.getType());
-                        }
-                    }
-
-                    return new Response(Response.OK, searchResult);
                 } else {
                     // look for all content regardless of who created it
                 }
@@ -311,17 +268,76 @@ public class SearchController {
                     case GeneralBase.USER_TYPE:
                         break;
                     case ContentBase.SERIES:
-                        break;
                     case ContentBase.EPISODE:
-                        break;
                     case ContentBase.FRAME:
+                        if (creatorUserId != null) {
+                            // search for content by a specific user
+
+                            // get all the public content of the specified type from the specified user
+                            allContentBases = contentBaseRepository.findByPublicAndTypeAndAuthor(true, type, creatorUserId);
+                            if (loggedIn && currentUser.getId().equals(creatorUserId)) {
+                                // if user is logged in and they request to see their own content then they get to see
+                                // their own private content as well
+                                allContentBases.addAll(contentBaseRepository.findByPublicAndTypeAndAuthor(false, type, creatorUserId));
+                            }
+                        } else {
+                            // search for content regardless of who created it
+
+                            // get all the public content of the specified type from all users
+                            allContentBases = contentBaseRepository.findByPublicAndType(true, type);
+                            if (loggedIn) {
+                                // if user is logged in then they get to see their own private content as well
+                                allContentBases.addAll(contentBaseRepository.findByPublicAndTypeAndAuthor(false, type, currentUser.getId()));
+                            }
+                        }
                         break;
                     default:
                         return new Response(Response.ERROR, "Invalid search type: " + type);
                 }
             }
 
-            return new Response(Response.ERROR);   // dummy return
+            List<AggregateInfo> aggregateInfoItems = new ArrayList<>();
+            for (ContentBase contentBase : allContentBases) {
+                AggregateInfo aggregateInfo = new AggregateInfo();
+                aggregateInfo.setContentBase(contentBase);
+                aggregateInfoItems.add(aggregateInfo);
+            }
+
+            for (AggregateInfo aggregateInfoItem : aggregateInfoItems) {
+                ContentBase contentBase = aggregateInfoItem.getContentBase();
+
+                Optional<GeneralBase> generalBaseOptional = generalBaseRepository.findById(contentBase.getGeneralBaseRef());
+                if (!generalBaseOptional.isPresent()) {
+                    return new Response(Response.ERROR, "Could not find GeneralBase for ContentBase");
+                }
+                GeneralBase generalBase = generalBaseOptional.get();
+                aggregateInfoItem.setGeneralBase(generalBase);
+
+                Optional<Sketch> sketchOptional = sketchRepository.findById(generalBase.getSketch());
+                if (!sketchOptional.isPresent()) {
+                    return new Response(Response.ERROR, "Could not find Sketch for GeneralBase");
+                }
+                Sketch sketch = sketchOptional.get();
+                aggregateInfoItem.setSketch(sketch);
+
+                aggregateInfoItem.setType(contentBase.getType());
+
+                switch (aggregateInfoItem.getType()) {
+                    case ContentBase.SERIES:
+                        series.add(aggregateInfoItem);
+                        break;
+                    case ContentBase.EPISODE:
+                        episodes.add(aggregateInfoItem);
+                        break;
+                    case ContentBase.FRAME:
+                        frames.add(aggregateInfoItem);
+                        break;
+                    default:
+                        return new Response(Response.ERROR, "Invalid type: " + aggregateInfoItem.getType());
+                }
+            }
+
+            return new Response(Response.OK, searchResult);
         }
     }
 

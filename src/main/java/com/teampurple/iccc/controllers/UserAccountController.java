@@ -314,6 +314,27 @@ public class UserAccountController {
         return "{\"id\":\"" + currentUser.getGeneralBaseRef() + "\"}";
     }
 
+    /**
+     * Description:
+     *   - get the User ID of the current logged in user
+     *
+     * Request params:
+     *   - none
+     *
+     * Returns:
+     *   - status: String ('OK' or 'error')
+     *   - content (if status is 'OK'): String (User ID of current logged in user)
+     */
+    @GetMapping("/user/id")
+    public Response getUserId() {
+        User currentUser = auth.getCurrentUser();
+        if (currentUser == null) {
+            return new Response(Response.ERROR, "Could not find current logged in user");
+        }
+
+        return new Response(Response.OK, currentUser.getId());
+    }
+
     // TODO: remove this, as the functionality already exists in /user/edit
     /**
      * Description:

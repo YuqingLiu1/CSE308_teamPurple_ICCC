@@ -30,10 +30,9 @@ class App extends Component
 			username     : '',
 			userInfoError: false,
 			generalBaseId: '',
+			loggedInUserId: '',
 			pageData     : {}
 		}
-		this.changePage=this.changePage.bind(this)
-		this.login     =this.login.bind(this)
 	}
 
 	componentDidMount()
@@ -41,7 +40,7 @@ class App extends Component
 		this.refresh()
 	}
 
-	changePage(page, pageData)
+	changePage = (page, pageData) =>
 	{
 		this.setState({
 			page: page,
@@ -83,7 +82,7 @@ class App extends Component
 			this.setState({userInfoError: true})
 		}
 	}
-	login()
+	login = () =>
 	{
 		this.setState({loggedIn: true})
 	}

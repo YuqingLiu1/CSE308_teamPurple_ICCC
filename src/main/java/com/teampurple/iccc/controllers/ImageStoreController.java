@@ -46,7 +46,7 @@ public class ImageStoreController {
             }
 
             String encodedImage = Base64.getEncoder().encodeToString(file.getBytes());
-            userSketch.setThumbnail(encodedImage);
+            userSketch.setThumbnail("data:" + file.getContentType() + ";base64," + encodedImage);
             sketchRepository.save(userSketch);
             return new Response(Response.OK);
         } catch (Exception e) {

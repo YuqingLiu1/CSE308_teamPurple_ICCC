@@ -111,9 +111,6 @@ class App extends Component
 			userInfo  :
 				<UserInfo
 					loggedInUserId={loggedInUserId}
-					bio={this.state.bio}
-					username={this.state.username}
-					error={this.state.userInfoError}
 					changePage={this.changePage}
 				/>,
 			login     : <LoginPage changePage={this.changePage} login={this.login}/>,

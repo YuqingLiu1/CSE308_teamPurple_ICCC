@@ -41,8 +41,8 @@ public class SearchController {
      *     in, content belonging to that user
      *
      * Request params:
-     *   - type: String (the type of content you want to see; either "User", "Series", "Episode", "Frame", or
-     *           null for all content (note this would not include users),
+     *   - type: String (the type of content you want to see; either "User", "Series", "Episode", "Frame", "Content" for
+     *           all content (note this would not include users), or "All" for everything (including users)
      *   - creator: String (User ID of the content creator that must be the author of the content returned; null
      *              if there is no restriction on who created the content),
      *   - searchText: String (the text to appear in the title/description of the content returned, or the
@@ -163,6 +163,7 @@ public class SearchController {
             searchText = searchText.trim();
         }
 
+        // TODO: integrate "search bar search" into general searches, like those done by categories
         if (type == null && creatorUserId == null) {
             // for now this means a general search from the search bar is being performed, e.g. not from a category
             if (searchText.length() == 0) {
@@ -250,7 +251,7 @@ public class SearchController {
             // search from a category is being requested
             List<ContentBase> allContentBases = null;
 
-            if (type == null) {
+            if (type.equals(NewCategoryItem.ALL_TYPE)) {
                 // search for all types of content (but not users)
                 if (creatorUserId != null) {
                     // get all the public content from the specified user
@@ -261,6 +262,11 @@ public class SearchController {
                     }
                 } else {
                     // look for all content regardless of who created it
+                    allContentBases = contentBaseRepository.findByPublic(true);
+                    if (loggedIn) {
+                        // if user is logged in then they get to see their own private content as well
+                        allContentBases.addAll(contentBaseRepository.findByPublicAndAuthor(false, currentUser.getId()));
+                    }
                 }
             } else {
                 // search for users or for a specific type of content

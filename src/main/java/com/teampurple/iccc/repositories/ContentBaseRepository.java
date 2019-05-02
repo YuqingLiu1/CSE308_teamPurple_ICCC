@@ -10,6 +10,9 @@ public interface ContentBaseRepository extends MongoRepository<ContentBase, Stri
 
     List<ContentBase> findByAuthor(String userId);
 
+    @Query("{ '_public': ?0 }")
+    List<ContentBase> findByPublic(boolean _public);
+
     @Query("{ '_public': ?0, 'type': ?1 }")
     List<ContentBase> findByPublicAndType(boolean _public, String type);
 

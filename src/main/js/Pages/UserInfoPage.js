@@ -9,6 +9,7 @@ import DBAwareEdiText from "../Components/DBAwareEdiText"
 import ProfileCard from "../Components/ProfileCard"
 import UploadProfilePicture from "../Components/UploadProfilePicture"
 import Category from '../Components/Category'
+import Category2 from "../Components/Category2";
 
 export default class UserInfoPage extends Component {
 	constructor(props) {
@@ -20,7 +21,8 @@ export default class UserInfoPage extends Component {
 			bio: '',
 			userThumbnail: '',
 			reload: false,
-			items: []   // don't keep this; let categories load their own content
+			items: [],   // don't keep this; let categories load their own content
+			userCategoryIds: []
 		};
 	}
 
@@ -55,12 +57,14 @@ export default class UserInfoPage extends Component {
 			let userThumbnail = userInfoRes.content.sketch.thumbnail;
 			let username = userInfoRes.content.generalBase.title;
 			let bio = userInfoRes.content.generalBase.description;
+			let userCategoryIds = userInfoRes.content.user.userCategories;
 
 			this.setState({
 				items: items,
 				userThumbnail: userThumbnail,
 				username: username,
-				bio: bio
+				bio: bio,
+				userCategoryIds: userCategoryIds
 			});
 		} catch (err) {
 			console.error(err);
@@ -124,6 +128,8 @@ export default class UserInfoPage extends Component {
 		let username = this.state.username;
 		let bio = this.state.bio;
 		let items = this.state.items;
+		let userCategoryIds = this.state.userCategoryIds;
+		let changePage = this.props.changePage;
 		return (
 			<Container className="mt-5">
 				<Jumbotron>
@@ -152,7 +158,14 @@ export default class UserInfoPage extends Component {
 							</Col>
 						</Row>
 						<Row className='mt-5'>
-							<Category items={items} title={'My Series'} loggedIn={false}/>
+							{/*<Category items={items} title={'My Series'} loggedIn={false}/>*/}
+							{
+								userCategoryIds.map((userCategoryId) => {
+									return (
+										<Category2 key={userCategoryId} loggedIn={true} categoryId={userCategoryId} changePage={changePage} />
+									);
+								})
+							}
 						</Row>
 					</Container>
 				</Jumbotron>

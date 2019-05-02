@@ -1,38 +1,8 @@
-// import Thumbnail from './Components/thumbnail'
-import Category from './Category'
-// import React, {Component} from 'react'
-// import Menubar from './Components/menubar'
-// import Userinfo from './Components/userinfo'
-//
-// class App extends Component
-// {
-// 	render()
-// 	{
-// 		return <>
-// 			<link
-// 				rel="stylesheet"
-// 				href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-// 				integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-// 				crossOrigin="anonymous"
-// 			/>
-// 			<link
-// 				rel="stylesheet"
-// 				href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
-// 				integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
-// 				crossOrigin="anonymous"
-// 			/>
-// 			<div className="App">
-// 				<Category title="Hello"/>
-// 			</div>
-// 		</>
-// 	}
-// }
-//
-// export default App
+require('@babel/polyfill')
 
 import React, {Component} from "react"
-import ReactDOM from "react-dom"
 import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd"
+import Category from './Category'
 
 // fake data generator
 const getItems=count=>
@@ -74,7 +44,7 @@ const getListStyle=isDraggingOver=>({
 	width     : '100%'
 })
 
-class App extends Component
+export default class App extends Component
 {
 	constructor(props)
 	{
@@ -142,7 +112,3 @@ class App extends Component
 		)
 	}
 }
-
-// Put the thing into the DOM!
-// ReactDOM.render(<App />, document.getElementById("root"));
-export default App

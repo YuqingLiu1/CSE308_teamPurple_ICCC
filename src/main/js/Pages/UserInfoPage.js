@@ -1,6 +1,6 @@
 require("@babel/polyfill")
 
-import React, {useEffect, useState} from 'react'
+import React, { Component } from 'react'
 import Jumbotron from 'react-bootstrap/Jumbotron'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
@@ -9,85 +9,92 @@ import DBAwareEdiText from "../Components/DBAwareEdiText"
 import ProfileCard from "../Components/ProfileCard"
 import UploadProfilePicture from "../Components/UploadProfilePicture"
 import Category from '../Components/Category'
-import doFetch from '../Helpers/general.js'
 
-export default function({bio, error, profilePictureUrl, username, changePage})
-{
-	const [refresh, setRefresh]=useState('false')
-	const [items, setItems]=useState([])
+export default class UserInfoPage extends Component {
+	constructor(props) {
+		super(props);
 
-	function f()
-	{
-		async function refreshItems()
-		{
-			setItems(JSON.parse(await doFetch("test/user/series")).content.seriesList.map(x=>
-				{
-					return {
-						title        : x.generalBase.title,
-						thumbnail    : x.sketch.thumbnail,
-						sketchId     : x.sketch.id,
-						generalBaseId: x.generalBase.id,
-						contentBaseId: x.contentBase.id,
-						onClick(){changePage('viewContentPage', {
-							initialContentBaseId: x.contentBase.id,
-							initialSketchId: x.sketch.id
-						})}
+		this.state = {
+			userId: props.userId,
+			userThumbnail: '',
+			items: []   // don't keep this; let categories load their own content
+		};
+	}
+
+	async componentDidMount() {
+		try {
+			let seriesRes = await fetch('/test/user/series');
+			seriesRes = await seriesRes.json();
+			if (seriesRes.status !== 'OK') throw new Error('Failed to fetch user\'s series');
+
+			let changePage = this.props.changePage;
+
+			let items = seriesRes.content.seriesList.map((series) => {
+				return {
+					title: series.generalBase.title,
+					thumbnail: series.sketch.thumbnail,
+					sketchId: series.sketch.id,
+					generalBaseId: series.generalBase.id,
+					contentBaseId: series.contentBase.id,
+					onClick() {
+						changePage('viewContentPage', {
+							initialContentBaseId: series.contentBase.id,
+							initialSketchId: series.sketch.id
+						})
 					}
-				})
-			)
+				}
+			});
+
+			let userInfoRes = await fetch('/user/info');
+			userInfoRes = await userInfoRes.json();
+			if (userInfoRes.status !== 'OK') throw new Error('Failed to fetch current user info');
+
+			let userThumbnail = userInfoRes.content.sketch.thumbnail;
+
+			this.setState({
+				items: items,
+				userThumbnail: userThumbnail
+			});
+		} catch (err) {
+			console.error(err);
 		}
-		refreshItems()
 	}
 
-	useEffect(f)
-
-	if(refresh)
-	{
-		setRefresh(false)
-		return <></>
-	}
-	if(error)
-	{
-		return <Container className="mt-5">
-			<Jumbotron>
-				<Container>
-					<Row className="justify-content-center">
-						<p>Sorry, something went wrong :(<i className="far fa-frown"/></p>
-					</Row>
-				</Container>
-			</Jumbotron>
-		</Container>
-	}
-	else
-	{
-		return <Container className="mt-5">
-			<Jumbotron>
-				<Container>
-					<Row>
-						<Col xs={5} style={{textAlign: "center"}}>
-							<Row>
-								<ProfileCard
-									profileThumbnailUrl={profilePictureUrl}
-									username={username}
+	render() {
+		let userThumbnail = this.state.userThumbnail;
+		let username = this.props.username;
+		let bio = this.props.bio;
+		let items = this.state.items;
+		return (
+			<Container className="mt-5">
+				<Jumbotron>
+					<Container>
+						<Row>
+							<Col xs={5} style={{textAlign: "center"}}>
+								<Row>
+									<ProfileCard
+										profileThumbnailUrl={userThumbnail}
+										username={username}
+									/>
+									<UploadProfilePicture uploadType='profile' refresh={()=>setRefresh(true)}/>
+								</Row>
+							</Col>
+							<Col xs={7}>
+								<h1>Bio:</h1>
+								<DBAwareEdiText
+									inputProps={{rows: 5}}
+									type="textarea"
+									name="bio"
+									value={bio}
 								/>
-								<UploadProfilePicture uploadType='profile' refresh={()=>setRefresh(true)}/>
-							</Row>
-						</Col>
-						<Col xs={7}>
-							<h1>Bio:</h1>
-							<DBAwareEdiText
-								inputProps={{rows: 5}}
-								type="textarea"
-								name="bio"
-								value={bio}
-							/>
-						</Col>
-					</Row>
-					<Row className='mt-5'>
-						<Category items={items} title={'My Series'} loggedIn={false}/>
-					</Row>
-				</Container>
-			</Jumbotron>
-		</Container>
+							</Col>
+						</Row>
+						<Row className='mt-5'>
+							<Category items={items} title={'My Series'} loggedIn={false}/>
+						</Row>
+					</Container>
+				</Jumbotron>
+			</Container>
+		);
 	}
 }

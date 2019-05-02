@@ -242,7 +242,6 @@ public class SearchController {
             return new Response(Response.OK, searchResult);
         }
 
-
         return new Response(Response.ERROR);   // dummy return
     }
 

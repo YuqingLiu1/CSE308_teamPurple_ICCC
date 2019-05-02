@@ -15,16 +15,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RestController
 public class UserAccountController {
 
     // default profile picture
-    public static final String DEFAULT_USER_THUMBNAIL = "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";
+    public static final String DEFAULT_USER_THUMBNAIL = "data:image/png;base64,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";
 
     @Autowired
     private UserRepository users;
@@ -67,10 +64,6 @@ public class UserAccountController {
     //     return new Response(Response.OK,userInfo);
     // }
 
-
-    // @GetMapping("/general/info")
-
-
     /**
      * Description:
      *   - get information about current logged in user
@@ -83,37 +76,37 @@ public class UserAccountController {
      *   - status: String ('OK' or 'error')
      *   - content (if status is 'OK'):
      *       {
-     *           username: String (the username of the current logged in user),
-     *           bio: String (the bio of the current logged in user),
-     *           email: String (the email of the current logged in user),
-     *           password: String (the hashed password of the current logged in user),
-     *           sketchRef: String (Sketch ID of the sketch associated with the current logged in user),
-     *           userCategories: [ array of Category IDs for categories on the user's account page ],
-     *           homeCategories: [ array of Category IDs for categories on the user's home page ],
-     *           user:
-     *             {
-     *                 id: String (User ID of the current logged in user),
-     *                 generalBaseRef: String (GeneralBase ID of the current logged in user),
-     *                 email: String (email of the current logged in user),
-     *                 password: String (hashed password of the current loggedd in user),
-     *                 liked: [ array of GeneralBase IDs of things the current logged in user has liked ],
-     *                 content: [ array of ContentBase IDs of content created by the current logged in user ],
-     *                 userCategories: [ array of Category IDs for categories on the user's account page ],
-     *                 homeCategories: [ array of Category IDs for categories on the user's home page ]
-     *             },
+     *           type: String ("User"),
      *           generalBase:
      *             {
-     *                 id: String (GeneralBase ID of the current logged in user),
-     *                 typeRef: String (User ID of the current logged in user),
-     *                 type: String ("User'),
-     *                 sketch: String (Sketch ID of the current logged in user's profile picture sketch),
-     *                 title: String (username of the current logged in user),
-     *                 description: String (bio of the current logged in user),
-     *                 dateCreated: String (ISO 8601 datetime of when the user account was created),
-     *                 dateLastEdited: String (ISO 8601 datetime of when the user account was last edited),
-     *                 children: [ array of ContentBase IDs of the current logged in user's series ],
-     *                 likers: [ array of User IDs of users who have liked the current logged in user ],
-     *                 comments: [ array of Comment IDs of the current logged in user's comments ]
+     *                  id: String (GeneralBase ID of this GeneralBase),
+     *                  typeRef: String (User ID of the User for this GeneralBase),
+     *                  type: String ("User"),
+     *                  sketch: String (Sketch ID of the Sketch for this GeneralBase),
+     *                  title: String (username of this user),
+     *                  description: String (bio of this user),
+     *                  dateCreated: String (ISO 8601 datetime of when this user was created),
+     *                  dateLastEdited: String (ISO 8601 datetime of when this user was last edited),
+     *                  children: [ array of ContentBase IDs for this user's series ],
+     *                  likers: [ array of User IDs of users who have liked this user ],
+     *                  comments: [ array of Comment IDs of this user's comments ]
+     *             },
+     *           contentBase: null,
+     *           user:
+     *             {
+     *                  id: String (User ID of this User),
+     *                  generalBaseRef: String (GeneralBase ID of this user),
+     *                  email: String (email of this user),
+     *                  password: String (hashed password of this user),
+     *                  liked: [ array of GeneralBase IDs of things this user has liked ],
+     *                  userCategories: [ array of Category IDs for categories on this user's profile page ],
+     *                  homeCategories: [ array of Category IDs for categories on this user's home page ]
+     *             },
+     *           sketch:
+     *             {
+     *                  id: String (Sketch ID of this user's sketch),
+     *                  thumbnail: String (base 64 encoded image data of this user's sketch),
+     *                  data: String (JSON stringified image data for this user's sketch)
      *             }
      *       }
      */
@@ -126,26 +119,19 @@ public class UserAccountController {
             return new Response(Response.ERROR);
         }
 
-        // get the user's categories
-        List<Category> userCategories = getCategories(currentUser.getUserCategories());
+        Optional<Sketch> sketchOptional = sketchRepository.findById(currentGeneralBase.getSketch());
+        if (!sketchOptional.isPresent()) {
+            return new Response(Response.ERROR, "Could not find Sketch for current user");
+        }
+        Sketch sketch = sketchOptional.get();
 
-        // get the default "home" categories
-        List<Category> homeCategories = getCategories(currentUser.getHomeCategories());
+        AggregateInfo aggregateInfo = new AggregateInfo();
+        aggregateInfo.setType(GeneralBase.USER_TYPE);
+        aggregateInfo.setGeneralBase(currentGeneralBase);
+        aggregateInfo.setUser(currentUser);
+        aggregateInfo.setSketch(sketch);
 
-        UserInfo userInfo = new UserInfo();
-
-        userInfo.setGeneralBase(currentGeneralBase);
-        userInfo.setUsername(currentGeneralBase.getTitle());
-        userInfo.setBio(currentGeneralBase.getDescription());
-        userInfo.setEmail(currentUser.getEmail());
-        userInfo.setPassword(currentUser.getPassword());
-        userInfo.setUserCategories(userCategories);
-        userInfo.setUserCategories(userCategories);
-        userInfo.setHomeCategories(homeCategories);
-        userInfo.setSketchRef(currentGeneralBase.getSketch());
-        userInfo.setUser(currentUser);
-
-        return new Response(Response.OK, userInfo);
+        return new Response(Response.OK, aggregateInfo);
     }
 
     // TODO: handle updating categories, liked content/users, and comments

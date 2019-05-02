@@ -24,6 +24,7 @@ export default class SearchResultsPage extends Component {
                                 {userContent.map((userContent) => {
                                     return (
                                         <Card key={userContent.user.id}>
+                                            <Card.Img variant='top' src={userContent.sketch.thumbnail} />
                                             <Card.Body>
                                                 <Card.Title>{userContent.generalBase.title}</Card.Title>
                                                 <Card.Text>{userContent.generalBase.description}</Card.Text>

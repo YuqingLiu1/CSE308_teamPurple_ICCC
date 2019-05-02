@@ -15,7 +15,9 @@ export default class UserInfoPage extends Component {
 		super(props);
 
 		this.state = {
-			userId: props.userId,
+			userId: props.loggedInUserId,
+			username: '',
+			bio: '',
 			userThumbnail: '',
 			items: []   // don't keep this; let categories load their own content
 		};
@@ -50,10 +52,14 @@ export default class UserInfoPage extends Component {
 			if (userInfoRes.status !== 'OK') throw new Error('Failed to fetch current user info');
 
 			let userThumbnail = userInfoRes.content.sketch.thumbnail;
+			let username = userInfoRes.content.generalBase.title;
+			let bio = userInfoRes.content.generalBase.description;
 
 			this.setState({
 				items: items,
-				userThumbnail: userThumbnail
+				userThumbnail: userThumbnail,
+				username: username,
+				bio: bio
 			});
 		} catch (err) {
 			console.error(err);
@@ -62,8 +68,8 @@ export default class UserInfoPage extends Component {
 
 	render() {
 		let userThumbnail = this.state.userThumbnail;
-		let username = this.props.username;
-		let bio = this.props.bio;
+		let username = this.state.username;
+		let bio = this.state.bio;
 		let items = this.state.items;
 		return (
 			<Container className="mt-5">
@@ -81,12 +87,15 @@ export default class UserInfoPage extends Component {
 							</Col>
 							<Col xs={7}>
 								<h1>Bio:</h1>
-								<DBAwareEdiText
-									inputProps={{rows: 5}}
-									type="textarea"
-									name="bio"
-									value={bio}
-								/>
+								{
+									username &&
+										<DBAwareEdiText
+											inputProps={{rows: 5}}
+											type="textarea"
+											name="bio"
+											value={bio}
+										/>
+								}
 							</Col>
 						</Row>
 						<Row className='mt-5'>

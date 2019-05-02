@@ -82,23 +82,37 @@ class App extends Component
 			this.setState({userInfoError: true})
 		}
 	}
-	login = () =>
+
+	login = async () =>
 	{
-		this.setState({loggedIn: true})
+		try {
+			let userIdRes = await fetch('/user/id');
+			userIdRes = await userIdRes.json();
+			if (userIdRes.status !== 'OK') throw new Error('Failed to fetch current user\'s User ID');
+
+			let loggedInUserId = userIdRes.content;
+
+			this.setState({
+				loggedIn: true,
+				loggedInUserId: loggedInUserId
+			});
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
 	render()
 	{
+		let loggedInUserId = this.state.loggedInUserId;
 		const pages={
 			changePassword : <ChangePassword changePage={this.changePage} />,
 			create    : <CreateAccount changePage={this.changePage}/>,
 			homepage  : this.state.loggedIn ? <LoggedInCategories/> : <LoggedOutCategories/>,
 			userInfo  :
 				<UserInfo
+					loggedInUserId={loggedInUserId}
 					bio={this.state.bio}
 					username={this.state.username}
-					// profilePictureUrl={'http://35.227.70.138/generalBase/thumbnail?id=' + this.state.generalBaseId}
-					profilePictureUrl={'http://localhost:80/generalBase/thumbnail?id=' + this.state.generalBaseId}
 					error={this.state.userInfoError}
 					changePage={this.changePage}
 				/>,
@@ -109,6 +123,7 @@ class App extends Component
 			viewContentPage: <ViewContentPage changePage={this.changePage} refresh={this.refresh} {...this.state.pageData} />,
 			searchResultsPage: <SearchResultsPage changePage={this.changePage} {...this.state.pageData} />
 		}
+
 		return (
 			<>
 				<link

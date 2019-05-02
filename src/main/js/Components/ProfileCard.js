@@ -8,11 +8,14 @@ export default function({profileThumbnailUrl, username}) {
         <div style={{textAlign: "center"}}>
             <Image src={profileThumbnailUrl} rounded fluid className="mb-3"/>
             <div style={{display: 'inline-block'}}>
-                <DBAwareEdiText
-                    type="text"
-                    name="username"
-                    value={username}
-                />
+                {
+                    username &&
+                        <DBAwareEdiText
+                            type="text"
+                            name="username"
+                            value={username}
+                        />
+                }
             </div>
         </div>
         {/*<Likes/>*/}

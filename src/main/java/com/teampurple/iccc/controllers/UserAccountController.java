@@ -237,6 +237,76 @@ public class UserAccountController {
 
     /**
      * Description:
+     *   - add a new category for a user
+     *   - must be logged in as the user to which the category will be added
+     *   - can specify if the category should be added to the user's home page or user page
+     *
+     * Request params:
+     *   - location: String ("Home" or "User"; where the new category should be added; required)
+     *   - name: String (the name of the category)
+     *   - type: String ("User", "Series", "Episode", "Frame", or null for all content; specifies the type of content
+     *                   that will show up in the category),
+     *   - creator: String (User ID; specifies the user that must have created the content that will show up in the
+     *                      category; null indicates that the content can come from anyone),
+     *   - searchText: String (the text used for searching in user names/bios and/or content titles/descriptions; can
+     *                         be null if you don't want to search by text)
+     *
+     * Returns:
+     *   - status: String ('OK' or 'error')
+     *   - content: null
+     */
+    @PostMapping("/user/categories/add")
+    public Response addCategory(@RequestBody NewCategoryItem newCategoryItem) {
+        User currentUser = auth.getCurrentUser();
+        if (currentUser == null) {
+            return new Response(Response.ERROR, "Could not find current logged in user");
+        }
+
+        String location = newCategoryItem.getLocation();
+        String name = newCategoryItem.getName();
+        String type = newCategoryItem.getType();
+        String creator = newCategoryItem.getCreator();
+        String searchText = newCategoryItem.getSearchText();
+
+        // check for valid category location
+        if (location == null ||
+                (!location.equals(NewCategoryItem.HOME_LOCATION) && !location.equals(NewCategoryItem.USER_LOCATION))) {
+            return new Response(Response.ERROR, "Invalid category location: " + location);
+        }
+
+        // check for valid category type
+        if (type != null && !type.equals(GeneralBase.USER_TYPE) && !type.equals(ContentBase.SERIES) &&
+                !type.equals(ContentBase.EPISODE) && !type.equals(ContentBase.FRAME)) {
+            return new Response(Response.ERROR, "Invalid category type: " + type);
+        }
+
+        Category category = new Category();
+        category.setName(name);
+        category.setType(type);
+        category.setCreator(creator);
+        category.setSearchText(searchText);
+        category.setUserRef(currentUser.getId());
+        categoryRepository.save(category);
+
+        List<String> oldCategoryIds = null;
+        switch (location) {
+            case NewCategoryItem.HOME_LOCATION:
+                oldCategoryIds = currentUser.getHomeCategories();
+                break;
+            case NewCategoryItem.USER_LOCATION:
+                oldCategoryIds = currentUser.getUserCategories();
+                break;
+            default:
+                return new Response(Response.ERROR, "Invalid category location: " + location);
+        }
+        oldCategoryIds.add(category.getId());
+        users.save(currentUser);
+
+        return new Response(Response.OK);
+    }
+
+    /**
+     * Description:
      *   - check if a user with a given email address exists
      *
      * Request params:

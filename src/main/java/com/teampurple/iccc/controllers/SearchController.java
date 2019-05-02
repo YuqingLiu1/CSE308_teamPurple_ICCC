@@ -5,6 +5,7 @@ import com.teampurple.iccc.repositories.ContentBaseRepository;
 import com.teampurple.iccc.repositories.GeneralBaseRepository;
 import com.teampurple.iccc.repositories.SketchRepository;
 import com.teampurple.iccc.repositories.UserRepository;
+import com.teampurple.iccc.utils.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,9 +31,14 @@ public class SearchController {
     @Autowired
     private SketchRepository sketchRepository;
 
+    @Autowired
+    private Authentication authentication;
+
     /**
      * Description:
      *   - search for users/content according to a given category
+     *   - will only return "visible" results, i.e. public author profiles, public content, and, if the user is logged
+     *     in, content belonging to that user
      *
      * Request params:
      *   - type: String (the type of content you want to see; either "User", "Series", "Episode", "Frame", or
@@ -132,6 +138,13 @@ public class SearchController {
      */
     @PostMapping("/search")
     public Response search(@RequestBody Category category) {
+        // determine if the current user is logged in
+        User currentUser = authentication.getCurrentUser();
+        boolean loggedIn = true;
+        if (currentUser == null) {
+            loggedIn = false;
+        }
+
         if (category.getType() == null && category.getCreator() == null) {
             // for now this means a general search from the search bar is being performed, e.g. not from a category
             String searchText = category.getSearchText().trim();
@@ -197,19 +210,29 @@ public class SearchController {
                     aggregateInfo.setType(contentBase.getType());
                 }
 
-                // split the AggregateInfo into User, Series, Episode, or Frame
+                // split the AggregateInfo into User, Series, Episode, or Frame and filter out any content that is not
+                // "visible" to the current user
                 switch (aggregateInfo.getType()) {
                     case GeneralBase.USER_TYPE:
                         users.add(aggregateInfo);
                         break;
                     case ContentBase.SERIES:
-                        series.add(aggregateInfo);
+                        if (aggregateInfo.getContentBase().getPublic() ||
+                                (loggedIn && aggregateInfo.getContentBase().getAuthor().equals(currentUser.getId()))) {
+                            series.add(aggregateInfo);
+                        }
                         break;
                     case ContentBase.EPISODE:
-                        episodes.add(aggregateInfo);
+                        if (aggregateInfo.getContentBase().getPublic() ||
+                                (loggedIn && aggregateInfo.getContentBase().getAuthor().equals(currentUser.getId()))) {
+                            episodes.add(aggregateInfo);
+                        }
                         break;
                     case ContentBase.FRAME:
-                        frames.add(aggregateInfo);
+                        if (aggregateInfo.getContentBase().getPublic() ||
+                                (loggedIn && aggregateInfo.getContentBase().getAuthor().equals(currentUser.getId()))) {
+                            frames.add(aggregateInfo);
+                        }
                         break;
                     default:
                         return new Response(Response.ERROR, "Found invalid AggregateInfo type: " + aggregateInfo.getType());
@@ -217,24 +240,10 @@ public class SearchController {
             }
 
             return new Response(Response.OK, searchResult);
-
-//            // split the search results into users, series, episodes, and frames
-//            List<GeneralBase> users = new ArrayList<>();
-//            List<GeneralBase> content = new ArrayList<>();
-//            for (GeneralBase generalBase : allGeneralBases) {
-//                String generalBaseType = generalBase.getType();
-//                if (generalBaseType.equals(GeneralBase.USER_TYPE)) {
-//                    users.add(generalBase);
-//                } else if (generalBaseType.equals(GeneralBase.CONTENT_BASE_TYPE)) {
-//                    content.add(generalBase);
-//                } else {
-//                    return new Response(Response.ERROR, "Found GeneralBase with invalid type: " + generalBaseType);
-//                }
-//            }
         }
 
 
-        return new Response(Response.ERROR);   // dummy retur
+        return new Response(Response.ERROR);   // dummy return
     }
 
 }

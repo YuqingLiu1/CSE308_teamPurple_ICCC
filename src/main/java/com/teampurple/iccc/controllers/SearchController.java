@@ -251,13 +251,13 @@ public class SearchController {
             List<ContentBase> allContentBases = null;
 
             if (type == null) {
-                // search for all type of content (but not users)
+                // search for all types of content (but not users)
                 if (creatorUserId != null) {
-                    // look for all content by a specific user
-                    allContentBases = contentBaseRepository.findByPublicAndAuthor(false, creatorUserId);
+                    // get all the public content from the specified user
+                    allContentBases = contentBaseRepository.findByPublicAndAuthor(true, creatorUserId);
                     if (loggedIn && currentUser.getId().equals(creatorUserId)) {
                         // if the creator is the current logged in user, then even their private content is "visible"
-                        allContentBases.addAll(contentBaseRepository.findByAuthor(creatorUserId));
+                        allContentBases.addAll(contentBaseRepository.findByPublicAndAuthor(false, creatorUserId));
                     }
                 } else {
                     // look for all content regardless of who created it

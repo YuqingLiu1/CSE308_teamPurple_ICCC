@@ -83,6 +83,21 @@ export default class Category2 extends Component {
                     }
                 }
             });
+            episodes = episodes.map((episode) => {
+                return {
+                    title: episode.generalBase.title,
+                    thumbnail: episode.sketch.thumbnail,
+                    sketchId: episode.sketch.id,
+                    generalBaseId: episode.generalBase.id,
+                    contentBaseId: episode.contentBase.id,
+                    onClick() {
+                        changePage('viewContentPage', {
+                            initialContentBaseId: episode.contentBase.id,
+                            initialSketchId: episode.sketch.id
+                        })
+                    }
+                }
+            });
             frames = frames.map((frame) => {
                 return {
                     title: frame.generalBase.title,
@@ -101,6 +116,7 @@ export default class Category2 extends Component {
 
             // add the mapped users/content into this category's list of items
             items.push.apply(items, series);
+            items.push.apply(items, episodes);
             items.push.apply(items, frames);
 
             this.setState({

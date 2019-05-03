@@ -15,6 +15,7 @@ import NewSeriesPage from './Pages/NewSeriesPage'
 import LoginPage from './Pages/LoginPage'
 import TestPage from './Components/TestPage'
 import ViewContentPage from './Pages/ViewContentPage'
+import fetchJson from './Helpers/fetchJson'
 import ChangePassword from './Components/ChangePassword'
 import SearchResultsPage from './Pages/SearchResultsPage'
 

@@ -23,7 +23,11 @@ export default class SearchResultsPage extends Component {
                             <CardDeck>
                                 {userContent.map((userContent) => {
                                     return (
-                                        <Card key={userContent.user.id}>
+                                        <Card
+                                            key={userContent.user.id}
+                                            onClick={() => {this.props.changePage('userInfo', {
+                                                userId: userContent.user.id,
+                                            })}}>
                                             <Card.Img variant='top' src={userContent.sketch.thumbnail} />
                                             <Card.Body>
                                                 <Card.Title>{userContent.generalBase.title}</Card.Title>

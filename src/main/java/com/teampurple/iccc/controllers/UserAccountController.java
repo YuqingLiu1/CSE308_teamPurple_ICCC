@@ -302,8 +302,9 @@ public class UserAccountController {
         }
         oldCategoryIds.add(category.getId());
         users.save(currentUser);
-
-        return new Response(Response.OK);
+        SearchController searcher = new SearchController();
+        Response searchResult=searcher.search(category);
+        return new Response(Response.OK,searchResult.getContent());
     }
 
     // @PostMapping("/user/categories/edit")

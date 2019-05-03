@@ -6,13 +6,21 @@ import {Card, Collapse, Modal} from 'react-bootstrap'
 import Thumbnail from './Thumbnail'
 import Button from 'react-bootstrap/Button'
 import DBAwareEdiText from './DBAwareEdiText'
+import ResultThumbnail from './ResultThumbnail'
 export default function({items=[{contentBaseId: 1},{contentBaseId: 2},{contentBaseId: 3}], editable, title, setTitle, remove, loggedIn=true})
 {
 	const categoryFontSize               ='30px'
 	const [notCollapsed, setNotCollapsed]=useState(true)
 	const [askIfDelete, setAskIfDelete]  =useState(false)
-	// console.assert(thumbnails!==undefined && Object.getPrototypeOf(thumbnails)===Array.prototype)
-	// console.assert(numberOfRows!==undefined && Object.getPrototypeOf(numberOfRows)===Number.prototype)
+	const [results, setResults]  =useState([])//These are the search results
+
+	async function refreshResults()
+	{
+		const results=await window.search.results()//TODO: THIS IS A STUB
+		setResults(results)
+	}
+	refreshResults()//This will continuously loop and update things. It's not a bug, it's a feature!
+
 	const removeAsker=<div className='mx-auto'>
 		Are you sure you want to remove this category?
 		<span>
@@ -26,9 +34,9 @@ export default function({items=[{contentBaseId: 1},{contentBaseId: 2},{contentBa
 			<table>
 				<tbody>
 					<tr>
-						{items.map(x=>
-							<td key={x.contentBaseId}>
-								<Thumbnail imageURL={x.thumbnail||undefined} title={x.title} onClick={x.onClick}/>
+						{results.map(result=>
+							<td key={JSON.stringify(result)}>
+								<ResultThumbnail result={result}/>
 							</td>)}
 					</tr>
 				</tbody>

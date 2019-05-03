@@ -255,6 +255,9 @@ public class UserAccountController {
      *   - status: String ('OK' or 'error')
      *   - content: null
      */
+    /*Example of using fetchJson:
+        fetchJson("/user/categories/add",{location:"Home",name:"try",type:"User",creator:"123",searchText:"frame",likedBy:"me"})
+     */
     @PostMapping("/user/categories/add")
     public Response addCategory(@RequestBody NewCategoryItem newCategoryItem) {
         User currentUser = auth.getCurrentUser();
@@ -307,27 +310,33 @@ public class UserAccountController {
         return new Response(Response.OK,oldCategoryIds);
     }
 
-    //The two reOrderFunstion pass in JsonFile as {categoryList:["5ccbe6b7af8cfc02b1753043","5ccbecf8af8cfc033cf9aee5","5ccbe6b1af8cfc02b1753042"]}
+    /*Example of using fetchJson:
+     fetchJson("/user/categories/reOrder/home",{categoryList:["5ccbe6b7af8cfc02b1753043","5ccbecf8af8cfc033cf9aee5","5ccbe6b1af8cfc02b1753042"]})
+     * The category list contains a list of categoryIDs
+     */
     @PostMapping("/user/categories/reOrder/home")
-    public Response reOrderCategoryHome(@RequestBody CategoryList catagoryList){
+    public Response reOrderCategoryHome(@RequestBody CategoryList categoryList){
         User currentUser = auth.getCurrentUser();
         if (currentUser == null) {
             return new Response(Response.ERROR, "Could not find current logged in user");
         }
-        currentUser.setHomeCategories(catagoryList.getCategoryList());
+        currentUser.setHomeCategories(categoryList.getCategoryList());
         users.save(currentUser);
-        return new Response(Response.OK,catagoryList);
+        return new Response(Response.OK,categoryList);
     }
-
+    /*Example of using fetchJson:
+     fetchJson("/user/categories/reOrder/home",{categoryList:["5ccbe6b7af8cfc02b1753043","5ccbecf8af8cfc033cf9aee5","5ccbe6b1af8cfc02b1753042"]})
+     * The category list contains a list of categoryIDs
+     */
     @PostMapping("/user/categories/reOrder/userPage")
-    public Response reOrderCategoryUser(@RequestBody CategoryList catagoryList){
+    public Response reOrderCategoryUser(@RequestBody CategoryList categoryList){
         User currentUser = auth.getCurrentUser();
         if (currentUser == null) {
             return new Response(Response.ERROR, "Could not find current logged in user");
         }
-        currentUser.setUserCategories(catagoryList.getCategoryList());
+        currentUser.setUserCategories(categoryList.getCategoryList());
         users.save(currentUser);
-        return new Response(Response.OK,catagoryList);
+        return new Response(Response.OK,categoryList);
     }
 
     @PostMapping("/user/categories/edit")

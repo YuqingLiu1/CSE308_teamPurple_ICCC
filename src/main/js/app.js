@@ -97,7 +97,6 @@ class App extends Component
 
 			let loggedInUserId=userIdRes.content
 			window.loggedInUserId=loggedInUserId//A bit hacky (setting a global variable here), but very useful for debugging.
-			window.
 			this.setState({
 							  loggedIn      : true,
 							  loggedInUserId: loggedInUserId

@@ -34,6 +34,7 @@ class Menubar extends Component
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+                type: 'All',
                 searchText: searchText
             })
         });

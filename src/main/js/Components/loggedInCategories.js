@@ -50,7 +50,7 @@ export default class App extends Component
 	{
 		super(props)
 		this.state    ={
-			items: getItems(10)
+			items: getItems(1)
 		}
 		this.onDragEnd=this.onDragEnd.bind(this)
 	}

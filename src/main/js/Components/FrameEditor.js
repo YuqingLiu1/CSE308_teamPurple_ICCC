@@ -28,22 +28,22 @@ class FrameEditor extends React.Component
 			<Container>
 				<ButtonGroup>
 					<Button variant="secondary" onClick={()=>{this.setTool(Tools.Select)}}>
-						<i className="far fa-hand-pointer"></i>
+						<i className="far fa-hand-pointer"/>
 					</Button>
 					<Button variant="secondary" onClick={()=>{this.setTool(Tools.Pencil)}}>
-						<i className="fas fa-pencil-alt"></i>
+						<i className="fas fa-pencil-alt"/>
 					</Button>
 					<Button variant="secondary" onClick={()=>{this.setTool(Tools.Circle)}}>
-						<i className="far fa-circle"></i>
+						<i className="far fa-circle"/>
 					</Button>
 					<Button variant="secondary" onClick={()=>{this.setTool(Tools.Line)}}>
-						<i className="fas fa-slash"></i>
+						<i className="fas fa-slash"/>
 					</Button>
 					<Button variant="secondary" onClick={()=>{this.setTool(Tools.Rectangle)}}>
-						<i className="far fa-square"></i>
+						<i className="far fa-square"/>
 					</Button>
 					<Button variant="secondary" onClick={()=>{this.saveJSON()}}>
-						<i className="fas fa-download"></i>
+						<i className="fas fa-download"/>
 					</Button>
 				</ButtonGroup>
 				<SketchField

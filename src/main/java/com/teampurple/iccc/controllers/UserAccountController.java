@@ -276,18 +276,17 @@ public class UserAccountController {
         }
 
         // check for valid category type
-        if (type != null && !type.equals(GeneralBase.USER_TYPE) && !type.equals(ContentBase.SERIES) &&
-                !type.equals(ContentBase.EPISODE) && !type.equals(ContentBase.FRAME)) {
-            return new Response(Response.ERROR, "Invalid category type: " + type);
+        if(isValidCategoryType(type))
+        {
+            return new Response(Response.ERROR,"Invalid category type: "+type);
         }
-
         Category category = new Category();
         category.setName(name);
         category.setType(type);
         category.setCreator(creator);
         category.setSearchText(searchText);
         category.setUserRef(currentUser.getId());
-        category.setLikeby(likedBy);
+        category.setLikedBy(likedBy);//Null by default because we don't normally want this field
         categoryRepository.save(category);
 
         List<String> oldCategoryIds = null;
@@ -307,6 +306,38 @@ public class UserAccountController {
         Response searchResult=searcher.search(category);
         return new Response(Response.OK,searchResult.getContent());
     }
+
+    // @PostMapping("/user/categories/edit")
+    // public Response updateCategory(@RequestBody Category newCategoryItem)
+    // {
+    //     if(auth.getCurrentUser()==null)
+    //     {
+    //         return new Response(Response.ERROR,"Could not find current logged in user");
+    //     }
+    //     // check for valid category type
+    //     if(isValidCategoryType(newCategoryItem.getType()))
+    //     {
+    //         return new Response(Response.ERROR,"Invalid category type: "+newCategoryItem.getType());
+    //     }
+    //     categoryRepository.findById(newCategoryItem.getId())
+    //     Category category=new Category();
+    //     category.setId         (newCategoryItem.getId());//---------------------------------------------------------CHANGED
+    //     category.setName       (newCategoryItem.getName());
+    //     category.setType       (newCategoryItem.getType());
+    //     category.setCreator    (newCategoryItem.getCreator());
+    //     category.setSearchText (newCategoryItem.getSearchText());
+    //     category.setLikedBy    (newCategoryItem.getLikedBy());//Null by default because we don't normally want this field
+    //     category.setUserRef    (auth.getCurrentUser().getId());
+    //     categoryRepository.save(category);
+    //     return new Response    (Response.OK);
+    // }
+
+    private boolean isValidCategoryType(String type)
+    {
+        return type!=null&&!type.equals(GeneralBase.USER_TYPE)&&!type.equals(ContentBase.SERIES)&&
+               !type.equals(ContentBase.EPISODE)&&!type.equals(ContentBase.FRAME);
+    }
+
 
     /**
      * Description:

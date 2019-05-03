@@ -1,5 +1,3 @@
-import EdiText from 'react-editext'
-// import InlineEdit from 'react-ions/lib/InlineEdit'
 import React, { Component } from 'react'
 import {Card, Collapse, Modal} from 'react-bootstrap'
 import Thumbnail from './Thumbnail'
@@ -21,6 +19,13 @@ import DBAwareEdiText from './DBAwareEdiText'
 //     }
 // )
 
+/**
+ * Props:
+ *   - categoryId: String (the Category ID of this category)
+ *   - changePage: function (the function that will be called when clicking on items in this category to go to a new
+ *                           page)
+ *   - loggedIn: boolean (whether this category is being displayed in a context where the viewer is a logged in user)
+ */
 export default class Category2 extends Component {
     constructor(props) {
         super(props);

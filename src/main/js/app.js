@@ -147,7 +147,7 @@ class App extends Component
 				<Menubar loggedIn={this.state.loggedIn} changePage={this.changePage}/>
 				{pages[this.state.page]}
 			</div>
-			<Category3/>{/*For testing*/}
+			{/*<Category3/>/!*For testing*!/*/}
 		</>
 	}
 }

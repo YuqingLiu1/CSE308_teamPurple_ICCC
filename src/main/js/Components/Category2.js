@@ -27,7 +27,8 @@ export default class Category2 extends Component {
 
         this.state = {
             name: '',
-            items: []
+            items: [],
+            loading: true
         };
     }
 
@@ -121,7 +122,8 @@ export default class Category2 extends Component {
 
             this.setState({
                 name: name,
-                items: items
+                items: items,
+                loading: false
             });
         } catch (err) {
             console.error(err);
@@ -132,6 +134,7 @@ export default class Category2 extends Component {
         let items = this.state.items;
         let loggedIn = this.props.loggedIn;
         let name = this.state.name;
+        let loading = this.state.loading;
         const categoryFontSize = '30px';
         // const [notCollapsed, setNotCollapsed] = useState(true)
         // const [askIfDelete, setAskIfDelete] = useState(false)
@@ -177,12 +180,12 @@ export default class Category2 extends Component {
                                     {/*<Button onClick={() => setNotCollapsed(!notCollapsed)}>{notCollapsed ? '▼' : '▲'}</Button>*/}
                                     <div className='mx-auto'>
                                         {
-                                            name ?
+                                            loading ?
+                                                'Loading...'
+                                                    :
                                                 <DBAwareEdiText viewProps={{style: {fontSize: categoryFontSize}}}
                                                     // inputProps	={{style:{'fontSize':categoryFontSize}}}
                                                                 value={name} type={'text'} onSave={alert}/>
-                                                    :
-                                                'Loading...'
                                         }
                                     </div>
                                 </>

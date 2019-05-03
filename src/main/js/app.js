@@ -21,6 +21,8 @@ import './Helpers/globals'
 import ChangePassword from './Components/ChangePassword'
 import SearchResultsPage from './Pages/SearchResultsPage'
 import Category3 from './Components/Category3'
+import CreateCategoryPage from './Pages/CreateCategoryPage';
+
 class App extends Component
 {
 	constructor(props)
@@ -135,7 +137,8 @@ class App extends Component
 					userId={loggedInUserId}
 					{...this.state.pageData}
 					changePage={this.changePage}
-				/>
+				/>,
+			createCategoryPage: <CreateCategoryPage changePage={this.changePage} {...this.state.pageData} />
 		}
 
 		return <>

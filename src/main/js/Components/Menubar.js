@@ -100,7 +100,7 @@ class Menubar extends Component
                 <Navbar.Collapse id="basic-navbar-nav" className='justify-content-end' style={{textAlign: 'right'}}>
                     <Nav>
                         {
-                            <Nav.Link onClick={() => {this.props.changePage('test')}}>
+                            <Nav.Link onClick={() => {this.props.changePage('createCategoryPage', { location: 'Home' })}}>
                                 <i className="fas fa-vial fa-2x"></i>
                             </Nav.Link>
                         }

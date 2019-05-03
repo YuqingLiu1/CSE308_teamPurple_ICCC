@@ -308,6 +308,7 @@ export default class ViewContentPage extends Component {
                                 </Row>
                             </Col>
                             <Col xs={3}>
+                                List of comments goes here
                                 <AddComment />
                             </Col>
                         </Row>

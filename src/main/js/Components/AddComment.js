@@ -10,12 +10,22 @@ export default class AddComment extends Component{
         super(props);
 
         this.state = {
-            comment: ''
+            comment: '',
+            generalBaseId:props
         }
     }
 
     handleChange(event){
+        console.log("general base id is: " + this.state.generalBaseId);
         this.setState({comment:event.target.value});
+    }
+
+    async handleSubmit(event) {
+        await window.fetchJson('/comment/add', {
+            on: '5cc90e40aa1e9934091cb9cd',
+            author: '5cc8d85a0e57322500d6ab11',
+            content: this.state.comment
+        });
     }
 
 
@@ -41,7 +51,7 @@ export default class AddComment extends Component{
                     />
                 </Form.Group>
 
-                <Button variant='primary' className="commentSubmit" type='submit' onClick={this.handleSubmit}>
+                <Button variant='primary' className="commentSubmit" type='submit' onClick={(e) => {this.handleSubmit(e)}}>
                     Submit
                 </Button>
             </Form>

@@ -302,9 +302,69 @@ public class UserAccountController {
         }
         oldCategoryIds.add(category.getId());
         users.save(currentUser);
-        SearchController searcher = new SearchController();
-        Response searchResult=searcher.search(category);
-        return new Response(Response.OK,searchResult.getContent());
+        //SearchController searcher = new SearchController();
+        //Response searchResult=searcher.search(category);
+        return new Response(Response.OK,oldCategoryIds);
+    }
+
+    @PostMapping("/user/categories/reOrder/home")
+    public Response reOrderCategoryHome(@RequestBody List<String> catagoryList){
+        User currentUser = auth.getCurrentUser();
+        if (currentUser == null) {
+            return new Response(Response.ERROR, "Could not find current logged in user");
+        }
+        currentUser.setHomeCategories(catagoryList);
+        users.save(currentUser);
+        return new Response(Response.OK,catagoryList);
+    }
+
+    @PostMapping("/user/categories/reOrder/userPage")
+    public Response reOrderCategoryUser(@RequestBody List<String> catagoryList){
+        User currentUser = auth.getCurrentUser();
+        if (currentUser == null) {
+            return new Response(Response.ERROR, "Could not find current logged in user");
+        }
+        currentUser.setUserCategories(catagoryList);
+        users.save(currentUser);
+        return new Response(Response.OK,catagoryList);
+    }
+
+    @PostMapping("/user/categories/edit")
+    public Response updateCategory(@RequestBody Category updateCategoryItem){
+        User currentUser = auth.getCurrentUser();
+        if (currentUser == null) {
+            return new Response(Response.ERROR, "Could not find current logged in user");
+        }
+        if(isValidCategoryType(updateCategoryItem.getType()))
+        {
+            return new Response(Response.ERROR,"Invalid category type: "+updateCategoryItem.getType());
+        }
+        Category oldcategory=categoryRepository.findById(updateCategoryItem.getId()).get();
+        oldcategory.setCreator(updateCategoryItem.getCreator());
+        oldcategory.setName(updateCategoryItem.getName());
+        oldcategory.setSearchText(updateCategoryItem.getSearchText());
+        oldcategory.setType(updateCategoryItem.getType());
+        oldcategory.setLikedBy(updateCategoryItem.getLikedBy());
+        categoryRepository.save(oldcategory);
+        //SearchController searcher = new SearchController();
+        //Response searchResult=searcher.search(oldcategory);
+        return new Response(Response.OK,oldcategory);
+    }
+
+    @GetMapping("/user/categories/delete")
+    public Response deleteCategory(@RequestParam(value="id") String deleteCatagoryId){
+        User currentUser = auth.getCurrentUser();
+        if (currentUser == null) {
+            return new Response(Response.ERROR, "Could not find current logged in user");
+        }
+        if (currentUser.getHomeCategories().contains(deleteCatagoryId)){
+            currentUser.getHomeCategories().remove(deleteCatagoryId);
+        }else if(currentUser.getUserCategories().contains(deleteCatagoryId)){
+            currentUser.getUserCategories().remove(deleteCatagoryId);
+        }
+        users.save(currentUser);
+        categoryRepository.deleteById(deleteCatagoryId);
+        return new Response(Response.OK);
     }
 
     // @PostMapping("/user/categories/edit")

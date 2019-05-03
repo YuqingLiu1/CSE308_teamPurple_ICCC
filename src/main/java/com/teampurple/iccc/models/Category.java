@@ -20,7 +20,7 @@ public class Category
     // the text used for searching in user names/bios and/or content titles/descriptions
     private String searchText;
     // restrict the results to results that have been liked by someone with userID likedBy, or skip the filter if null
-    private String likedBy;
+    private String likedBy;//TODO: Implement this in the search
     public String getType()
     {
         return type;

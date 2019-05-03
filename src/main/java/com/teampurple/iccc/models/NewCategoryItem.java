@@ -12,6 +12,7 @@ public class NewCategoryItem {
     private String type;
     private String creator;
     private String searchText;
+    private String likedBy;
 
     public String getLocation() {
         return location;
@@ -51,5 +52,13 @@ public class NewCategoryItem {
 
     public void setSearchText(String searchText) {
         this.searchText = searchText;
+    }
+    public String getLikedBy()
+    {
+        return likedBy;
+    }
+    public void setLikedBy(String likedBy)
+    {
+        this.likedBy=likedBy;
     }
 }

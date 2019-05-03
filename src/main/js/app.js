@@ -92,11 +92,11 @@ class App extends Component
 		try
 		{
 			let userIdRes=await fetch('/user/id')
-			userIdRes    = await userIdRes.json()
-			if(userIdRes.status!=='OK') throw new Error('Failed to fetch current user\'s User ID')
+			userIdRes    =await userIdRes.json()
+			if(userIdRes.status!=='OK')
+				throw new Error('Failed to fetch current user\'s User ID')
 
 			let loggedInUserId=userIdRes.content
-			window.loggedInUserId=loggedInUserId//A bit hacky (setting a global variable here), but very useful for debugging.
 			this.setState({
 							  loggedIn      : true,
 							  loggedInUserId: loggedInUserId
@@ -110,22 +110,24 @@ class App extends Component
 
 	render()
 	{
-		let loggedInUserId=this.state.loggedInUserId
-		const pages       ={
-			changePassword   : <ChangePassword changePage={this.changePage}/>,
-			create           : <CreateAccount changePage={this.changePage}/>,
+		let loggedInUserId   =this.state.loggedInUserId
+		window.loggedInUserId=loggedInUserId//A bit hacky (setting a global variable here), but very useful for debugging.
+
+		const pages={
+			changePassword   : <ChangePassword    changePage={this.changePage}/>,
+			create           : <CreateAccount     changePage={this.changePage}/>,
+			login            : <LoginPage         changePage={this.changePage}                          login  ={this.login  } />,
+			viewContentPage  : <ViewContentPage   changePage={this.changePage} {...this.state.pageData} refresh={this.refresh} />,
+			searchResultsPage: <SearchResultsPage changePage={this.changePage} {...this.state.pageData} />,
+			newContent       : <NewSeriesPage     changePage={this.changePage} {...this.state.pageData} />,
+			editor           : <TestFrameEditor   pageData={this.state.pageData}/>,
+			test             : <TestPage/>,
 			homepage         : this.state.loggedIn ? <LoggedInCategories/> : <LoggedOutCategories/>,
 			userInfo         :
 				<UserInfo
 					loggedInUserId={loggedInUserId}
 					changePage={this.changePage}
-				/>,
-			login            : <LoginPage changePage={this.changePage} login={this.login}/>,
-			editor           : <TestFrameEditor pageData={this.state.pageData}/>,
-			newContent       : <NewSeriesPage changePage={this.changePage} {...this.state.pageData} />,
-			test             : <TestPage/>,
-			viewContentPage  : <ViewContentPage changePage={this.changePage} refresh={this.refresh} {...this.state.pageData} />,
-			searchResultsPage: <SearchResultsPage changePage={this.changePage} {...this.state.pageData} />
+				/>
 		}
 
 		return <>

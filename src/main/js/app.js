@@ -125,10 +125,15 @@ class App extends Component
 			newContent       : <NewSeriesPage     changePage={this.changePage} {...this.state.pageData} />,
 			editor           : <TestFrameEditor   pageData={this.state.pageData}/>,
 			test             : <TestPage/>,
-			homepage         : this.state.loggedIn ? <LoggedInCategories/> : <LoggedOutCategories/>,
+			homepage         :
+				this.state.loggedIn ?
+					<LoggedInCategories changePage={this.changePage} />
+						:
+					<LoggedOutCategories changePage={this.changePage} />,
 			userInfo         :
 				<UserInfo
 					userId={loggedInUserId}
+					{...this.state.pageData}
 					changePage={this.changePage}
 				/>
 		}

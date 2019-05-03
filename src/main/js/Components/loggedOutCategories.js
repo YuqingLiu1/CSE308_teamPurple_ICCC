@@ -1,5 +1,6 @@
 // import Thumbnail from './Components/thumbnail'
 import Category from './Category'
+import Category2 from './Category2';
 // import React, {Component} from 'react'
 // import Menubar from './Components/menubar'
 // import Userinfo from './Components/userinfo'
@@ -34,12 +35,15 @@ import React, {Component} from "react"
 import ReactDOM from "react-dom"
 import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd"
 
+const ALL_SERIES_CATEGORY_ID = "5ccc5fbc1c9d440000c181a2";
+const ALL_USERS_CATEGORY_ID = "5ccc626d1c9d440000c181a3";
+
 // fake data generator
-const getItems=count=>
-    Array.from({length: count}, (v, k)=>k).map(k=>({
-        id     : `item-${k}`,
-        content: <Category title="CategoryTitle" loggedIn={false}/>
-    }))
+// const getItems=count=>
+//     Array.from({length: count}, (v, k)=>k).map(k=>({
+//         id     : `item-${k}`,
+//         content: <Category title="CategoryTitle" loggedIn={false}/>
+//     }))
 
 // a little function to help us with reordering the result
 const reorder=(list, startIndex, endIndex)=>
@@ -77,11 +81,33 @@ const getListStyle=isDraggingOver=>({
 
 class App extends Component
 {
+    getItems = () =>
+    [
+        {
+            id: 1,
+            content:
+                <Category2
+                    categoryId={ALL_SERIES_CATEGORY_ID}
+                    loggedIn={false}
+                    changePage={this.props.changePage}
+                />
+        },
+        {
+            id: 2,
+            content:
+                <Category2
+                    categoryId={ALL_USERS_CATEGORY_ID}
+                    loggedIn={false}
+                    changePage={this.props.changePage}
+                />
+        }
+    ]
+
     constructor(props)
     {
         super(props)
         this.state    ={
-            items: getItems(10)
+            items: this.getItems()
         }
         this.onDragEnd=this.onDragEnd.bind(this)
     }

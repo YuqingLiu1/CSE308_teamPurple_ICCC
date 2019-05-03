@@ -74,6 +74,20 @@ export default class Category2 extends Component {
             let frames = searchRes.content.frames;
             let changePage = this.props.changePage;
             // TODO: handle mapping users
+            users = users.map((user) => {
+                return {
+                    title: user.generalBase.title,
+                    thumbnail: user.sketch.thumbnail,
+                    sketchId: user.sketch.id,
+                    generalBaseId: user.generalBase.id,
+                    userId: user.user.id,
+                    onClick() {
+                        changePage('userInfo', {
+                            userId: user.user.id,
+                        })
+                    }
+                }
+            });
             series = series.map((series) => {
                 return {
                     title: series.generalBase.title,
@@ -124,6 +138,7 @@ export default class Category2 extends Component {
             items.push.apply(items, series);
             items.push.apply(items, episodes);
             items.push.apply(items, frames);
+            items.push.apply(items, users);
 
             this.setState({
                 name: name,
@@ -159,7 +174,7 @@ export default class Category2 extends Component {
                         <tbody>
                             <tr>
                                 {items.map(x =>
-                                    <td key={x.contentBaseId}>
+                                    <td key={x.generalBaseId}>
                                         <Thumbnail imageURL={x.thumbnail || undefined} title={x.title} onClick={x.onClick}/>
                                     </td>)}
                             </tr>
@@ -175,7 +190,7 @@ export default class Category2 extends Component {
                     <div style={{display: 'flex', flexDirection: 'vertical'}}>
                         {
                             !loggedIn ?
-                                <span className='mx-auto' style={{'fontSize': categoryFontSize}}>{title}</span>
+                                <span className='mx-auto' style={{'fontSize': categoryFontSize}}>{name}</span>
                                 :
                                 <>
                                     {/*<Button variant="danger"*/}

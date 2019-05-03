@@ -66,3 +66,11 @@ window.search={
 		return flattenedArray(Object.values(response.content))
 	},
 }
+async function getLoggedInUserCategories()
+{
+	return (await fetchJson('/user/info')).content.user.userCategories
+}
+async function getLoggedInHomeCategories()
+{
+	return (await fetchJson('/user/info')).content.user.homeCategories
+}

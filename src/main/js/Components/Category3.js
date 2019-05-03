@@ -13,13 +13,21 @@ export default function({items=[{contentBaseId: 1},{contentBaseId: 2},{contentBa
 	const [notCollapsed, setNotCollapsed]=useState(true)
 	const [askIfDelete, setAskIfDelete]  =useState(false)
 	const [results, setResults]  =useState([])//These are the search results
+	const [query,setQuery]=useState(undefined)
 
 	async function refreshResults()
 	{
-		const results=await window.search.results()//TODO: THIS IS A STUB
-		setResults(results)
+		if(query)//Don't do anything until we get the query, which will be undefined until we get a response
+		{
+			const results=await window.search.results()//TODO: THIS IS A STUB
+			setResults(results)
+		}
 	}
-	refreshResults()//This will continuously loop and update things. It's not a bug, it's a feature!
+
+	async function getQuery()
+	{
+
+	}
 
 	const removeAsker=<div className='mx-auto'>
 		Are you sure you want to remove this category?
@@ -29,36 +37,36 @@ export default function({items=[{contentBaseId: 1},{contentBaseId: 2},{contentBa
 		</span>
 	</div>
 	// items=JSON.parse(await doFetch("test/user/series")).seriesList.map(x=>{return {title:x.generalBase.title,thumbnail:x.sketch.thumbnail,sketchId:x.sketch.id,generalBaseId:x.generalBase.id,contentBaseId:x.contentBase.id}})
-	const cards      =<Card.Body style={{overflowX: 'scroll'}}>
-		<div>
-			<table>
-				<tbody>
-					<tr>
-						{results.map(result=>
-							<td key={JSON.stringify(result)}>
-								<ResultThumbnail result={result}/>
-							</td>)}
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</Card.Body>
+	const thumbnails=results.map(result=>
+									 <td key={JSON.stringify(result)}>
+										 <ResultThumbnail result={result}/>
+									 </td>)
+	const cards     =<Card.Body style={{overflowX: 'scroll'}}><div><table><tbody><tr>
+			{thumbnails}
+		</tr></tbody></table></div></Card.Body>
+	let upperLeftButtons=loggedIn ?
+		<>
+			<Button variant="danger" onClick={()=>setAskIfDelete(true)}>
+				{<i className="fas fa-minus-circle"/>}
+			</Button>
+			<Button onClick={()=>setNotCollapsed(!notCollapsed)}>
+				{notCollapsed ? '▼' : '▲'}
+			</Button>
+			<div className='mx-auto'>
+				<DBAwareEdiText viewProps={{style: {fontSize: categoryFontSize}}}
+								value={title}
+								type={'text'}
+								onSave={alert}/>
+			</div>
+		</>
+		:
+		<span className='mx-auto' style={{'fontSize': categoryFontSize}}>
+			{title}
+		</span>
 	return <Card>
 		<Card.Header>
 			<div style={{display: 'flex', flexDirection: 'vertical'}}>
-				{!loggedIn ? <span className='mx-auto' style={{'fontSize': categoryFontSize}}>{title}</span> :
-					<>
-						<Button variant="danger"
-								onClick={()=>setAskIfDelete(true)}>
-							{<i className="fas fa-minus-circle"/>}
-						</Button>
-						<Button onClick={()=>setNotCollapsed(!notCollapsed)}>{notCollapsed ? '▼' : '▲'}</Button>
-						<div className='mx-auto'>
-							<DBAwareEdiText viewProps={{style: {fontSize: categoryFontSize}}}
-								// inputProps	={{style:{'fontSize':categoryFontSize}}}
-											value={title} type={'text'} onSave={alert}/>
-						</div>
-					</>}
+				{upperLeftButtons}
 			</div>
 			<Collapse in={askIfDelete}>
 				{removeAsker}

@@ -33,3 +33,4 @@ async function fetchJson(url,body)
 		console.log('FETCH FAILED: url=',url,'body=',body)
 	}
 }
+window.fetchJson=fetchJson//Expose this function to the window so we can easily test things

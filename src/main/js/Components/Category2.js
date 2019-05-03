@@ -27,7 +27,8 @@ export default class Category2 extends Component {
 
         this.state = {
             name: '',
-            items: []
+            items: [],
+            loading: true
         };
     }
 
@@ -54,7 +55,7 @@ export default class Category2 extends Component {
                 body: JSON.stringify({
                     type: type,
                     creator: creator,
-                    serachText: searchText
+                    searchText: searchText
                 })
             });
             searchRes = await searchRes.json();
@@ -121,7 +122,8 @@ export default class Category2 extends Component {
 
             this.setState({
                 name: name,
-                items: items
+                items: items,
+                loading: false
             });
         } catch (err) {
             console.error(err);
@@ -132,7 +134,8 @@ export default class Category2 extends Component {
         let items = this.state.items;
         let loggedIn = this.props.loggedIn;
         let name = this.state.name;
-        const categoryFontSize = '30px'
+        let loading = this.state.loading;
+        const categoryFontSize = '30px';
         // const [notCollapsed, setNotCollapsed] = useState(true)
         // const [askIfDelete, setAskIfDelete] = useState(false)
         // const removeAsker = (
@@ -144,20 +147,23 @@ export default class Category2 extends Component {
         //         </span>
         //     </div>
         // );
-        const cards = <Card.Body style={{overflowX: 'scroll'}}>
-            <div>
-                <table>
-                    <tbody>
-                    <tr>
-                        {items.map(x =>
-                            <td key={x.contentBaseId}>
-                                <Thumbnail imageURL={x.thumbnail || undefined} title={x.title} onClick={x.onClick}/>
-                            </td>)}
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </Card.Body>
+        const cards = (
+            <Card.Body style={{overflowX: 'scroll'}}>
+                <div>
+                    <table>
+                        <tbody>
+                            <tr>
+                                {items.map(x =>
+                                    <td key={x.contentBaseId}>
+                                        <Thumbnail imageURL={x.thumbnail || undefined} title={x.title} onClick={x.onClick}/>
+                                    </td>)}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </Card.Body>
+        );
+
         return (
             <Card>
                 <Card.Header>
@@ -165,27 +171,32 @@ export default class Category2 extends Component {
                         {
                             !loggedIn ?
                                 <span className='mx-auto' style={{'fontSize': categoryFontSize}}>{title}</span>
-                                    :
+                                :
                                 <>
                                     {/*<Button variant="danger"*/}
-                                            {/*onClick={() => setAskIfDelete(true)}>*/}
-                                        {/*{<i className="fas fa-minus-circle"/>}*/}
+                                    {/*onClick={() => setAskIfDelete(true)}>*/}
+                                    {/*{<i className="fas fa-minus-circle"/>}*/}
                                     {/*</Button>*/}
                                     {/*<Button onClick={() => setNotCollapsed(!notCollapsed)}>{notCollapsed ? '▼' : '▲'}</Button>*/}
                                     <div className='mx-auto'>
-                                        <DBAwareEdiText viewProps={{style: {fontSize: categoryFontSize}}}
-                                            // inputProps	={{style:{'fontSize':categoryFontSize}}}
-                                                        value={name} type={'text'} onSave={alert}/>
+                                        {
+                                            loading ?
+                                                'Loading...'
+                                                    :
+                                                <DBAwareEdiText viewProps={{style: {fontSize: categoryFontSize}}}
+                                                    // inputProps	={{style:{'fontSize':categoryFontSize}}}
+                                                                value={name} type={'text'} onSave={alert}/>
+                                        }
                                     </div>
                                 </>
                         }
                     </div>
                     {/*<Collapse in={askIfDelete}>*/}
-                        {/*{removeAsker}*/}
+                    {/*{removeAsker}*/}
                     {/*</Collapse>*/}
                 </Card.Header>
                 {/*<Collapse in={notCollapsed}>*/}
-                    {/*{cards}*/}
+                {/*{cards}*/}
                 {/*</Collapse>*/}
                 {cards}
             </Card>

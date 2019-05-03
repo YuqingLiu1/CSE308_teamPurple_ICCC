@@ -4,6 +4,8 @@ public class NewCategoryItem {
 
     public static final String HOME_LOCATION = "Home";
     public static final String USER_LOCATION = "User";
+    public static final String CONTENT_TYPE = "Content";
+    public static final String ALL_TYPE = "All";
 
     private String location;
     private String name;

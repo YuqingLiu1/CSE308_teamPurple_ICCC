@@ -11,6 +11,11 @@ public class Comment {
     private String author;
     private String content;
 
+
+    public String getId() {
+        return id;
+    }
+
     public String getOn(){
         return on;
     }

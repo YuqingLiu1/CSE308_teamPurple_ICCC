@@ -1,15 +1,9 @@
-require('@babel/polyfill')
+require('@babel/polyfill');
 
 import React, {Component} from "react"
 import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd"
-import Category from './Category'
-
-// fake data generator
-const getItems=count=>
-	Array.from({length: count}, (v, k)=>k).map(k=>({
-		id     : `item-${k}`,
-		content: <Category title="CategoryTitle"/>
-	}))
+import Category from './Category';
+import Category2 from './Category2';
 
 // a little function to help us with reordering the result
 const reorder=(list, startIndex, endIndex)=>
@@ -48,14 +42,42 @@ export default class App extends Component
 {
 	constructor(props)
 	{
-		super(props)
-		this.state    ={
-			items: getItems(1)
-		}
-		this.onDragEnd=this.onDragEnd.bind(this)
+		super(props);
+
+		this.state = {
+			items: []
+		};
 	}
 
-	onDragEnd(result)
+	async componentDidMount() {
+		try {
+			let userId = this.props.userId;
+			let userInfoRes = await fetch('/user/info?id=' + userId);
+			userInfoRes = await userInfoRes.json();
+			if (userInfoRes.status !== 'OK') throw new Error('Failed to fetch user info for User ID: ' + userId);
+
+			let categoryIds = userInfoRes.content.user.homeCategories;
+			let items = categoryIds.map((categoryId) => {
+				return {
+					id: categoryId,
+					content:
+						<Category2
+							categoryId={categoryId}
+							loggedIn={true}
+							changePage={this.props.changePage}
+						/>
+				}
+			});
+
+			this.setState({
+				items: items,
+			});
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	onDragEnd = (result) =>
 	{
 		// dropped outside the list
 		if(!result.destination)

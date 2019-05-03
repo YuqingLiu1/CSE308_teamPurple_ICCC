@@ -127,7 +127,7 @@ class App extends Component
 			test             : <TestPage/>,
 			homepage         :
 				this.state.loggedIn ?
-					<LoggedInCategories changePage={this.changePage} />
+					<LoggedInCategories userId={loggedInUserId} changePage={this.changePage} />
 						:
 					<LoggedOutCategories changePage={this.changePage} />,
 			userInfo         :

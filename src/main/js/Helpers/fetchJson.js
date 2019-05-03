@@ -1,6 +1,6 @@
 async function fetchJson(url,body)
 {
-	//Body is an optional parameter, meaning you don't have to spcify it.
+	//Body is an optional parameter, meaning you don't have to specify it.
 	//But, if it IS specified, it must be a javascript Object (not a string, number etc).
 	//If body is specified, this method will send a POST request. Otherwise, it will send a GET request.
 	//This method will return the JSON.parse'd form of whatever the server gives back (probably an Object)

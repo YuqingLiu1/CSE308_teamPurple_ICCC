@@ -66,11 +66,13 @@ public class UserAccountController {
 
     /**
      * Description:
-     *   - get information about current logged in user
-     *   - must be logged in
+     *   - get information about a user
+     *   - if User ID is provided, get information about that user, otherwise get information about the current
+     *     logged in user (if there is one)
      *
      * Request params:
-     *   - none
+     *   - userId: String (the User ID of the user to get info about, or null to get info about the current logged in
+     *                     user, if there is one)
      *
      * Returns:
      *   - status: String ('OK' or 'error')
@@ -111,24 +113,40 @@ public class UserAccountController {
      *       }
      */
     @GetMapping("/user/info")
-    public Response getUserInfo() {
-        User currentUser = auth.getCurrentUser();
-        GeneralBase currentGeneralBase = auth.getCurrentUserGeneralBase();
-
-        if (currentUser == null || currentGeneralBase == null) {
-            return new Response(Response.ERROR);
+    public Response getUserInfo(@RequestParam("id") final String userId) {
+        String id = userId;
+        if (id == null || id.length() == 0) {
+            // try to find the current logged in user
+            User currentUser = auth.getCurrentUser();
+            if (currentUser == null) {
+                // either a User ID must be provided or there must be a logged in user
+                return new Response(Response.ERROR, "No User ID provided and no logged in user");
+            } else {
+                id = currentUser.getId();
+            }
         }
 
-        Optional<Sketch> sketchOptional = sketchRepository.findById(currentGeneralBase.getSketch());
+        Optional<User> userOptional = users.findById(id);
+        if (!userOptional.isPresent()) {
+            return new Response(Response.ERROR, "Could not find user by ID: " + id);
+        }
+        User user = userOptional.get();
+        Optional<GeneralBase> userGeneralBaseOptional = generalbase.findById(user.getGeneralBaseRef());
+        if (!userGeneralBaseOptional.isPresent()) {
+            return new Response(Response.ERROR, "Could not find GeneralBase for User");
+        }
+        GeneralBase userGeneralBase = userGeneralBaseOptional.get();
+
+        Optional<Sketch> sketchOptional = sketchRepository.findById(userGeneralBase.getSketch());
         if (!sketchOptional.isPresent()) {
-            return new Response(Response.ERROR, "Could not find Sketch for current user");
+            return new Response(Response.ERROR, "Could not find Sketch for User");
         }
         Sketch sketch = sketchOptional.get();
 
         AggregateInfo aggregateInfo = new AggregateInfo();
         aggregateInfo.setType(GeneralBase.USER_TYPE);
-        aggregateInfo.setGeneralBase(currentGeneralBase);
-        aggregateInfo.setUser(currentUser);
+        aggregateInfo.setGeneralBase(userGeneralBase);
+        aggregateInfo.setUser(user);
         aggregateInfo.setSketch(sketch);
 
         return new Response(Response.OK, aggregateInfo);

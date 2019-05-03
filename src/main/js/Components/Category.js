@@ -29,7 +29,7 @@ export default function({categoryId="5ccb37a90e57323354e42726",/*items=[{content
 		const results=await window.search.results(query)
 		setResults(results)
 	}
-	refresh()
+	// refresh()
 
 
 	const removeAsker=<div className='mx-auto'>

@@ -64,12 +64,13 @@ class App extends Component
 						  generalBaseId: res.id,
 					  })
 
-		let userInfoRes=await fetch('/user/info')
+		let userInfoRes=await fetch('/user/info?id')
 		userInfoRes    = await userInfoRes.json()
 		if(userInfoRes.status==='OK')
 		{
 			let userInfo=userInfoRes.content
 			this.setState({
+				              loggedInUserId: userInfo.user.id,
 							  bio          : userInfo.bio,
 							  username     : userInfo.username,
 							  userInfoError: false
@@ -83,6 +84,8 @@ class App extends Component
 		else
 		{
 			//TODO From Ryan: What the heck is going on here lol, why does it always make an error?
+			// Elliot: because both this else clause and the preceding else if clause are error cases; the else if
+			// is just more specific about what the error is
 			this.setState({userInfoError: true})
 		}
 	}
@@ -125,7 +128,7 @@ class App extends Component
 			homepage         : this.state.loggedIn ? <LoggedInCategories/> : <LoggedOutCategories/>,
 			userInfo         :
 				<UserInfo
-					loggedInUserId={loggedInUserId}
+					userId={loggedInUserId}
 					changePage={this.changePage}
 				/>
 		}

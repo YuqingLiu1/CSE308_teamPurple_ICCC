@@ -1,14 +1,10 @@
-// items=JSON.parse(await doFetch("test/user/series")).seriesList.map(x=>{return {title:x.generalBase.title,thumbnail:x.sketch.thumbnail,sketchId:x.sketch.id,generalBaseId:x.generalBase.id,contentBaseId:x.contentBase.id}})
-import EdiText from 'react-editext'
-// import InlineEdit from 'react-ions/lib/InlineEdit'
 import React from 'react'
 import {useState} from 'react'
 import {Card, Collapse, Modal} from 'react-bootstrap'
-import Thumbnail from './Thumbnail'
 import Button from 'react-bootstrap/Button'
 import DBAwareEdiText from './DBAwareEdiText'
 import ResultThumbnail from './ResultThumbnail'
-export default function({categoryId="5ccb37a90e57323354e42726",/*items=[{contentBaseId: 1},{contentBaseId: 2},{contentBaseId: 3}],*/ editable, title, setTitle, remove, loggedIn=true})
+export default function({categoryId="5ccb37a90e57323354e42726", editable, title, setTitle, remove, loggedIn=true})
 {
 	const categoryFontSize               ='30px'
 	const [notCollapsed, setNotCollapsed]=useState(true )
@@ -18,9 +14,9 @@ export default function({categoryId="5ccb37a90e57323354e42726",/*items=[{content
 	const [query       , setQuery       ]=useState({name:'',type:'',searchText:'',creator:''})
 
 
-	//This 'refresh' function will loop infinitely, resulting in realtime updates. It's a feature, not a bug!
-	//(This is because it will launch an async function, which will eventually call setState, which will call
-	// this function again, thus calling refresh again ad infinitum)
+	// This 'refresh' function will loop infinitely, resulting in realtime updates. It's a feature, not a bug!
+	// (This is because it will launch an async function, which will eventually call setState, which will call
+	//  this function again, thus calling refresh again ad infinitum)
 	async function refresh()
 	{
 		let query=await window.getCategoryInfoFromId(categoryId)
@@ -29,7 +25,7 @@ export default function({categoryId="5ccb37a90e57323354e42726",/*items=[{content
 		const results=await window.search.results(query)
 		setResults(results)
 	}
-	setInterval(refresh,1000)
+	setInterval(refresh,5 * 60 * 1000)
 
 
 	const removeAsker=<div className='mx-auto'>
@@ -64,7 +60,7 @@ export default function({categoryId="5ccb37a90e57323354e42726",/*items=[{content
 
 	function handleChangeType()
 	{
-		setQueryParameter('type',window.annoyingDialogSelector(['All','User','Series','Episode','Frame']))
+		setQueryParameter('type', window.annoyingDialogSelector(['All','User','Series','Episode','Frame']))
 	}
 
 	function handleChangeCreator()

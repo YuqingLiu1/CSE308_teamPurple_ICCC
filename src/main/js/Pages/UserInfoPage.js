@@ -16,7 +16,6 @@ export default class UserInfoPage extends Component {
 		super(props);
 
 		this.state = {
-			userId: props.loggedInUserId,
 			username: '',
 			bio: '',
 			userThumbnail: '',
@@ -27,9 +26,10 @@ export default class UserInfoPage extends Component {
 
 	async componentDidMount() {
 		try {
-			let userInfoRes = await fetch('/user/info');
+			let userId = this.props.userId;
+			let userInfoRes = await fetch('/user/info?id=' + userId);
 			userInfoRes = await userInfoRes.json();
-			if (userInfoRes.status !== 'OK') throw new Error('Failed to fetch current user info');
+			if (userInfoRes.status !== 'OK') throw new Error('Failed to fetch user info');
 
 			let userThumbnail = userInfoRes.content.sketch.thumbnail;
 			let username = userInfoRes.content.generalBase.title;
@@ -50,9 +50,10 @@ export default class UserInfoPage extends Component {
 	async componentDidUpdate() {
 		if (this.state.reload) {
 			try {
-				let userInfoRes = await fetch('/user/info');
+				let userId = this.props.userId;
+				let userInfoRes = await fetch('/user/info?id=' + userId);
 				userInfoRes = await userInfoRes.json();
-				if (userInfoRes.status !== 'OK') throw new Error('Failed to fetch current user info');
+				if (userInfoRes.status !== 'OK') throw new Error('Failed to fetch user info');
 
 				let userThumbnail = userInfoRes.content.sketch.thumbnail;
 				let username = userInfoRes.content.generalBase.title;

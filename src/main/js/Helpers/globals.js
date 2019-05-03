@@ -95,7 +95,7 @@ window.annoyingDialogSelector=function(options,{allow_cancel=false}={})
 
 //ICCC-SPECIFIC HELPER FUNCTIONS:------------------------------------------------------------
 window.search={
-	//The functions 'repsonse', 'results', and 'thumbnails' process a search query progressively, allowing you to debug intermediate steps.
+	//The functions 'response', 'results', and 'thumbnails' process a search query progressively, allowing you to debug intermediate steps.
 	async response(request={})
 	{
 		//Just the raw response we get from the server; no post-processing whatsoever

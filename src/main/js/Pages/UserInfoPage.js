@@ -21,35 +21,12 @@ export default class UserInfoPage extends Component {
 			bio: '',
 			userThumbnail: '',
 			reload: false,
-			items: [],   // don't keep this; let categories load their own content
 			userCategoryIds: []
 		};
 	}
 
 	async componentDidMount() {
 		try {
-			let seriesRes = await fetch('/test/user/series');
-			seriesRes = await seriesRes.json();
-			if (seriesRes.status !== 'OK') throw new Error('Failed to fetch user\'s series');
-
-			let changePage = this.props.changePage;
-
-			let items = seriesRes.content.seriesList.map((series) => {
-				return {
-					title: series.generalBase.title,
-					thumbnail: series.sketch.thumbnail,
-					sketchId: series.sketch.id,
-					generalBaseId: series.generalBase.id,
-					contentBaseId: series.contentBase.id,
-					onClick() {
-						changePage('viewContentPage', {
-							initialContentBaseId: series.contentBase.id,
-							initialSketchId: series.sketch.id
-						})
-					}
-				}
-			});
-
 			let userInfoRes = await fetch('/user/info');
 			userInfoRes = await userInfoRes.json();
 			if (userInfoRes.status !== 'OK') throw new Error('Failed to fetch current user info');
@@ -60,7 +37,6 @@ export default class UserInfoPage extends Component {
 			let userCategoryIds = userInfoRes.content.user.userCategories;
 
 			this.setState({
-				items: items,
 				userThumbnail: userThumbnail,
 				username: username,
 				bio: bio,
@@ -74,28 +50,6 @@ export default class UserInfoPage extends Component {
 	async componentDidUpdate() {
 		if (this.state.reload) {
 			try {
-				let seriesRes = await fetch('/test/user/series');
-				seriesRes = await seriesRes.json();
-				if (seriesRes.status !== 'OK') throw new Error('Failed to fetch user\'s series');
-
-				let changePage = this.props.changePage;
-
-				let items = seriesRes.content.seriesList.map((series) => {
-					return {
-						title: series.generalBase.title,
-						thumbnail: series.sketch.thumbnail,
-						sketchId: series.sketch.id,
-						generalBaseId: series.generalBase.id,
-						contentBaseId: series.contentBase.id,
-						onClick() {
-							changePage('viewContentPage', {
-								initialContentBaseId: series.contentBase.id,
-								initialSketchId: series.sketch.id
-							})
-						}
-					}
-				});
-
 				let userInfoRes = await fetch('/user/info');
 				userInfoRes = await userInfoRes.json();
 				if (userInfoRes.status !== 'OK') throw new Error('Failed to fetch current user info');
@@ -105,7 +59,6 @@ export default class UserInfoPage extends Component {
 				let bio = userInfoRes.content.generalBase.description;
 
 				this.setState({
-					items: items,
 					userThumbnail: userThumbnail,
 					username: username,
 					bio: bio,
@@ -127,7 +80,6 @@ export default class UserInfoPage extends Component {
 		let userThumbnail = this.state.userThumbnail;
 		let username = this.state.username;
 		let bio = this.state.bio;
-		let items = this.state.items;
 		let userCategoryIds = this.state.userCategoryIds;
 		let changePage = this.props.changePage;
 		return (
@@ -158,7 +110,6 @@ export default class UserInfoPage extends Component {
 							</Col>
 						</Row>
 						<Row className='mt-5'>
-							{/*<Category items={items} title={'My Series'} loggedIn={false}/>*/}
 							{
 								userCategoryIds.map((userCategoryId) => {
 									return (

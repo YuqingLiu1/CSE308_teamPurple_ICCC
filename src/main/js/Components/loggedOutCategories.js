@@ -1,49 +1,14 @@
-// import Thumbnail from './Components/thumbnail'
-import Category from './Category'
+require('@babel/polyfill');
+
+import Category from './Category';
 import Category2 from './Category2';
-// import React, {Component} from 'react'
-// import Menubar from './Components/menubar'
-// import Userinfo from './Components/userinfo'
-//
-// class App extends Component
-// {
-// 	render()
-// 	{
-// 		return <>
-// 			<link
-// 				rel="stylesheet"
-// 				href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-// 				integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-// 				crossOrigin="anonymous"
-// 			/>
-// 			<link
-// 				rel="stylesheet"
-// 				href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
-// 				integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
-// 				crossOrigin="anonymous"
-// 			/>
-// 			<div className="App">
-// 				<Category title="Hello"/>
-// 			</div>
-// 		</>
-// 	}
-// }
-//
-// export default App
 
 import React, {Component} from "react"
-import ReactDOM from "react-dom"
 import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd"
 
+// hardcoded Category IDs of site-wide visible homepage categories
 const ALL_SERIES_CATEGORY_ID = "5ccc5fbc1c9d440000c181a2";
 const ALL_USERS_CATEGORY_ID = "5ccc626d1c9d440000c181a3";
-
-// fake data generator
-// const getItems=count=>
-//     Array.from({length: count}, (v, k)=>k).map(k=>({
-//         id     : `item-${k}`,
-//         content: <Category title="CategoryTitle" loggedIn={false}/>
-//     }))
 
 // a little function to help us with reordering the result
 const reorder=(list, startIndex, endIndex)=>
@@ -81,6 +46,16 @@ const getListStyle=isDraggingOver=>({
 
 class App extends Component
 {
+    constructor(props)
+    {
+        super(props)
+        this.state    ={
+            items: this.getItems()
+        }
+        this.onDragEnd=this.onDragEnd.bind(this)
+    }
+
+    // generate the site-wide visible homepage categories
     getItems = () =>
     [
         {
@@ -101,16 +76,7 @@ class App extends Component
                     changePage={this.props.changePage}
                 />
         }
-    ]
-
-    constructor(props)
-    {
-        super(props)
-        this.state    ={
-            items: this.getItems()
-        }
-        this.onDragEnd=this.onDragEnd.bind(this)
-    }
+    ];
 
     onDragEnd(result)
     {

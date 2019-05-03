@@ -1,3 +1,4 @@
+import Category2 from './Components/Category2'
 require("@babel/polyfill")
 
 import React, {Component} from 'react'
@@ -16,23 +17,24 @@ import LoginPage from './Pages/LoginPage'
 import TestPage from './Components/TestPage'
 import ViewContentPage from './Pages/ViewContentPage'
 import fetchJson from './Helpers/fetchJson'
+import './Helpers/globals'
 import ChangePassword from './Components/ChangePassword'
 import SearchResultsPage from './Pages/SearchResultsPage'
-
+import Category3 from './Components/Category3'
 class App extends Component
 {
 	constructor(props)
 	{
 		super(props)
-		this.state     ={
-			page         : 'homepage',
-			loggedIn     : false,
-			bio          : '',
-			username     : '',
-			userInfoError: false,
-			generalBaseId: '',
+		this.state={
+			page          : 'homepage',
+			loggedIn      : false,
+			bio           : '',
+			username      : '',
+			userInfoError : false,
+			generalBaseId : '',
 			loggedInUserId: '',
-			pageData     : {}
+			pageData      : {}
 		}
 	}
 
@@ -41,26 +43,26 @@ class App extends Component
 		this.refresh()
 	}
 
-	changePage = (page, pageData) =>
+	changePage=(page, pageData)=>
 	{
 		this.setState({
-			page: page,
-			pageData: pageData
-		})
+						  page    : page,
+						  pageData: pageData
+					  })
 		if(page==='homepage')
 		{
 			this.refresh()
 		}
 	}
 
-	refresh = async () =>
+	refresh=async()=>
 	{
 		let res=await fetch('/generalBase/id')
 		res    = await res.json()
 		this.setState({
-			loggedIn: res.id.length!==0,
-			generalBaseId: res.id,
-		});
+						  loggedIn     : res.id.length!==0,
+						  generalBaseId: res.id,
+					  })
 
 		let userInfoRes=await fetch('/user/info')
 		userInfoRes    = await userInfoRes.json()
@@ -80,68 +82,73 @@ class App extends Component
 		}
 		else
 		{
+			//TODO From Ryan: What the heck is going on here lol, why does it always make an error?
 			this.setState({userInfoError: true})
 		}
 	}
 
-	login = async () =>
+	login=async()=>
 	{
-		try {
-			let userIdRes = await fetch('/user/id');
-			userIdRes = await userIdRes.json();
-			if (userIdRes.status !== 'OK') throw new Error('Failed to fetch current user\'s User ID');
+		try
+		{
+			let userIdRes=await fetch('/user/id')
+			userIdRes    =await userIdRes.json()
+			if(userIdRes.status!=='OK')
+				throw new Error('Failed to fetch current user\'s User ID')
 
-			let loggedInUserId = userIdRes.content;
-
+			let loggedInUserId=userIdRes.content
 			this.setState({
-				loggedIn: true,
-				loggedInUserId: loggedInUserId
-			});
-		} catch (err) {
-			console.error(err);
+							  loggedIn      : true,
+							  loggedInUserId: loggedInUserId
+						  })
+		}
+		catch(err)
+		{
+			console.error(err)
 		}
 	}
 
 	render()
 	{
-		let loggedInUserId = this.state.loggedInUserId;
+		let loggedInUserId   =this.state.loggedInUserId
+		window.loggedInUserId=loggedInUserId//A bit hacky (setting a global variable here), but very useful for debugging.
+
 		const pages={
-			changePassword : <ChangePassword changePage={this.changePage} />,
-			create    : <CreateAccount changePage={this.changePage}/>,
-			homepage  : this.state.loggedIn ? <LoggedInCategories/> : <LoggedOutCategories/>,
-			userInfo  :
+			changePassword   : <ChangePassword    changePage={this.changePage}/>,
+			create           : <CreateAccount     changePage={this.changePage}/>,
+			login            : <LoginPage         changePage={this.changePage}                          login  ={this.login  } />,
+			viewContentPage  : <ViewContentPage   changePage={this.changePage} {...this.state.pageData} refresh={this.refresh} />,
+			searchResultsPage: <SearchResultsPage changePage={this.changePage} {...this.state.pageData} />,
+			newContent       : <NewSeriesPage     changePage={this.changePage} {...this.state.pageData} />,
+			editor           : <TestFrameEditor   pageData={this.state.pageData}/>,
+			test             : <TestPage/>,
+			homepage         : this.state.loggedIn ? <LoggedInCategories/> : <LoggedOutCategories/>,
+			userInfo         :
 				<UserInfo
 					loggedInUserId={loggedInUserId}
 					changePage={this.changePage}
-				/>,
-			login     : <LoginPage changePage={this.changePage} login={this.login}/>,
-			editor    : <TestFrameEditor pageData={this.state.pageData}/>,
-			newContent: <NewSeriesPage changePage={this.changePage} {...this.state.pageData} />,
-			test      : <TestPage />,
-			viewContentPage: <ViewContentPage changePage={this.changePage} refresh={this.refresh} {...this.state.pageData} />,
-			searchResultsPage: <SearchResultsPage changePage={this.changePage} {...this.state.pageData} />
+				/>
 		}
 
-		return (
-			<>
-				<link
-					rel="stylesheet"
-					href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-					integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-					crossOrigin="anonymous"
-				/>
-				<link
-					rel="stylesheet"
-					href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
-					integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
-					crossOrigin="anonymous"
-				/>
-				<div className="App">
-					<Menubar loggedIn={this.state.loggedIn} changePage={this.changePage}/>
-					{pages[this.state.page]}
-				</div>
-			</>
-		)
+		return <>
+			<link
+				rel="stylesheet"
+				href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+				integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+				crossOrigin="anonymous"
+			/>
+			<link
+				rel="stylesheet"
+				href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+				integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+				crossOrigin="anonymous"
+			/>
+			<div className="App">
+				<Menubar loggedIn={this.state.loggedIn} changePage={this.changePage}/>
+				{pages[this.state.page]}
+			</div>
+			<Category3/>{/*For testing*/}
+		</>
 	}
 }
 

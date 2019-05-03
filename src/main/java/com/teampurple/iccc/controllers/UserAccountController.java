@@ -307,24 +307,25 @@ public class UserAccountController {
         return new Response(Response.OK,oldCategoryIds);
     }
 
+    //The two reOrderFunstion pass in JsonFile as {categoryList:["5ccbe6b7af8cfc02b1753043","5ccbecf8af8cfc033cf9aee5","5ccbe6b1af8cfc02b1753042"]}
     @PostMapping("/user/categories/reOrder/home")
-    public Response reOrderCategoryHome(@RequestBody List<String> catagoryList){
+    public Response reOrderCategoryHome(@RequestBody CategoryList catagoryList){
         User currentUser = auth.getCurrentUser();
         if (currentUser == null) {
             return new Response(Response.ERROR, "Could not find current logged in user");
         }
-        currentUser.setHomeCategories(catagoryList);
+        currentUser.setHomeCategories(catagoryList.getCategoryList());
         users.save(currentUser);
         return new Response(Response.OK,catagoryList);
     }
 
     @PostMapping("/user/categories/reOrder/userPage")
-    public Response reOrderCategoryUser(@RequestBody List<String> catagoryList){
+    public Response reOrderCategoryUser(@RequestBody CategoryList catagoryList){
         User currentUser = auth.getCurrentUser();
         if (currentUser == null) {
             return new Response(Response.ERROR, "Could not find current logged in user");
         }
-        currentUser.setUserCategories(catagoryList);
+        currentUser.setUserCategories(catagoryList.getCategoryList());
         users.save(currentUser);
         return new Response(Response.OK,catagoryList);
     }

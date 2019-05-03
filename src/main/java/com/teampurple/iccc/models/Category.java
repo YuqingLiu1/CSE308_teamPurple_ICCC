@@ -1,11 +1,11 @@
 package com.teampurple.iccc.models;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import java.util.*;
 
-@Document(collection = "Category")
-public class Category {
+import java.util.*;
+@Document(collection="Category")
+public class Category
+{
     @Id
     private String id;
     // User ID of the user this category belongs to
@@ -19,52 +19,62 @@ public class Category {
     private String creator;
     // the text used for searching in user names/bios and/or content titles/descriptions
     private String searchText;
-
-    public String getType() {
+    // restrict the results to results that have been liked by someone with userID likedBy, or skip the filter if null
+    private String likedBy;//TODO: Implement this in the search
+    public String getType()
+    {
         return type;
     }
-
-    public void setType(String type) {
-        this.type = type;
+    public void setType(String type)
+    {
+        this.type=type;
     }
-
-    public String getId() {
+    public String getId()
+    {
         return id;
     }
-
-    public void setId(String id) {
-        this.id = id;
+    public void setId(String id)
+    {
+        this.id=id;
     }
-
-    public String getUserRef() {
+    public String getUserRef()
+    {
         return userRef;
     }
-
-    public void setUserRef(String userRef) {
-        this.userRef = userRef;
+    public void setUserRef(String userRef)
+    {
+        this.userRef=userRef;
     }
-
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String name)
+    {
+        this.name=name;
     }
-
-    public String getCreator() {
+    public String getCreator()
+    {
         return creator;
     }
-
-    public void setCreator(String creator) {
-        this.creator = creator;
+    public void setCreator(String creator)
+    {
+        this.creator=creator;
     }
-
-    public String getSearchText() {
+    public String getSearchText()
+    {
         return searchText;
     }
-
-    public void setSearchText(String searchText) {
-        this.searchText = searchText;
+    public void setSearchText(String searchText)
+    {
+        this.searchText=searchText;
+    }
+    public String getLikedBy()
+    {
+        return likedBy;
+    }
+    public void setLikedBy(String likedBy)
+    {
+        this.likedBy=likedBy;
     }
 }

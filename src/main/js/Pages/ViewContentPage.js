@@ -31,7 +31,7 @@ export default class ViewContentPage extends Component {
             editable: false,
             title: '',
             description: '',
-            reload: false
+            reload: true
         }
     }
 
@@ -124,7 +124,8 @@ export default class ViewContentPage extends Component {
 
     changeContent = (newContentBaseId) => {
         this.setState({
-            contentBaseId: newContentBaseId
+            contentBaseId: newContentBaseId,
+            reload: true
         });
     }
 
@@ -192,19 +193,26 @@ export default class ViewContentPage extends Component {
     }
 
     render() {
+        let reload = this.state.reload;
         return (
             <Container fluid className='my-3'>
                 {
                     // check if we should show an editable version of the content
                     this.state.editable ?
+                        // show the editable version
                         <Row>
                             <Col xs={3}>
-                                <ContentCard
-                                    contentBaseId={this.state.contentBaseId}
-                                    editable={true}
-                                    title={this.state.title}
-                                    description={this.state.description}
-                                />
+                                {
+                                    reload ?
+                                        'Loading...'
+                                            :
+                                        <ContentCard
+                                            contentBaseId={this.state.contentBaseId}
+                                            editable={true}
+                                            title={this.state.title}
+                                            description={this.state.description}
+                                        />
+                                }
                                 <Button variant='primary' onClick={this.handlePublishButtonClick} className='mt-3'>Publish</Button>
                             </Col>
                             <Col xs={9} style={{ textAlign: 'center' }}>
@@ -251,7 +259,7 @@ export default class ViewContentPage extends Component {
                             </Col>
                         </Row>
                             :
-                        // non-editable version
+                        // show the non-editable version
                         <Row>
                             <Col xs={3}>
                                 <ContentCard

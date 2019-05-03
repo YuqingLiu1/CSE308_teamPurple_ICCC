@@ -39,6 +39,8 @@ public class SearchController {
      *   - search for users/content according to a given category
      *   - will only return "visible" results, i.e. public author profiles, public content, and, if the user is logged
      *     in, content belonging to that user
+     *   - in terms of categories, this endpoint could currently support queries such as "frames that I created with the
+     *     word 'school' in their title/description"
      *
      * Request params:
      *   - type: String (the type of content you want to see; either "User", "Series", "Episode", "Frame", "Content" for

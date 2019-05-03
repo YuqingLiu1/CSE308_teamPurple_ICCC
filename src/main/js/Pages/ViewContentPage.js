@@ -9,6 +9,7 @@ import Fab from '@material-ui/core/Fab';
 import Image from 'react-bootstrap/Image';
 import ContentCard from '../Components/ContentCard';
 import Button from 'react-bootstrap/Button';
+import AddComment from '../Components/AddComment';
 
 export default class ViewContentPage extends Component {
     constructor(props) {
@@ -307,7 +308,7 @@ export default class ViewContentPage extends Component {
                                 </Row>
                             </Col>
                             <Col xs={3}>
-                                This is where the comments will go
+                                <AddComment />
                             </Col>
                         </Row>
                 }

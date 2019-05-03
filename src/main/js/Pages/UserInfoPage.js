@@ -10,6 +10,7 @@ import ProfileCard from "../Components/ProfileCard"
 import UploadProfilePicture from "../Components/UploadProfilePicture"
 import Category from '../Components/Category'
 import Category2 from "../Components/Category2";
+import Button from 'react-bootstrap/Button';
 
 export default class UserInfoPage extends Component {
 	constructor(props) {
@@ -75,7 +76,13 @@ export default class UserInfoPage extends Component {
 		this.setState({
 			reload: true
 		});
-	}
+	};
+
+	handleAddCategory = (event) => {
+		event.preventDefault();
+
+		this.props.changePage('createCategoryPage', { userId: this.props.userId, location: 'User' });
+	};
 
 	render() {
 		let userThumbnail = this.state.userThumbnail;
@@ -83,6 +90,7 @@ export default class UserInfoPage extends Component {
 		let bio = this.state.bio;
 		let userCategoryIds = this.state.userCategoryIds;
 		let changePage = this.props.changePage;
+		let loggedIn = this.props.loggedIn;
 		return (
 			<Container className="mt-5">
 				<Jumbotron>
@@ -110,6 +118,12 @@ export default class UserInfoPage extends Component {
 								}
 							</Col>
 						</Row>
+						{
+							loggedIn &&
+								<Row>
+									<Button onClick={this.handleAddCategory}>Add Category</Button>
+								</Row>
+						}
 						<Row className='mt-5'>
 							{
 								userCategoryIds.map((userCategoryId) => {

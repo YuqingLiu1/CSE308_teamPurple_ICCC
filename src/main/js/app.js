@@ -135,8 +135,8 @@ class App extends Component
 			userInfo         :
 				<UserInfo
 					userId={loggedInUserId}
-					{...this.state.pageData}
 					changePage={this.changePage}
+					{...this.state.pageData}
 				/>,
 			createCategoryPage: <CreateCategoryPage changePage={this.changePage} {...this.state.pageData} />
 		}
@@ -155,7 +155,7 @@ class App extends Component
 				crossOrigin="anonymous"
 			/>
 			<div className="App">
-				<Menubar loggedIn={this.state.loggedIn} changePage={this.changePage}/>
+				<Menubar loggedIn={this.state.loggedIn} userId={this.state.loggedInUserId} changePage={this.changePage} />
 				{pages[this.state.page]}
 			</div>
 			{/*<Category3/>/!*For testing*!/*/}

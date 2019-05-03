@@ -34,6 +34,9 @@ export default class CreateCategoryForm extends React.Component {
             let name = this.state.name;
             let type = this.state.type;
             let creator = null;
+
+            console.log(this.state.creator);
+
             switch (this.state.creator) {
                 case 'Me':
                     creator = this.props.userId;
@@ -44,6 +47,8 @@ export default class CreateCategoryForm extends React.Component {
                     throw new Error('Invalid creator: ' + this.state.creator);
             }
             let searchText = this.state.searchText;
+
+            console.log(creator);
 
             let createCategoryRes = await fetch('/user/categories/add', {
                 method: 'POST',
@@ -82,10 +87,10 @@ export default class CreateCategoryForm extends React.Component {
                     <Form.Label>Type</Form.Label>
                     <Form.Control as='select' onChange={(e) => {this.handleChange(e, 'type')}}>
                         <option value='Series'>Series</option>
-                        <option value='Episodes'>Episodes</option>
-                        <option value='Frames'>Frames</option>
+                        <option value='Episode'>Episodes</option>
+                        <option value='Frame'>Frames</option>
                         <option value='Content'>All Content</option>
-                        <option value='Users'>Users</option>
+                        <option value='User'>Users</option>
                         <option value='All'>All Users and Content</option>
                     </Form.Control>
                 </Form.Group>

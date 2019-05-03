@@ -100,7 +100,10 @@ class Menubar extends Component
                 <Navbar.Collapse id="basic-navbar-nav" className='justify-content-end' style={{textAlign: 'right'}}>
                     <Nav>
                         {
-                            <Nav.Link onClick={() => {this.props.changePage('createCategoryPage', { location: 'Home' })}}>
+                            <Nav.Link onClick={() => {this.props.changePage('createCategoryPage', {
+                                userId: this.props.userId,
+                                location: 'Home'
+                            })}}>
                                 <i className="fas fa-vial fa-2x"></i>
                             </Nav.Link>
                         }
@@ -139,7 +142,7 @@ class Menubar extends Component
                         </NavDropdown>
                         {
                             this.props.loggedIn ?
-                                <Nav.Link onClick={()=>{this.props.changePage('userInfo')}}>
+                                <Nav.Link onClick={()=>{this.props.changePage('userInfo', { loggedIn: true })}}>
                                     <i className="fas fa-cog fa-2x"/>
                                 </Nav.Link>
                                     :

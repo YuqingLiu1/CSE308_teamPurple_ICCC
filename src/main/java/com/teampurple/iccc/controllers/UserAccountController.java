@@ -276,7 +276,8 @@ public class UserAccountController {
 
         // check for valid category type
         if (type != null && !type.equals(GeneralBase.USER_TYPE) && !type.equals(ContentBase.SERIES) &&
-                !type.equals(ContentBase.EPISODE) && !type.equals(ContentBase.FRAME)) {
+                !type.equals(ContentBase.EPISODE) && !type.equals(ContentBase.FRAME) &&
+                !type.equals(NewCategoryItem.CONTENT_TYPE) && !type.equals(NewCategoryItem.ALL_TYPE)) {
             return new Response(Response.ERROR, "Invalid category type: " + type);
         }
 

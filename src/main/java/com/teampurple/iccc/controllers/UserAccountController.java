@@ -338,6 +338,10 @@ public class UserAccountController {
         users.save(currentUser);
         return new Response(Response.OK,categoryList);
     }
+    /*example:
+    fetchJson("/user/categories/edit",
+    {id:"5ccbdd3baf8cfc02b175303e",userRef:"5cc8f0880249f8f459875437",name:"hahahaha",type:"User",creator:"123",searchText:"hhey",likedBy:"me"})
+    */
 
     @PostMapping("/user/categories/edit")
     public Response updateCategory(@RequestBody Category updateCategoryItem){
@@ -360,7 +364,9 @@ public class UserAccountController {
         //Response searchResult=searcher.search(oldcategory);
         return new Response(Response.OK,oldcategory);
     }
-
+    /*example:
+        fetchJson("/user/categories/delete?id=5ccbdd3baf8cfc02b175303e")
+    */
     @GetMapping("/user/categories/delete")
     public Response deleteCategory(@RequestParam(value="id") String deleteCatagoryId){
         User currentUser = auth.getCurrentUser();

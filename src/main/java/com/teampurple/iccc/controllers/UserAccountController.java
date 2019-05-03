@@ -267,6 +267,7 @@ public class UserAccountController {
         String type = newCategoryItem.getType();
         String creator = newCategoryItem.getCreator();
         String searchText = newCategoryItem.getSearchText();
+        String likedBy = newCategoryItem.getLikedBy();
 
         // check for valid category location
         if (location == null ||
@@ -286,6 +287,7 @@ public class UserAccountController {
         category.setCreator(creator);
         category.setSearchText(searchText);
         category.setUserRef(currentUser.getId());
+        category.setLikeby(likedBy);
         categoryRepository.save(category);
 
         List<String> oldCategoryIds = null;
@@ -301,8 +303,9 @@ public class UserAccountController {
         }
         oldCategoryIds.add(category.getId());
         users.save(currentUser);
-
-        return new Response(Response.OK);
+        SearchController searcher = new SearchController();
+        Response searchResult=searcher.search(category);
+        return new Response(Response.OK,searchResult.getContent());
     }
 
     /**

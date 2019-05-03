@@ -13,6 +13,16 @@ public class NewCategoryItem {
     private String creator;
     private String searchText;
 
+    public String getLikedBy() {
+        return likedBy;
+    }
+
+    public void setLikedBy(String likedBy) {
+        this.likedBy = likedBy;
+    }
+
+    private String likedBy;
+
     public String getLocation() {
         return location;
     }

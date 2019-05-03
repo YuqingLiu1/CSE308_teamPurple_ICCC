@@ -19,6 +19,16 @@ public class Category {
     private String creator;
     // the text used for searching in user names/bios and/or content titles/descriptions
     private String searchText;
+    // liked by a user (userID)
+    private String Likeby;
+
+    public String getLikeby() {
+        return Likeby;
+    }
+
+    public void setLikeby(String likeby) {
+        Likeby = likeby;
+    }
 
     public String getType() {
         return type;

@@ -302,9 +302,9 @@ public class UserAccountController {
         }
         oldCategoryIds.add(category.getId());
         users.save(currentUser);
-        SearchController searcher = new SearchController();
-        Response searchResult=searcher.search(category);
-        return new Response(Response.OK,searchResult.getContent());
+        //SearchController searcher = new SearchController();
+        //Response searchResult=searcher.search(category);
+        return new Response(Response.OK,oldCategoryIds);
     }
 
     @PostMapping("/user/categories/reOrder/home")
@@ -346,13 +346,13 @@ public class UserAccountController {
         oldcategory.setType(updateCategoryItem.getType());
         oldcategory.setLikedBy(updateCategoryItem.getLikedBy());
         categoryRepository.save(oldcategory);
-        SearchController searcher = new SearchController();
-        Response searchResult=searcher.search(oldcategory);
-        return new Response(Response.OK,searchResult.getContent());
+        //SearchController searcher = new SearchController();
+        //Response searchResult=searcher.search(oldcategory);
+        return new Response(Response.OK,oldcategory);
     }
 
     @GetMapping("/user/categories/delete")
-    public Response deleteCategory(@RequestParam String deleteCatagoryId){
+    public Response deleteCategory(@RequestParam(value="id") String deleteCatagoryId){
         User currentUser = auth.getCurrentUser();
         if (currentUser == null) {
             return new Response(Response.ERROR, "Could not find current logged in user");

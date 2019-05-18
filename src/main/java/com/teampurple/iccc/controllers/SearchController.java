@@ -41,6 +41,7 @@ public class SearchController {
      *     in, content belonging to that user
      *   - in terms of categories, this endpoint could currently support queries such as "frames that I created with the
      *     word 'school' in their title/description"
+     *   - DOES NOT return sketch data (aside from Sketch ID) for performance reasons
      *
      * Request params:
      *   - type: String (the type of content you want to see; either "User", "Series", "Episode", "Frame", "Content" for
@@ -85,8 +86,8 @@ public class SearchController {
      *                 sketch:
      *                   {
      *                       id: String (Sketch ID of this user's sketch),
-     *                       thumbnail: String (base 64 encoded image data of this user's sketch),
-     *                       data: String (JSON stringified image data for this user's sketch)
+     *                       thumbnail: null,
+     *                       data: null
      *                   }
      *             }, ...
      *           ],
@@ -129,8 +130,8 @@ public class SearchController {
      *                 sketch:
      *                   {
      *                       id: String (Sketch ID of this series' sketch),
-     *                       thumbnail: String (base 64 encoded image data of this series' sketch),
-     *                       data: String (JSON stringified image data for this series' sketch)
+     *                       thumbnail: null,
+     *                       data: null
      *                   }
      *             }
      *           ],
@@ -332,7 +333,7 @@ public class SearchController {
             }
 
             // collect the Sketch for this GeneralBase
-            Optional<Sketch> sketchOptional = sketchRepository.findById(generalBase.getSketch());
+            Optional<Sketch> sketchOptional = sketchRepository.findByIdAndExcludeData(generalBase.getSketch());
             if (!sketchOptional.isPresent()) {
                 return new Response(Response.ERROR, "Could not find Sketch for GeneralBase");
             }

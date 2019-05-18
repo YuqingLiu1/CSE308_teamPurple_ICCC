@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import {Card, Collapse, Modal} from 'react-bootstrap'
-import Thumbnail from './Thumbnail'
 import Button from 'react-bootstrap/Button'
 import DBAwareEdiText from './DBAwareEdiText'
+import CategoryCard from "./CategoryCard";
 
 // ( {
 //         items = [{contentBaseId: 1}, {contentBaseId: 2}, {contentBaseId: 3}]
@@ -175,7 +175,12 @@ export default class Category2 extends Component {
                             <tr>
                                 {items.map(x =>
                                     <td key={x.generalBaseId}>
-                                        <Thumbnail imageURL={x.thumbnail || undefined} title={x.title} onClick={x.onClick}/>
+                                        {
+                                            x.userId ?
+                                                <CategoryCard userId={x.userId} onClick={x.onClick}/>
+                                                    :
+                                                <CategoryCard contentBaseId={x.contentBaseId} onClick={x.onClick}/>
+                                        }
                                     </td>)}
                             </tr>
                         </tbody>

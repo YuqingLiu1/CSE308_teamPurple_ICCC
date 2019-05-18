@@ -7,7 +7,7 @@ import Col from 'react-bootstrap/Col';
 import TestFrameEditor from '../Components/TestFrameEditor';
 import Fab from '@material-ui/core/Fab';
 import Image from 'react-bootstrap/Image';
-import ContentCard from '../Components/ContentCard';
+import ContentInfoCard from '../Components/ContentInfoCard';
 import Button from 'react-bootstrap/Button';
 import AddComment from '../Components/AddComment';
 
@@ -207,7 +207,7 @@ export default class ViewContentPage extends Component {
                                     reload ?
                                         'Loading...'
                                             :
-                                        <ContentCard
+                                        <ContentInfoCard
                                             contentBaseId={this.state.contentBaseId}
                                             editable={true}
                                             title={this.state.title}
@@ -263,7 +263,7 @@ export default class ViewContentPage extends Component {
                         // show the non-editable version
                         <Row>
                             <Col xs={3}>
-                                <ContentCard
+                                <ContentInfoCard
                                     contentBaseId={this.state.contentBaseId}
                                     editable={false}
                                     title={this.state.title}

@@ -1,11 +1,11 @@
 require("@babel/polyfill")
 
-import React, {Component} from 'react'
+import React from 'react'
 import EdiText from "react-editext"
 
-export default class DBAwareEdiText extends Component
+export default function DBAwareEdiText(props)
 {
-	onSave = async (val) =>
+	async function onSave(val)
 	{
 		let userInfoRes=await fetch('/user/edit', {
 			method : 'POST',
@@ -13,7 +13,7 @@ export default class DBAwareEdiText extends Component
 				'Content-Type': 'application/json'
 			},
 			body   : JSON.stringify({
-										[this.props.name]: val
+										[props.name]: val
 									})
 		})
 		userInfoRes    = await userInfoRes.json()
@@ -27,19 +27,16 @@ export default class DBAwareEdiText extends Component
 		}
 	}
 
-	render()
-	{
-		return (
-			<EdiText {...{...this.props, onSave: this.props.onSave ? this.props.onSave : this.onSave}}
-				hideIcons={true}
-				editButtonContent={<i className="far fa-edit"></i>}
-				editButtonClassName="transparent-button"
-				saveButtonContent={<i className="fas fa-check"></i>}
-				saveButtonClassName="transparent-button green"
-				cancelButtonContent={<i className="fas fa-times"></i>}
-				cancelButtonClassName="transparent-button red"
-			/>
-		)
-	}
+	return (
+		<EdiText {...{...props, onSave: props.onSave ? props.onSave : onSave}}
+			hideIcons={true}
+			editButtonContent={<i className="far fa-edit"></i>}
+			editButtonClassName="transparent-button"
+			saveButtonContent={<i className="fas fa-check"></i>}
+			saveButtonClassName="transparent-button green"
+			cancelButtonContent={<i className="fas fa-times"></i>}
+			cancelButtonClassName="transparent-button red"
+		/>
+	)
 }
 

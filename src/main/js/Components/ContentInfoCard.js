@@ -2,26 +2,44 @@ require('@babel/polyfill')
 
 import React, { useState, useEffect } from 'react';
 import Card from 'react-bootstrap/Card';
+import Spinner from 'react-bootstrap/Spinner';
 import DBAwareEdiText from "./DBAwareEdiText";
 
-export default function ContentCard({ contentBaseId, editable, titleInit, descriptionInit }) {
+/**
+ * A card to display information about a piece of content. Optionally editable.
+ * @param contentBaseId The ContentBase ID of the content
+ * @param editable Whether or not the displayed info should be editable
+ * @param titleInit An initial title to display; optional
+ * @param descriptionInit An initial description to display; optional
+ */
+export default function ContentInfoCard({ contentBaseId, editable, titleInit, descriptionInit }) {
     const [title, setTitle] = useState(titleInit);
     const [description, setDescription] = useState(descriptionInit);
+    const [authorPic, setAuthorPic] = useState('');
     useEffect(() => {
         let isMounted = true;
 
         async function loadData() {
             try {
+                // fetch info about content
                 let contentRes = await fetch('/content/info?id=' + contentBaseId);
                 contentRes = await contentRes.json();
                 if (contentRes.status !== 'OK') throw new Error('Could not fetch ContentBase by ID: ' + contentBaseId);
 
                 let title = contentRes.content.generalBase.title;
                 let description = contentRes.content.generalBase.description;
+                let authorId = contentRes.content.contentBase.author;
+
+                // fetch info about the author of the content
+                let authorRes = await fetch(`/user/info?id=${authorId}`);
+                authorRes = await authorRes.json();
+                if (authorRes.status !== 'OK') throw new Error(`Failed to fetch author info for ID: ${authorId}.`);
+                let authorPic = authorRes.content.sketch.thumbnail;
 
                 if (isMounted) {
                     setTitle(title);
                     setDescription(description);
+                    setAuthorPic(authorPic);
                 }
             } catch (err) {
                 console.error(err);
@@ -32,6 +50,7 @@ export default function ContentCard({ contentBaseId, editable, titleInit, descri
         return () => isMounted = false;
     }, [contentBaseId]);
 
+    // called when saving edits to the title
     async function onSaveTitle(val) {
         try {
             let editContentRes = await fetch('/content/edit', {
@@ -51,6 +70,7 @@ export default function ContentCard({ contentBaseId, editable, titleInit, descri
         }
     };
 
+    // called when saving edits to the description
     async function onSaveDescription(val) {
         try {
             let editContentRes = await fetch('/content/edit', {
@@ -71,10 +91,11 @@ export default function ContentCard({ contentBaseId, editable, titleInit, descri
     };
 
     // rendering logic
-    if (title && description) {
+    if (title && description && authorPic) {
         if (editable) {
             return (
                 <Card>
+                    <Card.Img variant='top' src={authorPic}/>
                     <Card.Header>
                         <DBAwareEdiText type='text' value={title} onSave={onSaveTitle}/>
                     </Card.Header>
@@ -86,6 +107,7 @@ export default function ContentCard({ contentBaseId, editable, titleInit, descri
         } else {
             return (
                 <Card>
+                    <Card.Img variant='top' src={authorPic}/>
                     <Card.Header>
                         {title}
                     </Card.Header>
@@ -97,9 +119,7 @@ export default function ContentCard({ contentBaseId, editable, titleInit, descri
         }
     } else {
         return (
-            <Card>
-                Loading...
-            </Card>
+            <Spinner animation='border'/>
         );
     }
 }

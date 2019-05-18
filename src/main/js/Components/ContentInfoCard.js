@@ -9,13 +9,12 @@ import DBAwareEdiText from "./DBAwareEdiText";
  * A card to display information about a piece of content. Optionally editable.
  * @param contentBaseId The ContentBase ID of the content
  * @param editable Whether or not the displayed info should be editable
- * @param titleInit An initial title to display; optional
- * @param descriptionInit An initial description to display; optional
  */
-export default function ContentInfoCard({ contentBaseId, editable, titleInit, descriptionInit }) {
-    const [title, setTitle] = useState(titleInit);
-    const [description, setDescription] = useState(descriptionInit);
+export default function ContentInfoCard({ contentBaseId, editable }) {
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
     const [authorPic, setAuthorPic] = useState('');
+    const [loaded, setLoaded] = useState(false);
     useEffect(() => {
         let isMounted = true;
 
@@ -40,6 +39,7 @@ export default function ContentInfoCard({ contentBaseId, editable, titleInit, de
                     setTitle(title);
                     setDescription(description);
                     setAuthorPic(authorPic);
+                    setLoaded(true);
                 }
             } catch (err) {
                 console.error(err);
@@ -91,7 +91,7 @@ export default function ContentInfoCard({ contentBaseId, editable, titleInit, de
     };
 
     // rendering logic
-    if (title && description && authorPic) {
+    if (loaded) {
         if (editable) {
             return (
                 <Card>
@@ -100,7 +100,7 @@ export default function ContentInfoCard({ contentBaseId, editable, titleInit, de
                         <DBAwareEdiText type='text' value={title} onSave={onSaveTitle}/>
                     </Card.Header>
                     <Card.Body>
-                        <DBAwareEdiText type='text' value={description} onSave={onSaveDescription}/>
+                        <DBAwareEdiText type='textarea' value={description} onSave={onSaveDescription}/>
                     </Card.Body>
                 </Card>
             );

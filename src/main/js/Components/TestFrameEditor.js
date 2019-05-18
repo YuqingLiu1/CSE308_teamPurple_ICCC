@@ -374,7 +374,7 @@ class SketchFieldDemo extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-xs-7 col-sm-7 col-md-9 col-lg-9">
+                    <div className="col-xs-7 col-sm-7 col-md-8 col-lg-8">
                         <SketchField
                             name="sketch"
                             className="canvas-area"
@@ -406,7 +406,7 @@ class SketchFieldDemo extends React.Component {
                             tool={this.state.tool}
                         />
                     </div>
-                    <div className="col-xs-5 col-sm-5 col-md-3 col-lg-3">
+                    <div className="col-xs-5 col-sm-5 col-md-4 col-lg-4">
                         <Card style={styles.card}>
                             <CardHeader
                                 title="Tools"

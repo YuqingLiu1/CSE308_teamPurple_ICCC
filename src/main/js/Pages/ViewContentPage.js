@@ -322,10 +322,17 @@ export default class ViewContentPage extends Component {
                                             }
                                             <Image src={this.state.contentThumbnail} fluid />
                                             {
-                                                this.state.childContentBaseId &&
-                                                <Fab onClick={() => {this.changeContent(this.state.childContentBaseId)}}>
-                                                    <i className="fas fa-arrow-down fa-2x"/>
-                                                </Fab>
+                                                this.state.childContentBaseId ?
+                                                    <Fab onClick={() => {this.changeContent(this.state.childContentBaseId)}}>
+                                                        <i className="fas fa-arrow-down fa-2x"/>
+                                                    </Fab>
+                                                        :
+                                                    (
+                                                        isContributable &&
+                                                            <Fab onClick={this.createContent}>
+                                                                <i className="fas fa-plus fa-2x"/>
+                                                            </Fab>
+                                                    )
                                             }
                                         </Container>
                                     </Col>

@@ -7,7 +7,7 @@ import ReactDOM from 'react-dom'
 import Menubar from './Components/Menubar'
 import ArrowButton from './Components/NavButtons/ArrowButton'
 import PlusButton from './Components/NavButtons/PlusButton'
-import UserInfo from "./Pages/UserInfoPage"
+import UserInfoPage from "./Pages/UserInfoPage"
 import LoggedOutCategories from './Components/loggedOutCategories'
 import LoggedInCategories from './Components/loggedInCategories'
 import CreateAccount from './Components/CreateAccount'
@@ -138,8 +138,8 @@ class App extends Component
 					<LoggedInCategories userId={loggedInUserId} changePage={this.changePage} />
 						:
 					<LoggedOutCategories changePage={this.changePage} />,
-			userInfo         :
-				<UserInfo
+			userInfo        :
+				<UserInfoPage
 					userId={loggedInUserId}
 					changePage={this.changePage}
 					{...this.state.pageData}

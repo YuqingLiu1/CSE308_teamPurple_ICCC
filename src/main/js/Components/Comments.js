@@ -93,7 +93,7 @@ export default function Comments({ generalBaseId, contentBaseId, loggedInUserId 
             <ListGroup style={{ overflow: 'scroll', maxHeight: '300px' }}>
                 {commentIds.map(commentId => {
                     return (
-                        <Comment commentId={commentId}/>
+                        <Comment key={commentId} commentId={commentId}/>
                     );
                 })}
             </ListGroup>

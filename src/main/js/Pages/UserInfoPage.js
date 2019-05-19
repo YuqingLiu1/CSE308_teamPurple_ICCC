@@ -17,6 +17,7 @@ export default class UserInfoPage extends Component {
 		super(props);
 
 		this.state = {
+			generalBaseId: '',
 			username: '',
 			bio: '',
 			userThumbnail: '',
@@ -32,12 +33,14 @@ export default class UserInfoPage extends Component {
 			userInfoRes = await userInfoRes.json();
 			if (userInfoRes.status !== 'OK') throw new Error('Failed to fetch user info');
 
+			let generalBaseId = userInfoRes.content.generalBase.id;
 			let userThumbnail = userInfoRes.content.sketch.thumbnail;
 			let username = userInfoRes.content.generalBase.title;
 			let bio = userInfoRes.content.generalBase.description;
 			let userCategoryIds = userInfoRes.content.user.userCategories;
 
 			this.setState({
+				generalBaseId: generalBaseId,
 				userThumbnail: userThumbnail,
 				username: username,
 				bio: bio,
@@ -56,11 +59,13 @@ export default class UserInfoPage extends Component {
 				userInfoRes = await userInfoRes.json();
 				if (userInfoRes.status !== 'OK') throw new Error('Failed to fetch user info');
 
+				let generalBaseId = userInfoRes.content.generalBase.id;
 				let userThumbnail = userInfoRes.content.sketch.thumbnail;
 				let username = userInfoRes.content.generalBase.title;
 				let bio = userInfoRes.content.generalBase.description;
 
 				this.setState({
+					generalBaseId: generalBaseId,
 					userThumbnail: userThumbnail,
 					username: username,
 					bio: bio,
@@ -91,6 +96,7 @@ export default class UserInfoPage extends Component {
 		let userCategoryIds = this.state.userCategoryIds;
 		let changePage = this.props.changePage;
 		let loggedIn = this.props.loggedIn;
+		let generalBaseId = this.state.generalBaseId;
 		return (
 			<Container className="mt-5">
 				<Jumbotron>
@@ -98,11 +104,15 @@ export default class UserInfoPage extends Component {
 						<Row>
 							<Col xs={5} style={{textAlign: "center"}}>
 								<Row>
-									<ProfileCard
-										profileThumbnailUrl={userThumbnail}
-										username={username}
-										editable={loggedIn}
-									/>
+									{
+										generalBaseId &&
+											<ProfileCard
+												generalBaseId={generalBaseId}
+												profileThumbnailUrl={userThumbnail}
+												username={username}
+												editable={loggedIn}
+											/>
+									}
 									{
 										loggedIn &&
 											<UploadProfilePicture uploadType='profile' refresh={this.reload}/>

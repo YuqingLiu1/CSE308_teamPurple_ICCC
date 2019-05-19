@@ -112,8 +112,18 @@ export default class Category2 extends Component {
     }
 
     render() {
+
+        const handleDelete=()=>
+        {
+            if(window.confirm("Are you sure you want to delete this category?"))
+            {
+                window.deleteCategory(this.props.categoryId)
+            }
+        }
+
 		let items   =this.state.items
 		let loggedIn=this.props.loggedIn
+		let categoryId=this.props.categoryId
 		let name    =this.state.name
 		let loading =this.state.loading
         const categoryFontSize = '30px'
@@ -164,9 +174,14 @@ export default class Category2 extends Component {
                                             loading ?
                                                 'Loading...'
                                                     :
+                                                <>
+                                                    <Button onClick={handleDelete}>
+                                                        Delete
+                                                    </Button>
                                                 <DBAwareEdiText viewProps={{style: {fontSize: categoryFontSize}}}
                                                     // inputProps	={{style:{'fontSize':categoryFontSize}}}
-                                                                value={name} type={'text'} onSave={name=>window.setCategoryName(this.props.categoryId,name)}/>
+                                                                value={name} type={'text'} onSave={name=>window.setCategoryName(categoryId,name)}/>
+                                                </>
                                         }
                                     </div>
                                 </>

@@ -25,7 +25,7 @@ window.assertIsString=function(x)
 }
 window.assertIsObject=function(x)
 {
-	console.assert(isObject(x),'x is not a string! x=',x)
+	console.assert(isObject(x),'x is not an object! x=',x)
 }
 window.all=function(array,condition=x=>x)
 {
@@ -144,6 +144,14 @@ window.getLoggedInUserCategories=async function()
 {
 	return (await getCategoriesFromCategoryIds(await getLoggedInUserCategoryIds())).filter(isObject)
 }
+
+window.deleteCategory=async function(categoryId)
+{
+	console.assert(arguments.length ===1       ,'Wrong number of arguments'  )
+	console.assert(typeof categoryId==='string','categoryId must be a string')
+	return await window.fetchJson('/user/categories/delete?id='+categoryId)
+}
+
 window.setCategoryParameter=async function(categoryId,parameterName,parameterValue)
 {
 	console.log(categoryId,parameterName,parameterValue)

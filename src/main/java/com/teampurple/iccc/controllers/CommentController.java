@@ -3,6 +3,7 @@ package com.teampurple.iccc.controllers;
 import com.teampurple.iccc.models.*;
 import com.teampurple.iccc.repositories.CommentRepository;
 import com.teampurple.iccc.repositories.GeneralBaseRepository;
+import com.teampurple.iccc.repositories.SketchRepository;
 import com.teampurple.iccc.repositories.UserRepository;
 import com.teampurple.iccc.utils.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class CommentController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private SketchRepository sketchRepository;
 
     @Autowired
     private Authentication authentication;
@@ -130,6 +134,15 @@ public class CommentController {
         }
         GeneralBase authorGeneralBase = authorGeneralBaseOptional.get();
         commentInfo.setAuthorGeneralBase(authorGeneralBase);
+
+        // get the Sketch info for the author of the specified comment
+        Optional<Sketch> authorSketchOptional = sketchRepository.findByIdAndExcludeJSONData(authorGeneralBase.getSketch());
+        if (!authorSketchOptional.isPresent()) {
+            return new Response(Response.ERROR, "Could not find Sketch with Sketch ID: "
+                    + authorGeneralBase.getSketch() + ".");
+        }
+        Sketch authorSketch = authorSketchOptional.get();
+        commentInfo.setAuthorSketch(authorSketch);
 
         return new Response(Response.OK, commentInfo);
     }

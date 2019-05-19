@@ -4,6 +4,15 @@ public class CommentInfo {
 
     private Comment comment;
     private GeneralBase authorGeneralBase;
+    private Sketch authorSketch;
+
+    public Sketch getAuthorSketch() {
+        return authorSketch;
+    }
+
+    public void setAuthorSketch(Sketch authorSketch) {
+        this.authorSketch = authorSketch;
+    }
 
     public GeneralBase getAuthorGeneralBase() {
         return authorGeneralBase;

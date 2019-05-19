@@ -9,6 +9,9 @@ import java.util.Optional;
 public interface SketchRepository extends MongoRepository<Sketch, String> {
 
     @Query(value="{ '_id': ?0 }", fields="{ '_id': 1 }")
-    Optional<Sketch> findByIdAndExcludeData(String id);
+    Optional<Sketch> findByIdAndExcludeAllData(String id);
+
+    @Query(value="{ '_id': ?0 }", fields="{ '_id': 1, 'thumbnail': 1 }")
+    Optional<Sketch> findByIdAndExcludeJSONData(String id);
 
 }

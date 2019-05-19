@@ -333,7 +333,7 @@ public class SearchController {
             }
 
             // collect the Sketch for this GeneralBase
-            Optional<Sketch> sketchOptional = sketchRepository.findByIdAndExcludeData(generalBase.getSketch());
+            Optional<Sketch> sketchOptional = sketchRepository.findByIdAndExcludeAllData(generalBase.getSketch());
             if (!sketchOptional.isPresent()) {
                 return new Response(Response.ERROR, "Could not find Sketch for GeneralBase");
             }

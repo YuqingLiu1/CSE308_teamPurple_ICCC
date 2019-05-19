@@ -81,9 +81,9 @@ export default function({categoryId="5ccb37a90e57323354e42726", editable, title,
 	const categoryEditor=<div style={{backgroundColor:'lightgray',padding:10,textAlign:'center'}}>
 		Category Settings
 		<br/>
-		<Button style={{margin:5}} onClick={handleChangeName}>Change Name</Button>
-		<Button style={{margin:5}} onClick={handleChangeType}>Change Type</Button>
-		<Button style={{margin:5}} onClick={handleChangeCreator}>Change Creator</Button>
+		<Button style={{margin:5}} onClick={handleChangeName      }>Change Name       </Button>
+		<Button style={{margin:5}} onClick={handleChangeType      }>Change Type       </Button>
+		<Button style={{margin:5}} onClick={handleChangeCreator   }>Change Creator    </Button>
 		<Button style={{margin:5}} onClick={handleChangeSearchText}>Change Search Text</Button>
 	</div>
 
@@ -92,11 +92,9 @@ export default function({categoryId="5ccb37a90e57323354e42726", editable, title,
 										 <ResultThumbnail result={result}/>
 									 </td>)
 
-
 	const cards     =<Card.Body style={{overflowX: 'scroll'}}><div><table><tbody><tr>
 			{thumbnails}
 		</tr></tbody></table></div></Card.Body>
-
 
 	let upperLeftButtons=loggedIn ?
 		<>

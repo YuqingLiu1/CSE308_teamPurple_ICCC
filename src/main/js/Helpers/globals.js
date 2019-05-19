@@ -144,3 +144,36 @@ window.getLoggedInUserCategories=async function()
 {
 	return (await getCategoriesFromCategoryIds(await getLoggedInUserCategoryIds())).filter(isObject)
 }
+window.setCategoryParameter=async function(categoryId,parameterName,parameterValue)
+{
+	console.log(categoryId,parameterName,parameterValue)
+	console.assert(arguments.length    ===3       ,'Wrong number of arguments'     )
+	console.assert(typeof parameterName==='string','parameterName must be a string')
+	console.assert(typeof categoryId   ==='string','categoryId must be a string'   )
+	const categoryInfo=await window.getCategoryInfoFromId(categoryId)
+	console.log(JSON.stringify(categoryInfo))
+	return await window.fetchJson('/user/categories/edit',{...categoryInfo,[parameterName]:parameterValue})//We simply wait for the refresh-loop to update the gui (it's pretty slow, but it works)
+}
+
+window.setCategoryName=async function(categoryId,name)
+{
+	console.assert(arguments.length ===2       ,'Wrong number of arguments'  )
+	console.assert(typeof name      ==='string','name must be a string'      )
+	console.assert(typeof categoryId==='string','categoryId must be a string')
+	return await setCategoryParameter(categoryId,'name',name)
+}
+window.setCategorySearchText=async function(categoryId,searchText)
+{
+	console.assert(arguments.length ===2       ,'Wrong number of arguments'  )
+	console.assert(typeof searchText==='string','searchText must be a string')
+	console.assert(typeof categoryId==='string','categoryId must be a string')
+	return await setCategoryParameter(categoryId,'searchText',searchText)
+}
+window.setCategoryType=async function(categoryId,type)
+{
+	console.assert(arguments.length ===2       ,'Wrong number of arguments'  )
+	console.assert(typeof type      ==='string','type must be a string'      )
+	console.assert(typeof categoryId==='string','categoryId must be a string')
+	console.assert(['All','User','Series','Episode','Frame'].includes(type),'Type '+JSON.stringify(type)+' is not a valid category type')
+	return await setCategoryParameter(categoryId,'type',type)
+}

@@ -368,7 +368,7 @@ public class UserAccountController {
         if (currentUser == null) {
             return new Response(Response.ERROR, "Could not find current logged in user");
         }
-        if(isValidCategoryType(updateCategoryItem.getType()))
+        if(!isValidCategoryType(updateCategoryItem.getType()))
         {
             return new Response(Response.ERROR,"Invalid category type: "+updateCategoryItem.getType());
         }

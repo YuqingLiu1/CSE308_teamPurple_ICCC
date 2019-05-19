@@ -7,6 +7,8 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import ListGroup from 'react-bootstrap/ListGroup';
 
+import Comment from './Comment';
+
 export default function Comments({ generalBaseId, contentBaseId, loggedInUserId }) {
     const [comment, setComment] = useState('');
 
@@ -21,6 +23,8 @@ export default function Comments({ generalBaseId, contentBaseId, loggedInUserId 
                 if (res.status !== 'OK') throw new Error(`Failed to load data for ContentBase ID: ${contentBaseId}.`);
 
                 let commentIds = res.content.generalBase.comments;
+                // show newest comments first
+                commentIds.reverse();
                 if (isMounted) {
                     setCommentIds(commentIds);
                 }
@@ -64,13 +68,6 @@ export default function Comments({ generalBaseId, contentBaseId, loggedInUserId 
 
     return (
         <Container>
-            <ListGroup>
-                {commentIds.map(commentId => {
-                    return (
-                        <ListGroup.Item key={commentId}>{commentId}</ListGroup.Item>
-                    );
-                })}
-            </ListGroup>
             <Form className="AddComment">
                 <Form.Group controlId="addCommentText">
                     <Form.Label style={{color:'black', padding:'0px', textShadow: '1px 1px lightgray'}}>Your Comment</Form.Label>
@@ -93,6 +90,13 @@ export default function Comments({ generalBaseId, contentBaseId, loggedInUserId 
                     Submit
                 </Button>
             </Form>
+            <ListGroup>
+                {commentIds.map(commentId => {
+                    return (
+                        <Comment key={commentId} commentId={commentId}/>
+                    );
+                })}
+            </ListGroup>
         </Container>
     );
 }

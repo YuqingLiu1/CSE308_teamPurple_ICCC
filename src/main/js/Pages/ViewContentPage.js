@@ -1,15 +1,20 @@
 require('@babel/polyfill');
 
 import React, { Component } from 'react';
+
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import TestFrameEditor from '../Components/TestFrameEditor';
-import Fab from '@material-ui/core/Fab';
-import Image from 'react-bootstrap/Image';
-import ContentInfoCard from '../Components/ContentInfoCard';
 import Button from 'react-bootstrap/Button';
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import Image from 'react-bootstrap/Image';
+
+import Fab from '@material-ui/core/Fab';
+
+import TestFrameEditor from '../Components/TestFrameEditor';
+import ContentInfoCard from '../Components/ContentInfoCard';
 import AddComment from '../Components/AddComment';
+
 
 export default class ViewContentPage extends Component {
     constructor(props) {
@@ -23,15 +28,11 @@ export default class ViewContentPage extends Component {
             leftContentBaseId: '',
             parentContentBaseId: '',
             childContentBaseId: '',
-            authorName: '',
-            authorBio: '',
-            authorThumbnail: '',
             contentThumbnail: '',
             contentData: {},
             comments: [],
-            editable: false,
-            title: '',
-            description: '',
+            isPublic: false,
+            isContributable: false,
             reload: true
         }
     }
@@ -45,15 +46,11 @@ export default class ViewContentPage extends Component {
             surroundingsRes = await surroundingsRes.json();
             if (surroundingsRes.status !== 'OK') throw new Error('Something went wrong fetching surrounding content');
 
-            // TODO: fetch author info
-            // TODO: fetch comment info
-
             let contentData = JSON.parse(contentRes.content.sketch.data);
             let contentThumbnail = contentRes.content.sketch.thumbnail;
-            let editable = !contentRes.content.contentBase.public;
+            let isPublic = contentRes.content.contentBase.public;
+            let isContributable = contentRes.content.contentBase.contributable;
             let type = contentRes.content.contentBase.type;
-            let title = contentRes.content.generalBase.title;
-            let description = contentRes.content.generalBase.description;
 
             let leftContentBaseId = surroundingsRes.content.leftContentBaseRef;
             let rightContentBaseId = surroundingsRes.content.rightContentBaseRef;
@@ -68,20 +65,17 @@ export default class ViewContentPage extends Component {
                 leftContentBaseId: leftContentBaseId,
                 parentContentBaseId: parentContentBaseId,
                 childContentBaseId: childContentBaseId,
-                editable: editable,
-                title: title,
-                description: description
+                isPublic: isPublic,
+                isContributable: isContributable,
             });
-        }
-
-        catch (err) {
+        } catch (err) {
             console.error(err);
         }
     }
 
     async componentDidUpdate(prevProps, prevState, snapshot) {
         try {
-            // only re-fetch data if the ContentBase ID has changed
+            // only re-fetch data if explicitly told to or if the ContentBase ID has changed (i.e. navigation)
             if (this.state.reload || this.state.contentBaseId !== prevState.contentBaseId) {
                 let contentRes = await fetch('/content/info?id=' + this.state.contentBaseId);
                 contentRes = await contentRes.json();
@@ -93,10 +87,9 @@ export default class ViewContentPage extends Component {
                 let contentData = JSON.parse(contentRes.content.sketch.data);
                 let contentThumbnail = contentRes.content.sketch.thumbnail;
                 let sketchId = contentRes.content.sketch.id;
-                let editable = !contentRes.content.contentBase.public;
+                let isPublic = contentRes.content.contentBase.public;
+                let isContributable = contentRes.content.contentBase.contributable;
                 let type = contentRes.content.contentBase.type;
-                let title = contentRes.content.generalBase.title;
-                let description = contentRes.content.generalBase.description;
 
                 let leftContentBaseId = surroundingsRes.content.leftContentBaseRef;
                 let rightContentBaseId = surroundingsRes.content.rightContentBaseRef;
@@ -112,10 +105,9 @@ export default class ViewContentPage extends Component {
                     leftContentBaseId: leftContentBaseId,
                     parentContentBaseId: parentContentBaseId,
                     childContentBaseId: childContentBaseId,
-                    editable: editable,
-                    title: title,
-                    description: description,
-                    reload: false
+                    isPublic: isPublic,
+                    isContributable: isContributable,
+                    reload: false,
                 });
             }
         } catch (err) {
@@ -131,9 +123,9 @@ export default class ViewContentPage extends Component {
     }
 
     handlePublishButtonClick = async (e) => {
-        e.preventDefault();
-
         try {
+            e.preventDefault();
+
             let id = this.state.contentBaseId;
 
             let publishRes = await fetch('/content/edit', {
@@ -148,7 +140,7 @@ export default class ViewContentPage extends Component {
             });
             publishRes = await publishRes.json();
 
-            if (publishRes.status !== 'OK') throw new Error('Could not make sketch public');
+            if (publishRes.status !== 'OK') throw new Error('Could not make sketch public.');
 
             let sketchId = this.state.sketchId;
 
@@ -157,6 +149,37 @@ export default class ViewContentPage extends Component {
             });
             this.props.changePage('viewContentPage', {
                 initialContentBaseId: id,
+                initialSketchId: sketchId
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    handleContributableButtonClick = async (e) => {
+        try {
+            e.preventDefault();
+
+            let contentBaseId = this.state.contentBaseId;
+            let res = await fetch('/content/edit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: contentBaseId,
+                    contributable: true
+                })
+            });
+            res = await res.json();
+            if (res.status !== 'OK') throw new Error('Could not make sketch contributable.');
+
+            let sketchId = this.state.sketchId;
+            this.setState({
+                reload: true
+            });
+            this.props.changePage('viewContentPage', {
+                initialContentBaseId: contentBaseId,
                 initialSketchId: sketchId
             });
         } catch (err) {
@@ -195,12 +218,14 @@ export default class ViewContentPage extends Component {
 
     render() {
         let reload = this.state.reload;
+        let isContributable = this.state.isContributable;
+        let isPublic = this.state.isPublic;
         return (
             <Container fluid className='my-3'>
                 {
-                    // check if we should show an editable version of the content
-                    this.state.editable ?
-                        // show the editable version
+                    // check if we should show a public version of the content
+                    !isPublic ?
+                        // show the private version
                         <Row>
                             <Col xs={3}>
                                 {
@@ -210,11 +235,12 @@ export default class ViewContentPage extends Component {
                                         <ContentInfoCard
                                             contentBaseId={this.state.contentBaseId}
                                             editable={true}
-                                            title={this.state.title}
-                                            description={this.state.description}
                                         />
                                 }
-                                <Button variant='primary' onClick={this.handlePublishButtonClick} className='mt-3'>Publish</Button>
+                                <ButtonGroup className='mt-3'>
+                                    <Button variant='primary' onClick={this.handlePublishButtonClick}>Publish</Button>
+                                    <Button variant='primary' disabled onClick={this.handleContributableButtonClick}>Make Contributable</Button>
+                                </ButtonGroup>
                             </Col>
                             <Col xs={9} style={{ textAlign: 'center' }}>
                                 <Row>
@@ -222,7 +248,7 @@ export default class ViewContentPage extends Component {
                                         {
                                             this.state.leftContentBaseId &&
                                             <Fab onClick={() => {this.changeContent(this.state.leftContentBaseId)}}>
-                                                <i className="fas fa-arrow-left fa-2x"></i>
+                                                <i className="fas fa-arrow-left fa-2x"/>
                                             </Fab>
                                         }
                                     </Col>
@@ -230,7 +256,7 @@ export default class ViewContentPage extends Component {
                                         {
                                             this.state.parentContentBaseId &&
                                             <Fab onClick={() => {this.changeContent(this.state.parentContentBaseId)}} className='mb-3'>
-                                                <i className="fas fa-arrow-up fa-2x"></i>
+                                                <i className="fas fa-arrow-up fa-2x"/>
                                             </Fab>
                                         }
                                         <TestFrameEditor
@@ -240,11 +266,11 @@ export default class ViewContentPage extends Component {
                                         {
                                             this.state.childContentBaseId ?
                                             <Fab onClick={() => {this.changeContent(this.state.childContentBaseId)}}>
-                                                <i className="fas fa-arrow-down fa-2x"></i>
+                                                <i className="fas fa-arrow-down fa-2x"/>
                                             </Fab>
                                                 :
                                             <Fab onClick={this.createContent}>
-                                                <i className="fas fa-plus fa-2x"></i>
+                                                <i className="fas fa-plus fa-2x"/>
                                             </Fab>
                                         }
                                     </Col>
@@ -252,7 +278,7 @@ export default class ViewContentPage extends Component {
                                         {
                                             this.state.rightContentBaseId &&
                                             <Fab onClick={() => {this.changeContent(this.state.rightContentBaseId)}}>
-                                                <i className="fas fa-arrow-right fa-2x"></i>
+                                                <i className="fas fa-arrow-right fa-2x"/>
                                             </Fab>
                                         }
                                     </Col>
@@ -260,15 +286,21 @@ export default class ViewContentPage extends Component {
                             </Col>
                         </Row>
                             :
-                        // show the non-editable version
+                        // show the public version
                         <Row>
                             <Col xs={3}>
                                 <ContentInfoCard
                                     contentBaseId={this.state.contentBaseId}
                                     editable={false}
-                                    title={this.state.title}
-                                    description={this.state.description}
                                 />
+                                <ButtonGroup className='mt-3'>
+                                    {
+                                        !isContributable &&
+                                            <Button
+                                                variant='primary'
+                                                onClick={this.handleContributableButtonClick}>Make Contributable</Button>
+                                    }
+                                </ButtonGroup>
                             </Col>
                             <Col xs={6} style={{ textAlign: 'center' }}>
                                 <Row>
@@ -276,7 +308,7 @@ export default class ViewContentPage extends Component {
                                         {
                                             this.state.leftContentBaseId &&
                                             <Fab onClick={() => {this.changeContent(this.state.leftContentBaseId)}}>
-                                                <i className="fas fa-arrow-left fa-2x"></i>
+                                                <i className="fas fa-arrow-left fa-2x"/>
                                             </Fab>
                                         }
                                     </Col>
@@ -285,14 +317,14 @@ export default class ViewContentPage extends Component {
                                             {
                                                 this.state.parentContentBaseId &&
                                                 <Fab onClick={() => {this.changeContent(this.state.parentContentBaseId)}} className='mb-3'>
-                                                    <i className="fas fa-arrow-up fa-2x"></i>
+                                                    <i className="fas fa-arrow-up fa-2x"/>
                                                 </Fab>
                                             }
                                             <Image src={this.state.contentThumbnail} fluid />
                                             {
                                                 this.state.childContentBaseId &&
                                                 <Fab onClick={() => {this.changeContent(this.state.childContentBaseId)}}>
-                                                    <i className="fas fa-arrow-down fa-2x"></i>
+                                                    <i className="fas fa-arrow-down fa-2x"/>
                                                 </Fab>
                                             }
                                         </Container>
@@ -301,7 +333,7 @@ export default class ViewContentPage extends Component {
                                         {
                                             this.state.rightContentBaseId &&
                                             <Fab onClick={() => {this.changeContent(this.state.rightContentBaseId)}}>
-                                                <i className="fas fa-arrow-right fa-2x"></i>
+                                                <i className="fas fa-arrow-right fa-2x"/>
                                             </Fab>
                                         }
                                     </Col>

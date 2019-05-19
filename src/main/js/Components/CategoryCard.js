@@ -11,14 +11,15 @@ import Spinner from 'react-bootstrap/Spinner';
  * @param userId User ID of user this card displays info about; semi-required (see description above)
  * @param contentBaseId ContentBase ID of content this card displays info about; semi-required (see description above)
  * @param onClick Function to be called when this card is clicked; required
+ * @param extraStyles Any extra styles to be applied to this card; optional
  */
-export default function CategoryCard({ userId, contentBaseId, onClick }) {
+export default function CategoryCard({ userId, contentBaseId, onClick, extraStyles }) {
     const [thumbnail, setThumbnail] = useState('');
     const [title, setTitle] = useState('');
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         let isMounted = true;
-        
+
         async function loadData() {
             try {
                 // load either content info or user info
@@ -44,7 +45,7 @@ export default function CategoryCard({ userId, contentBaseId, onClick }) {
             }
         }
         loadData();
-        
+
         return () => isMounted = false;
     }, [userId, contentBaseId]);
 
@@ -55,7 +56,7 @@ export default function CategoryCard({ userId, contentBaseId, onClick }) {
         );
     } else {
         return (
-            <Card style={{ width: '18rem', cursor: 'pointer' }} onClick={onClick}>
+            <Card style={{...{ width: '18rem', cursor: 'pointer' }, ...extraStyles}} onClick={onClick}>
                 <Card.Img variant='top' src={thumbnail}/>
                 <Card.Footer style={{ textAlign: 'center' }}>{title}</Card.Footer>
             </Card>

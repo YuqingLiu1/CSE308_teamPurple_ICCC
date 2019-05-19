@@ -21,7 +21,7 @@ export default class UserInfoPage extends Component {
 			bio: '',
 			userThumbnail: '',
 			reload: false,
-			userCategoryIds: []
+			userCategoryIds: [],
 		};
 	}
 
@@ -101,20 +101,29 @@ export default class UserInfoPage extends Component {
 									<ProfileCard
 										profileThumbnailUrl={userThumbnail}
 										username={username}
+										editable={loggedIn}
 									/>
-									<UploadProfilePicture uploadType='profile' refresh={this.reload}/>
+									{
+										loggedIn &&
+											<UploadProfilePicture uploadType='profile' refresh={this.reload}/>
+									}
 								</Row>
 							</Col>
 							<Col xs={7}>
 								<h1>Bio:</h1>
 								{
-									username &&
-										<DBAwareEdiText
-											inputProps={{rows: 5}}
-											type="textarea"
-											name="bio"
-											value={bio}
-										/>
+									bio &&
+									(
+										loggedIn ?
+											<DBAwareEdiText
+												inputProps={{rows: 5}}
+												type="textarea"
+												name="bio"
+												value={bio}
+											/>
+												:
+											<p>{bio}</p>
+									)
 								}
 							</Col>
 						</Row>

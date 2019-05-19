@@ -13,7 +13,7 @@ import Fab from '@material-ui/core/Fab';
 
 import TestFrameEditor from '../Components/TestFrameEditor';
 import ContentInfoCard from '../Components/ContentInfoCard';
-import AddComment from '../Components/AddComment';
+import Comments from '../Components/Comments';
 
 
 export default class ViewContentPage extends Component {
@@ -21,6 +21,7 @@ export default class ViewContentPage extends Component {
         super(props);
 
         this.state = {
+            generalBaseId: '',
             contentBaseId: props.initialContentBaseId,
             sketchId: props.initialSketchId,
             type: '',
@@ -51,6 +52,7 @@ export default class ViewContentPage extends Component {
             let isPublic = contentRes.content.contentBase.public;
             let isContributable = contentRes.content.contentBase.contributable;
             let type = contentRes.content.contentBase.type;
+            let generalBaseId = contentRes.content.generalBase.id;
 
             let leftContentBaseId = surroundingsRes.content.leftContentBaseRef;
             let rightContentBaseId = surroundingsRes.content.rightContentBaseRef;
@@ -58,6 +60,7 @@ export default class ViewContentPage extends Component {
             let childContentBaseId = surroundingsRes.content.childContentBaseRef;
 
             this.setState({
+                generalBaseId: generalBaseId,
                 type: type,
                 contentThumbnail: contentThumbnail,
                 contentData: contentData,
@@ -90,6 +93,7 @@ export default class ViewContentPage extends Component {
                 let isPublic = contentRes.content.contentBase.public;
                 let isContributable = contentRes.content.contentBase.contributable;
                 let type = contentRes.content.contentBase.type;
+                let generalBaseId = contentRes.content.generalBase.id;
 
                 let leftContentBaseId = surroundingsRes.content.leftContentBaseRef;
                 let rightContentBaseId = surroundingsRes.content.rightContentBaseRef;
@@ -97,6 +101,7 @@ export default class ViewContentPage extends Component {
                 let childContentBaseId = surroundingsRes.content.childContentBaseRef;
 
                 this.setState({
+                    generalBaseId: generalBaseId,
                     sketchId: sketchId,
                     type: type,
                     contentThumbnail: contentThumbnail,
@@ -220,6 +225,9 @@ export default class ViewContentPage extends Component {
         let reload = this.state.reload;
         let isContributable = this.state.isContributable;
         let isPublic = this.state.isPublic;
+        let loggedInUserId = this.props.loggedInUserId;
+        let generalBaseId = this.state.generalBaseId;
+        let contentBaseId = this.state.contentBaseId;
         return (
             <Container fluid className='my-3'>
                 {
@@ -347,8 +355,7 @@ export default class ViewContentPage extends Component {
                                 </Row>
                             </Col>
                             <Col xs={3}>
-                                List of comments goes here
-                                <AddComment />
+                                <Comments generalBaseId={generalBaseId} contentBaseId={contentBaseId} loggedInUserId={loggedInUserId}/>
                             </Col>
                         </Row>
                 }

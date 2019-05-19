@@ -122,7 +122,13 @@ class App extends Component
 			changePassword   : <ChangePassword    changePage={this.changePage}/>,
 			create           : <CreateAccount     changePage={this.changePage}/>,
 			login            : <LoginPage         changePage={this.changePage}                          login  ={this.login  } />,
-			viewContentPage  : <ViewContentPage   changePage={this.changePage} {...this.state.pageData} refresh={this.refresh} />,
+			viewContentPage  :
+				<ViewContentPage
+					changePage={this.changePage}
+					{...this.state.pageData}
+					refresh={this.refresh}
+					loggedInUserId={loggedInUserId}
+				/>,
 			searchResultsPage: <SearchResultsPage changePage={this.changePage} {...this.state.pageData} />,
 			newContent       : <NewSeriesPage     changePage={this.changePage} {...this.state.pageData} />,
 			editor           : <TestFrameEditor   pageData={this.state.pageData}/>,

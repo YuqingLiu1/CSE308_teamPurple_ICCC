@@ -1,4 +1,7 @@
-import React, {Component} from 'react'
+require('@babel/polyfill')
+
+import React, { useState } from 'react'
+
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import Form from 'react-bootstrap/Form'
@@ -7,158 +10,144 @@ import Button from 'react-bootstrap/Button'
 import NavDropdown from "react-bootstrap/es/NavDropdown";
 import Spinner from 'react-bootstrap/Spinner';
 
-class Menubar extends Component
-{
-    constructor(props) {
-        super(props);
+/**
+ * The menubar that is displayed at the top of every page.
+ * @param userId The User ID of the currently logged in user (if there is one).
+ * @param loggedIn Whether or not there is a currently logged in user.
+ * @param changePage The function to call to change the current page.
+ */
+export default function Menubar({ userId, loggedIn, changePage }) {
+    const [searchText, setSearchText] = useState('');
+    const [searchLoading, setSearchLoading] = useState(false);
 
-        this.state = {
-            searchText: '',
-            searchLoading: false
-        };
-    }
+    async function search(event) {
+        try {
+            event.preventDefault();
 
-    search = async (e) => {
-        e.preventDefault();
+            // show search spinner
+            setSearchLoading(true);
 
-        // show search spinner
-        this.setState({
-            searchLoading: true
-        });
-
-        let searchText = this.state.searchText;
-
-        let searchRes = await fetch('/search', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                type: 'All',
-                searchText: searchText
-            })
-        });
-        searchRes = await searchRes.json();
-
-        // stop showing search spinner
-        this.setState({
-            searchLoading: false
-        });
-
-        if (searchRes.status !== 'OK') {
-            console.error('Search failed');
-        } else {
-            this.props.changePage('searchResultsPage', {
-                content: searchRes.content
+            let searchRes = await fetch('/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    type: 'All',
+                    searchText: searchText
+                })
             });
+            searchRes = await searchRes.json();
+
+            // stop showing search spinner
+            setSearchLoading(false);
+
+            if (searchRes.status !== 'OK') throw new Error('Search failed.');
+
+            changePage('searchResultsPage', { content: searchRes.content });
+        } catch (err) {
+            console.error(err);
         }
     }
 
-    handleSearchChange = (e) => {
-        this.setState({
-            searchText: e.target.value
-        });
+    function handleSearchChange(event) {
+        let searchText = event.target.value;
+        setSearchText(searchText);
     }
 
-    render()
-    {
-        let changePage = this.props.changePage;
-        return (
-            <Navbar bg="light" expand="lg">
-                <Nav.Link onClick={()=>{this.props.changePage('homepage')}}>
-                    <i className="fas fa-info fa-2x"/>
-                    <i className="fab fa-cuttlefish fa-2x"/>
-                    <i className="fab fa-cuttlefish fa-2x"/>
-                    <i className="fab fa-cuttlefish fa-2x"/>
+    // rendering logic
+    return (
+        <Navbar bg="light" expand="lg">
+            <Nav.Link onClick={()=>{changePage('homepage')}}>
+                <i className="fas fa-info fa-2x"/>
+                <i className="fab fa-cuttlefish fa-2x"/>
+                <i className="fab fa-cuttlefish fa-2x"/>
+                <i className="fab fa-cuttlefish fa-2x"/>
+            </Nav.Link>
+            <Nav className='mr-3'>
+                <Nav.Link onClick={() => {changePage('refresh')}}>
+                    <i className="fas fa-redo fa-2x"/>
                 </Nav.Link>
-                <Nav className='mr-3'>
-                    <Nav.Link onClick={() => {changePage('refresh')}}>
-                        <i className="fas fa-redo fa-2x"/>
-                    </Nav.Link>
-                </Nav>
+            </Nav>
+            <Nav>
+                <Form inline>
+                    <InputGroup>
+                        <Form.Control type="text" placeholder="Search..." onChange={handleSearchChange} required/>
+                        <InputGroup.Append>
+                            {
+                                searchLoading ?
+                                    <Button variant="primary" disabled>
+                                        <Spinner
+                                            as="span"
+                                            animation="border"
+                                            size="sm"
+                                            role="status"
+                                            aria-hidden="true"
+                                        />
+                                        <span className="sr-only">Loading...</span>
+                                    </Button>
+                                        :
+                                    <Button type='submit' onClick={search}>
+                                        <i className="fas fa-search"/>
+                                    </Button>
+                            }
+                        </InputGroup.Append>
+                    </InputGroup>
+                </Form>
+            </Nav>
+            <Navbar.Toggle aria-controls="basic-navbar-nav"/>
+            <Navbar.Collapse id="basic-navbar-nav" className='justify-content-end' style={{ textAlign: 'right' }}>
                 <Nav>
-                    <Form inline>
-                        <InputGroup>
-                            <Form.Control type="text" placeholder="Search..." onChange={this.handleSearchChange} required />
-                            <InputGroup.Append>
-                                {
-                                    this.state.searchLoading ?
-                                        <Button variant="primary" disabled>
-                                            <Spinner
-                                                as="span"
-                                                animation="border"
-                                                size="sm"
-                                                role="status"
-                                                aria-hidden="true"
-                                            />
-                                            <span className="sr-only">Loading...</span>
-                                        </Button>
-                                            :
-                                        <Button type='submit' onClick={this.search}>
-                                            <i className="fas fa-search"/>
-                                        </Button>
-                                }
-                            </InputGroup.Append>
-                        </InputGroup>
-                    </Form>
-                </Nav>
-                <Navbar.Toggle aria-controls="basic-navbar-nav"/>
-                <Navbar.Collapse id="basic-navbar-nav" className='justify-content-end' style={{textAlign: 'right'}}>
-                    <Nav>
-                        {
-                            <Nav.Link onClick={() => {this.props.changePage('createCategoryPage', {
-                                userId: this.props.userId,
-                                location: 'Home'
-                            })}}>
-                                <i className="fas fa-vial fa-2x"></i>
+                    {
+                        <Nav.Link onClick={() => {changePage('createCategoryPage', {
+                            userId: userId,
+                            location: 'Home'
+                        })}}>
+                            <i className="fas fa-vial fa-2x"></i>
+                        </Nav.Link>
+                    }
+                    {
+                        loggedIn ?
+                            <Nav.Link onClick={() => {changePage('newContent', { type: 'Series' })}}>
+                                <i className="fas fa-plus-circle fa-2x"/>
                             </Nav.Link>
+                                :
+                            <></>
+                    }
+                    <NavDropdown title={<i className="fas fa-user-circle fa-2x"/>} alignRight>
+                        {
+                            loggedIn &&
+                            <NavDropdown.Item href='/logout'>Logout</NavDropdown.Item>
                         }
                         {
-                            this.props.loggedIn ?
-                                <Nav.Link onClick={() => {this.props.changePage('newContent', { type: 'Series' })}}>
-                                    <i className="fas fa-plus-circle fa-2x"/>
-                                </Nav.Link>
-                                    :
-                                <></>
+                            loggedIn &&
+                            <NavDropdown.Item onClick={() => {changePage('changePassword')}}>
+                                Change Password
+                            </NavDropdown.Item>
                         }
-                        <NavDropdown title={<i className="fas fa-user-circle fa-2x"/>} alignRight>
-                            {
-                                this.props.loggedIn &&
-                                    <NavDropdown.Item href='/logout'>Logout</NavDropdown.Item>
-
-                            }
-                            {
-                                this.props.loggedIn &&
-                                    <NavDropdown.Item onClick={() => {this.props.changePage('changePassword')}}>
-                                        Change Password
-                                    </NavDropdown.Item>
-                            }
-                            {
-                                !this.props.loggedIn &&
-                                    <NavDropdown.Item onClick={() => {this.props.changePage('login')}}>
-                                        Login
-                                    </NavDropdown.Item>
-                            }
-                            {
-                                !this.props.loggedIn &&
-                                    <NavDropdown.Item onClick={() => {this.props.changePage('create')}}>
-                                        Create Account
-                                    </NavDropdown.Item>
-                            }
-                        </NavDropdown>
                         {
-                            this.props.loggedIn ?
-                                <Nav.Link onClick={()=>{this.props.changePage('userInfo', { loggedIn: true })}}>
-                                    <i className="fas fa-cog fa-2x"/>
-                                </Nav.Link>
-                                    :
-                                <></>
+                            !loggedIn &&
+                            <NavDropdown.Item onClick={() => {changePage('login')}}>
+                                Login
+                            </NavDropdown.Item>
                         }
-                    </Nav>
-                </Navbar.Collapse>
-            </Navbar>
-        )
-    }
+                        {
+                            !loggedIn &&
+                            <NavDropdown.Item onClick={() => {changePage('create')}}>
+                                Create Account
+                            </NavDropdown.Item>
+                        }
+                    </NavDropdown>
+                    {
+                        loggedIn ?
+                            <Nav.Link onClick={()=>{changePage('userInfo', { loggedIn: true })}}>
+                                <i className="fas fa-cog fa-2x"/>
+                            </Nav.Link>
+                                :
+                            <></>
+                    }
+                </Nav>
+            </Navbar.Collapse>
+        </Navbar>
+    );
 }
-
-export default Menubar

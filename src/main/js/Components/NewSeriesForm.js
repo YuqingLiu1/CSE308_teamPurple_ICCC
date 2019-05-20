@@ -90,8 +90,7 @@ class NewSeriesForm extends Component {
             newContentRes = await newContentRes.json();
             if (newContentRes.status !== 'OK') throw new Error('Failed to create new content');
             this.props.changePage('viewContentPage', {
-                initialContentBaseId: newContentRes.content.contentBase.id,
-                initialSketchId: newContentRes.content.sketch.id
+                contentBaseId: newContentRes.content.contentBase.id
             });
         } catch (err) {
             console.error(err);

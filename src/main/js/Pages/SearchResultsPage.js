@@ -55,8 +55,7 @@ export default class SearchResultsPage extends Component {
                                             contentBaseId={series.contentBase.id}
                                             onClick={() => {
                                                 this.props.changePage('viewContentPage', {
-                                                    initialContentBaseId: series.contentBase.id,
-                                                    initialSketchId: series.sketch.id
+                                                    contentBaseId: series.contentBase.id,
                                                 })
                                             }}
                                             extraStyles={{ display: 'inline-block', marginLeft: '10px', marginRight: '10px' }}
@@ -80,8 +79,7 @@ export default class SearchResultsPage extends Component {
                                             contentBaseId={episode.contentBase.id}
                                             onClick={() => {
                                                 this.props.changePage('viewContentPage', {
-                                                    initialContentBaseId: episode.contentBase.id,
-                                                    initialSketchId: episode.sketch.id
+                                                    contentBaseId: episode.contentBase.id,
                                                 })
                                             }}
                                             extraStyles={{ display: 'inline-block', marginLeft: '10px', marginRight: '10px' }}
@@ -105,8 +103,7 @@ export default class SearchResultsPage extends Component {
                                             contentBaseId={frame.contentBase.id}
                                             onClick={() => {
                                                 this.props.changePage('viewContentPage', {
-                                                    initialContentBaseId: frame.contentBase.id,
-                                                    initialSketchId: frame.sketch.id
+                                                    contentBaseId: frame.contentBase.id,
                                                 })
                                             }}
                                             extraStyles={{ display: 'inline-block', marginLeft: '10px', marginRight: '10px' }}

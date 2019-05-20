@@ -35,7 +35,7 @@ export default function Likes({ generalBaseId, likedByCurrentUserColor='red', no
         loadData();
 
         return () => isMounted = false;
-    }, [likedByCurrentUser]);
+    }, [generalBaseId, likedByCurrentUser]);
 
     async function handleClick(event) {
         event.preventDefault();

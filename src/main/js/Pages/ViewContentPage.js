@@ -1,6 +1,6 @@
 require('@babel/polyfill');
 
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -16,125 +16,92 @@ import ContentInfoCard from '../Components/ContentInfoCard';
 import Comments from '../Components/Comments';
 import Likes from '../Components/Likes';
 
+export default function ViewContentPage({ contentBaseId, loggedInUserId, changePage }) {
+    const [surroundingContent, setSurroundingContent] = useState({
+        rightContentBaseId: '',
+        leftContentBaseId: '',
+        parentContentBaseId: '',
+        childContentBaseId: '',
+    });
+    useEffect(() => {
+        let isMounted = true;
 
-export default class ViewContentPage extends Component {
-    constructor(props) {
-        super(props);
+        async function loadSurroundingContent() {
+            try {
+                let res = await fetch('/content/surroundings?id=' + contentBaseId);
+                res = await res.json();
+                if (res.status !== 'OK') throw new Error('Failed to load surrounding content.');
+                let leftContentBaseId = res.content.leftContentBaseRef;
+                let rightContentBaseId = res.content.rightContentBaseRef;
+                let parentContentBaseId = res.content.parentContentBaseRef;
+                let childContentBaseId = res.content.childContentBaseRef;
 
-        this.state = {
-            generalBaseId: '',
-            contentBaseId: props.initialContentBaseId,
-            sketchId: props.initialSketchId,
-            type: '',
-            rightContentBaseId: '',
-            leftContentBaseId: '',
-            parentContentBaseId: '',
-            childContentBaseId: '',
-            contentThumbnail: '',
-            contentData: {},
-            comments: [],
-            isPublic: false,
-            isContributable: false,
-            reload: true
-        }
-    }
-
-    async componentDidMount() {
-        try {
-            let contentRes = await fetch('/content/info?id=' + this.state.contentBaseId);
-            contentRes = await contentRes.json();
-            if (contentRes.status !== 'OK') throw new Error();
-            let surroundingsRes = await fetch('/content/surroundings?id=' + this.state.contentBaseId);
-            surroundingsRes = await surroundingsRes.json();
-            if (surroundingsRes.status !== 'OK') throw new Error('Something went wrong fetching surrounding content');
-
-            let contentData = JSON.parse(contentRes.content.sketch.data);
-            let contentThumbnail = contentRes.content.sketch.thumbnail;
-            let isPublic = contentRes.content.contentBase.public;
-            let isContributable = contentRes.content.contentBase.contributable;
-            let type = contentRes.content.contentBase.type;
-            let generalBaseId = contentRes.content.generalBase.id;
-
-            let leftContentBaseId = surroundingsRes.content.leftContentBaseRef;
-            let rightContentBaseId = surroundingsRes.content.rightContentBaseRef;
-            let parentContentBaseId = surroundingsRes.content.parentContentBaseRef;
-            let childContentBaseId = surroundingsRes.content.childContentBaseRef;
-
-            this.setState({
-                generalBaseId: generalBaseId,
-                type: type,
-                contentThumbnail: contentThumbnail,
-                contentData: contentData,
-                rightContentBaseId: rightContentBaseId,
-                leftContentBaseId: leftContentBaseId,
-                parentContentBaseId: parentContentBaseId,
-                childContentBaseId: childContentBaseId,
-                isPublic: isPublic,
-                isContributable: isContributable,
-            });
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    async componentDidUpdate(prevProps, prevState, snapshot) {
-        try {
-            // only re-fetch data if explicitly told to or if the ContentBase ID has changed (i.e. navigation)
-            if (this.state.reload || this.state.contentBaseId !== prevState.contentBaseId) {
-                let contentRes = await fetch('/content/info?id=' + this.state.contentBaseId);
-                contentRes = await contentRes.json();
-                if (contentRes.status !== 'OK') throw new Error('Something went wrong fetching content info');
-                let surroundingsRes = await fetch('/content/surroundings?id=' + this.state.contentBaseId);
-                surroundingsRes = await surroundingsRes.json();
-                if (surroundingsRes.status !== 'OK') throw new Error('Something went wrong fetching surrounding content');
-
-                let contentData = JSON.parse(contentRes.content.sketch.data);
-                let contentThumbnail = contentRes.content.sketch.thumbnail;
-                let sketchId = contentRes.content.sketch.id;
-                let isPublic = contentRes.content.contentBase.public;
-                let isContributable = contentRes.content.contentBase.contributable;
-                let type = contentRes.content.contentBase.type;
-                let generalBaseId = contentRes.content.generalBase.id;
-
-                let leftContentBaseId = surroundingsRes.content.leftContentBaseRef;
-                let rightContentBaseId = surroundingsRes.content.rightContentBaseRef;
-                let parentContentBaseId = surroundingsRes.content.parentContentBaseRef;
-                let childContentBaseId = surroundingsRes.content.childContentBaseRef;
-
-                this.setState({
-                    generalBaseId: generalBaseId,
-                    sketchId: sketchId,
-                    type: type,
-                    contentThumbnail: contentThumbnail,
-                    contentData: contentData,
-                    rightContentBaseId: rightContentBaseId,
-                    leftContentBaseId: leftContentBaseId,
-                    parentContentBaseId: parentContentBaseId,
-                    childContentBaseId: childContentBaseId,
-                    isPublic: isPublic,
-                    isContributable: isContributable,
-                    reload: false,
-                });
+                if (isMounted) {
+                    setSurroundingContent({
+                        rightContentBaseId: rightContentBaseId,
+                        leftContentBaseId: leftContentBaseId,
+                        parentContentBaseId: parentContentBaseId,
+                        childContentBaseId: childContentBaseId,
+                    });
+                }
+            } catch (err) {
+                console.log(err);
             }
-        } catch (err) {
-            console.error(err);
         }
-    }
+        loadSurroundingContent();
 
-    changeContent = (newContentBaseId) => {
-        this.setState({
-            contentBaseId: newContentBaseId,
-            reload: true
-        });
-    }
+        return () => isMounted = false;
+    }, [contentBaseId]);
 
-    handlePublishButtonClick = async (e) => {
+    const [generalBaseId, setGeneralBaseId] = useState('');
+    const [type, setType] = useState('');
+    const [contentThumbnail, setContentThumbnail] = useState('');
+    const [contentData, setContentData] = useState({});
+    const [isPublic, setIsPublic] = useState(true);
+    const [isContributable, setIsContributable] = useState(false);
+    const [sketchId, setSketchId] = useState('');
+    useEffect(() => {
+        let isMounted = true;
+
+        async function loadData() {
+            try {
+                let res = await fetch('/content/info?id=' + contentBaseId);
+                res = await res.json();
+                if (res.status !== 'OK') throw new Error('Failed to load content info.');
+
+                let contentData = JSON.parse(res.content.sketch.data);
+                let contentThumbnail = res.content.sketch.thumbnail;
+                let sketchId = res.content.sketch.id;
+                let isPublic = res.content.contentBase.public;
+                let isContributable = res.content.contentBase.contributable;
+                let type = res.content.contentBase.type;
+                let generalBaseId = res.content.generalBase.id;
+
+                if (isMounted) {
+                    setGeneralBaseId(generalBaseId);
+                    setType(type);
+                    setContentThumbnail(contentThumbnail);
+                    setContentData(contentData);
+                    setIsPublic(isPublic);
+                    setIsContributable(isContributable);
+                    setSketchId(sketchId);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+        loadData();
+
+        return () => isMounted = false;
+    }, [contentBaseId]);
+
+    async function handlePublishButtonClick(event) {
         try {
-            e.preventDefault();
+            event.preventDefault();
 
-            let id = this.state.contentBaseId;
-
-            let publishRes = await fetch('/content/edit', {
+            // attempt to make the content public
+            let id = contentBaseId;
+            let res = await fetch('/content/edit', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -144,60 +111,47 @@ export default class ViewContentPage extends Component {
                     public: true
                 })
             });
-            publishRes = await publishRes.json();
+            res = await res.json();
+            if (res.status !== 'OK') throw new Error('Could not make content public.');
 
-            if (publishRes.status !== 'OK') throw new Error('Could not make sketch public.');
-
-            let sketchId = this.state.sketchId;
-
-            this.setState({
-                reload: true
-            });
-            this.props.changePage('viewContentPage', {
-                initialContentBaseId: id,
-                initialSketchId: sketchId
-            });
+            // content successfully made public, so refresh the page
+            changePage('refresh');
         } catch (err) {
             console.error(err);
         }
     }
 
-    handleContributableButtonClick = async (e) => {
+    async function handleContributableButtonClick(event) {
         try {
-            e.preventDefault();
+            event.preventDefault();
 
-            let contentBaseId = this.state.contentBaseId;
+            // attempt to make the content contributable
+            let id = contentBaseId;
             let res = await fetch('/content/edit', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    id: contentBaseId,
+                    id: id,
                     contributable: true
                 })
             });
             res = await res.json();
-            if (res.status !== 'OK') throw new Error('Could not make sketch contributable.');
+            if (res.status !== 'OK') throw new Error('Could not make content contributable.');
 
-            let sketchId = this.state.sketchId;
-            this.setState({
-                reload: true
-            });
-            this.props.changePage('viewContentPage', {
-                initialContentBaseId: contentBaseId,
-                initialSketchId: sketchId
-            });
+            // content successfully made contributable, so refresh the page
+            changePage('refresh');
         } catch (err) {
             console.error(err);
         }
     }
 
-    createContent = (e) => {
-        e.preventDefault();
+    function createContent(event) {
+        event.preventDefault();
 
-        let parentContentBaseId = this.state.contentBaseId;
-        let currentContentType = this.state.type;
+        let parentContentBaseId = contentBaseId;
+        let currentContentType = type;
         let newContentType = '';
         let firstFrame = true;
         switch (currentContentType) {
@@ -215,153 +169,170 @@ export default class ViewContentPage extends Component {
                 console.error('Failed to create new content');
                 return;
         }
-        this.props.changePage('newContent', {
+        changePage('newContent', {
             type: newContentType,
             parentContentBaseId: parentContentBaseId,
             firstFrame: firstFrame
         });
     }
 
-    render() {
-        let reload = this.state.reload;
-        let isContributable = this.state.isContributable;
-        let isPublic = this.state.isPublic;
-        let loggedInUserId = this.props.loggedInUserId;
-        let generalBaseId = this.state.generalBaseId;
-        let contentBaseId = this.state.contentBaseId;
-        return (
-            <Container fluid className='my-3'>
-                {
-                    // check if we should show a public version of the content
-                    !isPublic ?
-                        // show the private version
-                        <Row>
-                            <Col xs={3}>
-                                {
-                                    reload ?
-                                        'Loading...'
-                                            :
-                                        <ContentInfoCard
-                                            contentBaseId={this.state.contentBaseId}
-                                            editable={true}
-                                        />
-                                }
-                                <ButtonGroup className='mt-3'>
-                                    <Button variant='primary' onClick={this.handlePublishButtonClick}>Publish</Button>
-                                    <Button variant='primary' disabled onClick={this.handleContributableButtonClick}>Make Contributable</Button>
-                                </ButtonGroup>
-                            </Col>
-                            <Col xs={9} style={{ textAlign: 'center' }}>
-                                <Row>
-                                    <Col xs={1} className='my-auto'>
-                                        {
-                                            this.state.leftContentBaseId &&
-                                            <Fab onClick={() => {this.changeContent(this.state.leftContentBaseId)}}>
-                                                <i className="fas fa-arrow-left fa-2x"/>
-                                            </Fab>
-                                        }
-                                    </Col>
-                                    <Col xs={10}>
-                                        {
-                                            this.state.parentContentBaseId &&
-                                            <Fab onClick={() => {this.changeContent(this.state.parentContentBaseId)}} className='mb-3'>
-                                                <i className="fas fa-arrow-up fa-2x"/>
-                                            </Fab>
-                                        }
-                                        <TestFrameEditor
-                                            sketchData={this.state.contentData}
-                                            sketchId={this.state.sketchId}
-                                        />
-                                        {
-                                            this.state.childContentBaseId ?
-                                            <Fab onClick={() => {this.changeContent(this.state.childContentBaseId)}}>
-                                                <i className="fas fa-arrow-down fa-2x"/>
-                                            </Fab>
-                                                :
-                                            <Fab onClick={this.createContent}>
-                                                <i className="fas fa-plus fa-2x"/>
-                                            </Fab>
-                                        }
-                                    </Col>
-                                    <Col xs={1} className='my-auto'>
-                                        {
-                                            this.state.rightContentBaseId &&
-                                            <Fab onClick={() => {this.changeContent(this.state.rightContentBaseId)}}>
-                                                <i className="fas fa-arrow-right fa-2x"/>
-                                            </Fab>
-                                        }
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                            :
-                        // show the public version
-                        <Row>
-                            <Col xs={3}>
-                                <ContentInfoCard
-                                    contentBaseId={this.state.contentBaseId}
-                                    editable={false}
-                                />
-                                <ButtonGroup className='mt-3'>
-                                    {
-                                        !isContributable &&
-                                            <Button
-                                                variant='primary'
-                                                onClick={this.handleContributableButtonClick}>Make Contributable</Button>
-                                    }
-                                    <Likes generalBaseId={generalBaseId}/>
-                                </ButtonGroup>
-                            </Col>
-                            <Col xs={6} style={{ textAlign: 'center' }}>
-                                <Row>
-                                    <Col xs={1} className='my-auto'>
-                                        {
-                                            this.state.leftContentBaseId &&
-                                            <Fab onClick={() => {this.changeContent(this.state.leftContentBaseId)}}>
-                                                <i className="fas fa-arrow-left fa-2x"/>
-                                            </Fab>
-                                        }
-                                    </Col>
-                                    <Col xs={10}>
-                                        <Container>
-                                            {
-                                                this.state.parentContentBaseId &&
-                                                <Fab onClick={() => {this.changeContent(this.state.parentContentBaseId)}} className='mb-3'>
-                                                    <i className="fas fa-arrow-up fa-2x"/>
-                                                </Fab>
-                                            }
-                                            <Image src={this.state.contentThumbnail} fluid />
-                                            {
-                                                this.state.childContentBaseId ?
-                                                    <Fab onClick={() => {this.changeContent(this.state.childContentBaseId)}}>
-                                                        <i className="fas fa-arrow-down fa-2x"/>
-                                                    </Fab>
-                                                        :
-                                                    (
-                                                        isContributable &&
-                                                            <Fab onClick={this.createContent}>
-                                                                <i className="fas fa-plus fa-2x"/>
-                                                            </Fab>
-                                                    )
-                                            }
-                                        </Container>
-                                    </Col>
-                                    <Col xs={1} className='my-auto'>
-                                        {
-                                            this.state.rightContentBaseId &&
-                                            <Fab onClick={() => {this.changeContent(this.state.rightContentBaseId)}}>
-                                                <i className="fas fa-arrow-right fa-2x"/>
-                                            </Fab>
-                                        }
-                                    </Col>
-                                </Row>
-                            </Col>
-                            <Col xs={3}>
-                                <Comments generalBaseId={generalBaseId} contentBaseId={contentBaseId} loggedInUserId={loggedInUserId}/>
-                            </Col>
-                        </Row>
-                }
-            </Container>
-        );
-    }
+    // rendering logic
+    let leftContentBaseId = surroundingContent.leftContentBaseId;
+    let rightContentBaseId = surroundingContent.rightContentBaseId;
+    let parentContentBaseId = surroundingContent.parentContentBaseId;
+    let childContentBaseId = surroundingContent.childContentBaseId;
+
+    let leftColumn = (
+        isPublic ?
+            <Col xs={3}>
+                <ContentInfoCard
+                    contentBaseId={contentBaseId}
+                    editable={false}  // TODO: figure out if this is actually not supposed to be editable
+                />
+                <ButtonGroup className='mt-3'>
+                    {
+                        !isContributable &&
+                        <Button
+                            variant='primary'
+                            onClick={handleContributableButtonClick}>Make Contributable</Button>
+                    }
+                    {
+                        generalBaseId &&
+                        <Likes generalBaseId={generalBaseId}/>
+                    }
+                </ButtonGroup>
+            </Col>
+                :
+            <Col xs={3}>
+                <ContentInfoCard
+                    contentBaseId={contentBaseId}
+                    editable={true}
+                />
+                <ButtonGroup className='mt-3'>
+                    <Button variant='primary' onClick={handlePublishButtonClick}>Publish</Button>
+                    <Button variant='primary' disabled onClick={handleContributableButtonClick}>Make Contributable</Button>
+                </ButtonGroup>
+            </Col>
+    );
+
+    let middleColumn = (
+        isPublic ?
+            <Col xs={6} style={{ textAlign: 'center' }}>
+                <Row>
+                    <Col xs={1} className='my-auto'>
+                        {
+                            leftContentBaseId &&
+                            <Fab onClick={() => {changePage('viewContentPage', { contentBaseId: leftContentBaseId })}}>
+                                <i className="fas fa-arrow-left fa-2x"/>
+                            </Fab>
+                        }
+                    </Col>
+                    <Col xs={10}>
+                        <Container>
+                            {
+                                parentContentBaseId &&
+                                <Fab onClick={() => {changePage('viewContentPage', { contentBaseId: parentContentBaseId })}} className='mb-3'>
+                                    <i className="fas fa-arrow-up fa-2x"/>
+                                </Fab>
+                            }
+                            {
+                                contentThumbnail &&
+                                <Image src={contentThumbnail} fluid/>
+                            }
+                            {
+                                childContentBaseId ?
+                                    <Fab onClick={() => {changePage('viewContentPage', { contentBaseId: childContentBaseId })}}>
+                                        <i className="fas fa-arrow-down fa-2x"/>
+                                    </Fab>
+                                    :
+                                    (
+                                        isContributable &&
+                                        <Fab onClick={createContent}>
+                                            <i className="fas fa-plus fa-2x"/>
+                                        </Fab>
+                                    )
+                            }
+                        </Container>
+                    </Col>
+                    <Col xs={1} className='my-auto'>
+                        {
+                            rightContentBaseId &&
+                            <Fab onClick={() => {changePage('viewContentPage', { contentBaseId: rightContentBaseId })}}>
+                                <i className="fas fa-arrow-right fa-2x"/>
+                            </Fab>
+                        }
+                    </Col>
+                </Row>
+            </Col>
+                :
+            <Col xs={9} style={{ textAlign: 'center' }}>
+                <Row>
+                    <Col xs={1} className='my-auto'>
+                        {
+                            leftContentBaseId &&
+                            <Fab onClick={() => {changePage('viewContentPage', { contentBaseId: leftContentBaseId })}}>
+                                <i className="fas fa-arrow-left fa-2x"/>
+                            </Fab>
+                        }
+                    </Col>
+                    <Col xs={10}>
+                        {
+                            parentContentBaseId &&
+                            <Fab onClick={() => {changePage('viewContentPage', { contentBaseId: parentContentBaseId })}} className='mb-3'>
+                                <i className="fas fa-arrow-up fa-2x"/>
+                            </Fab>
+                        }
+                        {
+                            sketchId &&
+                            <TestFrameEditor
+                                sketchData={contentData}
+                                sketchId={sketchId}
+                            />
+                        }
+                        {
+                            childContentBaseId ?
+                                <Fab onClick={() => {changePage('viewContentPage', { contentBaseId: childContentBaseId })}}>
+                                    <i className="fas fa-arrow-down fa-2x"/>
+                                </Fab>
+                                :
+                                <Fab onClick={createContent}>
+                                    <i className="fas fa-plus fa-2x"/>
+                                </Fab>
+                        }
+                    </Col>
+                    <Col xs={1} className='my-auto'>
+                        {
+                            rightContentBaseId &&
+                            <Fab onClick={() => {changePage('viewContentPage', { contentBaseId: rightContentBaseId })}}>
+                                <i className="fas fa-arrow-right fa-2x"/>
+                            </Fab>
+                        }
+                    </Col>
+                </Row>
+            </Col>
+    );
+
+    let rightColumn = (
+        isPublic &&
+        <Col xs={3}>
+            {
+                generalBaseId &&
+                <Comments
+                    generalBaseId={generalBaseId}
+                    contentBaseId={contentBaseId}
+                    loggedInUserId={loggedInUserId}
+                />
+            }
+        </Col>
+    );
+
+    return (
+        <Container fluid className='my-3'>
+            <Row>
+                {leftColumn}
+                {middleColumn}
+                {rightColumn}
+            </Row>
+        </Container>
+    );
 }

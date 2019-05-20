@@ -25,7 +25,6 @@ import CategoryCard from "./CategoryCard"
 
 
 
-
 export default class Category2 extends Component {
     constructor(props) {
         super(props)
@@ -117,15 +116,32 @@ export default class Category2 extends Component {
         {
             if(window.confirm("Are you sure you want to delete this category?"))
             {
-                window.deleteCategory(this.props.categoryId)
+                window.deleteCategory(categoryId)
             }
         }
 
-		let items   =this.state.items
-		let loggedIn=this.props.loggedIn
+        const handleChangeType=(type)=>{
+            window.setCategoryType(categoryId,type)
+        }
+
+        const handleChangeSearch=()=>{
+            const text=window.prompt("Please enter a search query for this category: ")
+            if(text==null)
+            {
+                window.alert("Cancelled changing the category's search query")
+            }
+            else
+            {
+                delete window.setCategorySearchText(categoryId, text)
+                alert("Set search text to "+JSON.stringify(text))
+            }
+        }
+
+		let items     =this.state.items
+		let loggedIn  =this.props.loggedIn
 		let categoryId=this.props.categoryId
-		let name    =this.state.name
-		let loading =this.state.loading
+		let name      =this.state.name
+		let loading   =this.state.loading
         const categoryFontSize = '30px'
         // const [notCollapsed, setNotCollapsed] = useState(true)
         // const [askIfDelete, setAskIfDelete] = useState(false)
@@ -138,6 +154,25 @@ export default class Category2 extends Component {
         //         </span>
         //     </div>
         // )
+
+
+        const controls=<span>
+			<Button onClick={handleDelete}>
+				Delete
+			</Button>
+			<Button onClick={handleChangeSearch}>
+				Change Search Text
+			</Button>
+            <select onChange={event=>handleChangeType(event.target.value)}>
+                <option selected disabled label={"(Select Type)"}/>
+                <option value={"All"} label={"All"}/>
+                <option value={"User"} label={"User"}/>
+                <option value={"Series"} label={"Series"}/>
+                <option value={"Episode"} label={"Episode"}/>
+                <option value={"Frame"} label={"Frame"}/>
+            </select>
+        </span>
+
         const cards = <Card.Body style={{overflowX: 'scroll'}}>
                 <div>
                     <table>
@@ -175,9 +210,7 @@ export default class Category2 extends Component {
                                                 'Loading...'
                                                     :
                                                 <>
-                                                    <Button onClick={handleDelete}>
-                                                        Delete
-                                                    </Button>
+                                                    {controls}
                                                 <DBAwareEdiText viewProps={{style: {fontSize: categoryFontSize}}}
                                                     // inputProps	={{style:{'fontSize':categoryFontSize}}}
                                                                 value={name} type={'text'} onSave={name=>window.setCategoryName(categoryId,name)}/>

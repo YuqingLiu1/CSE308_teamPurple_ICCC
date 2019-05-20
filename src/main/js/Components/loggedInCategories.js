@@ -51,12 +51,12 @@ export default class App extends Component
 
 	async componentDidMount() {
 		try {
-			let userId = this.props.userId;
-			let userInfoRes = await fetch('/user/info?id=' + userId);
-			userInfoRes = await userInfoRes.json();
-			if (userInfoRes.status !== 'OK') throw new Error('Failed to fetch user info for User ID: ' + userId);
+			// get logged in user's homepage categories
+			let res = await fetch('/user/categories/info');
+			res = await res.json();
+			if (res.status !== 'OK') throw new Error('Failed to load logged in user\'s categories.');
+			let categoryIds = res.content.homeCategoryIds;
 
-			let categoryIds = userInfoRes.content.user.homeCategories;
 			let items = categoryIds.map((categoryId) => {
 				return {
 					id: categoryId,

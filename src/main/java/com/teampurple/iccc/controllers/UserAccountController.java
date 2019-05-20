@@ -25,44 +25,18 @@ public class UserAccountController {
 
     @Autowired
     private UserRepository users;
+
     @Autowired
     private GeneralBaseRepository generalbase;
+
     @Autowired
     private Authentication auth;
+
     @Autowired
     private SketchRepository sketchRepository;
+
     @Autowired
     private CategoryRepository categoryRepository;
-
-    //TODO Create a function
-    // @SuppressWarnings("Duplicates")
-    // @GetMapping(value="/generalBase/title")
-    // public Response getGeneralBaseInfo(@RequestParam(value="id") final String generalBaseId)
-    // {
-    //     GeneralBase gb=generalbase.findById(generalBaseId).get();
-    //     User currentUser=auth.getCurrentUser();
-    //     GeneralBase currentGeneralBase=gb;
-    //     if(currentUser==null||currentGeneralBase==null)
-    //     {
-    //         return new Response(Response.ERROR);
-    //     }
-    //     // get the user's categories
-    //     List<Category> userCategories=getCategories(currentUser.getUserCategories());
-    //     // get the default "home" categories
-    //     List<Category> homeCategories=getCategories(currentUser.getHomeCategories());
-    //     UserInfo userInfo=new UserInfo();
-    //     userInfo.setGeneralBase(currentGeneralBase);
-    //     userInfo.setUsername(currentGeneralBase.getTitle());
-    //     userInfo.setBio(currentGeneralBase.getDescription());
-    //     userInfo.setEmail(currentUser.getEmail());
-    //     userInfo.setPassword(currentUser.getPassword());
-    //     userInfo.setUserCategories(userCategories);
-    //     userInfo.setUserCategories(userCategories);
-    //     userInfo.setHomeCategories(homeCategories);
-    //     userInfo.setSketchRef(currentGeneralBase.getSketch());
-    //     userInfo.setUser(currentUser);
-    //     return new Response(Response.OK,userInfo);
-    // }
 
     /**
      * Description:
@@ -152,7 +126,6 @@ public class UserAccountController {
         return new Response(Response.OK, aggregateInfo);
     }
 
-    // TODO: handle updating categories, liked content/users, and comments
     // TODO: change the dateLastEdited when making updates
     /**
      * Description:
@@ -208,7 +181,6 @@ public class UserAccountController {
         return new Response(Response.OK);
     }
 
-    // TODO: create a new sketch for the new user's profile picture upon creation
     /**
      * Description:
      *   - create a new user
@@ -222,7 +194,7 @@ public class UserAccountController {
      * Returns:
      *   - status: String ('OK' or 'error')
      */
-    @PostMapping(value = "/user/add")
+    @PostMapping("/user/add")
     public Response addUserAccount(@RequestBody NewUser user) {
         try {
             GeneralBase gb = new GeneralBase();
@@ -329,6 +301,41 @@ public class UserAccountController {
         return new Response(Response.OK,oldCategoryIds);
     }
 
+    /**
+     * Description:
+     *   - get the logged-in user's categories
+     *   - must be logged in
+     *
+     * Request Params:
+     *   - none
+     *
+     * Returns:
+     *   - status: String ('OK' or 'error')
+     *   - content (if status is 'OK'):
+     *       {
+     *           homeCategoryIds: [ array of Category IDs for the logged in user's homepage categories ],
+     *           userCategoryIds: [ array of Category IDs for the logged in user's account page categories ]
+     *       }
+     */
+    @GetMapping("/user/categories/info")
+    public Response getLoggedInUserCategories() {
+        try {
+            Categories categories = new Categories();
+
+            // make sure there is a logged in user
+            User currentUser = auth.getCurrentUser();
+            if (currentUser == null) throw new Exception("Must be logged in to get category info.");
+
+            // get the logged in user's categories
+            categories.setHomeCategoryIds(currentUser.getHomeCategories());
+            categories.setUserCategoryIds(currentUser.getUserCategories());
+
+            return new Response(Response.OK, categories);
+        } catch (Exception e) {
+            return new Response(Response.ERROR, e.toString());
+        }
+    }
+
     /*Example of using fetchJson:
      fetchJson("/user/categories/reOrder/home",{categoryList:["5ccbe6b7af8cfc02b1753043","5ccbecf8af8cfc033cf9aee5","5ccbe6b1af8cfc02b1753042"]})
      * The category list contains a list of categoryIDs
@@ -357,31 +364,6 @@ public class UserAccountController {
         users.save(currentUser);
         return new Response(Response.OK,categoryList);
     }
-
-    // @PostMapping("/user/categories/edit")
-    // public Response updateCategory(@RequestBody Category newCategoryItem)
-    // {
-    //     if(auth.getCurrentUser()==null)
-    //     {
-    //         return new Response(Response.ERROR,"Could not find current logged in user");
-    //     }
-    //     // check for valid category type
-    //     if(isValidCategoryType(newCategoryItem.getType()))
-    //     {
-    //         return new Response(Response.ERROR,"Invalid category type: "+newCategoryItem.getType());
-    //     }
-    //     categoryRepository.findById(newCategoryItem.getId())
-    //     Category category=new Category();
-    //     category.setId         (newCategoryItem.getId());//---------------------------------------------------------CHANGED
-    //     category.setName       (newCategoryItem.getName());
-    //     category.setType       (newCategoryItem.getType());
-    //     category.setCreator    (newCategoryItem.getCreator());
-    //     category.setSearchText (newCategoryItem.getSearchText());
-    //     category.setLikedBy    (newCategoryItem.getLikedBy());//Null by default because we don't normally want this field
-    //     category.setUserRef    (auth.getCurrentUser().getId());
-    //     categoryRepository.save(category);
-    //     return new Response    (Response.OK);
-    // }
 
     private boolean isValidCategoryType(String type)
     {

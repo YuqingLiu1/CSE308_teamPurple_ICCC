@@ -37,16 +37,15 @@ export default function CategoryCard({ userId, contentBaseId, onClick, extraStyl
                 }
                 let thumbnail = res.content.sketch.thumbnail;
                 let title = res.content.generalBase.title;
-                let authorId
-                try
-                {
+                let authorId//Will be undefined unless set
+                if(contentBaseId)//Authors don't have authors; prevent an error here
                     authorId=res.content.contentBase.author;
-                }catch{console.error("Failed to get authorid!")}
+
                 console.log("RESPONSE: ",res)
                 if (isMounted) {
                     setThumbnail(thumbnail);
                     setTitle(title);
-                    if(authorId!==undefined)
+                    if(contentBaseId)//
                     {
                         setAuthorId(authorId);
                         setAuthorTitle(await window.getUserTitle(authorId));
@@ -70,9 +69,14 @@ export default function CategoryCard({ userId, contentBaseId, onClick, extraStyl
     } else {
         return (
             <Card style={{...{ width: '18rem', cursor: 'pointer' }, ...extraStyles}} onClick={onClick}>
-                <Card.Header style={{ textAlign: 'center' }}>
-                    {"Author: "+authorTitle}
-                </Card.Header>
+                {
+                    userId?
+                    <></>//Don't show the author field if we're looking at a user
+                        :
+                    <Card.Header style={{textAlign: 'center'}}>
+                        {"Author: "+authorTitle}
+                    </Card.Header>
+                }
                 <Card.Img variant='top' src={thumbnail}/>
                 <Card.Footer style={{ textAlign: 'center' }}>{title}</Card.Footer>
             </Card>

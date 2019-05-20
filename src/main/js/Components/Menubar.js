@@ -55,7 +55,55 @@ export default function Menubar({ userId, loggedIn, changePage }) {
         setSearchText(searchText);
     }
 
-    // rendering logic
+    /* rendering logic */
+
+    // a button to display options related to users/user accounts
+    let userButton = (
+        <NavDropdown title={<i className="fas fa-user-circle fa-2x"/>} alignRight>
+            {
+                loggedIn &&
+                <NavDropdown.Item onClick={() => {changePage('userInfo', { loggedIn: true })}}>
+                    View Account
+                </NavDropdown.Item>
+            }
+            {
+                loggedIn &&
+                <NavDropdown.Item onClick={() => {changePage('changePassword')}}>
+                    Change Password
+                </NavDropdown.Item>
+            }
+            {
+                loggedIn &&
+                <NavDropdown.Item href='/logout'>Logout</NavDropdown.Item>
+            }
+            {
+                !loggedIn &&
+                <NavDropdown.Item onClick={() => {changePage('login')}}>
+                    Login
+                </NavDropdown.Item>
+            }
+            {
+                !loggedIn &&
+                <NavDropdown.Item onClick={() => {changePage('create')}}>
+                    Create Account
+                </NavDropdown.Item>
+            }
+        </NavDropdown>
+    );
+
+    // a button to display options related to creating new things (like adding a new series/creating a new category)
+    let createButton = (
+        loggedIn &&
+        <NavDropdown title={<i className='fas fa-plus-circle fa-2x'/>} alignRight>
+            <NavDropdown.Item onClick={() => {changePage('newContent', { type: 'Series' })}}>
+                New Series
+            </NavDropdown.Item>
+            <NavDropdown.Item onClick={() => {changePage('createCategoryPage', { userId: userId, location: 'Home' })}}>
+                Add Category
+            </NavDropdown.Item>
+        </NavDropdown>
+    );
+
     return (
         <Navbar bg="light" expand="lg">
             <Nav.Link onClick={()=>{changePage('homepage')}}>
@@ -98,54 +146,8 @@ export default function Menubar({ userId, loggedIn, changePage }) {
             <Navbar.Toggle aria-controls="basic-navbar-nav"/>
             <Navbar.Collapse id="basic-navbar-nav" className='justify-content-end' style={{ textAlign: 'right' }}>
                 <Nav>
-                    {
-                        <Nav.Link onClick={() => {changePage('createCategoryPage', {
-                            userId: userId,
-                            location: 'Home'
-                        })}}>
-                            <i className="fas fa-vial fa-2x"></i>
-                        </Nav.Link>
-                    }
-                    {
-                        loggedIn ?
-                            <Nav.Link onClick={() => {changePage('newContent', { type: 'Series' })}}>
-                                <i className="fas fa-plus-circle fa-2x"/>
-                            </Nav.Link>
-                                :
-                            <></>
-                    }
-                    <NavDropdown title={<i className="fas fa-user-circle fa-2x"/>} alignRight>
-                        {
-                            loggedIn &&
-                            <NavDropdown.Item href='/logout'>Logout</NavDropdown.Item>
-                        }
-                        {
-                            loggedIn &&
-                            <NavDropdown.Item onClick={() => {changePage('changePassword')}}>
-                                Change Password
-                            </NavDropdown.Item>
-                        }
-                        {
-                            !loggedIn &&
-                            <NavDropdown.Item onClick={() => {changePage('login')}}>
-                                Login
-                            </NavDropdown.Item>
-                        }
-                        {
-                            !loggedIn &&
-                            <NavDropdown.Item onClick={() => {changePage('create')}}>
-                                Create Account
-                            </NavDropdown.Item>
-                        }
-                    </NavDropdown>
-                    {
-                        loggedIn ?
-                            <Nav.Link onClick={()=>{changePage('userInfo', { loggedIn: true })}}>
-                                <i className="fas fa-cog fa-2x"/>
-                            </Nav.Link>
-                                :
-                            <></>
-                    }
+                    {createButton}
+                    {userButton}
                 </Nav>
             </Navbar.Collapse>
         </Navbar>

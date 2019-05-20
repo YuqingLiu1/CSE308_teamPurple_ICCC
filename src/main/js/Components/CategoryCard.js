@@ -16,6 +16,7 @@ import Spinner from 'react-bootstrap/Spinner';
 export default function CategoryCard({ userId, contentBaseId, onClick, extraStyles }) {
     const [thumbnail, setThumbnail] = useState('');
     const [title, setTitle] = useState('');
+    const [authorTitle, setAuthorTitle] = useState('');
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         let isMounted = true;
@@ -35,9 +36,12 @@ export default function CategoryCard({ userId, contentBaseId, onClick, extraStyl
                 }
                 let thumbnail = res.content.sketch.thumbnail;
                 let title = res.content.generalBase.title;
+                let authorId = res.content.contentBase.author;
+                console.log("RESPONSE: ",res)
                 if (isMounted) {
                     setThumbnail(thumbnail);
                     setTitle(title);
+                    setAuthorTitle(await window.getUserTitle(authorId));
                     setLoading(false);
                 }
             } catch (err) {
@@ -57,6 +61,7 @@ export default function CategoryCard({ userId, contentBaseId, onClick, extraStyl
     } else {
         return (
             <Card style={{...{ width: '18rem', cursor: 'pointer' }, ...extraStyles}} onClick={onClick}>
+                <Card.Header style={{ textAlign: 'center' }}>{authorTitle}</Card.Header>
                 <Card.Img variant='top' src={thumbnail}/>
                 <Card.Footer style={{ textAlign: 'center' }}>{title}</Card.Footer>
             </Card>

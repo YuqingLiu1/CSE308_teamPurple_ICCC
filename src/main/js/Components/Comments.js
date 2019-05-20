@@ -9,8 +9,15 @@ import ListGroup from 'react-bootstrap/ListGroup';
 
 import Comment from './Comment';
 
+/**
+ * A component for adding/viewing comments on a piece of content.
+ * @param generalBaseId The GeneralBase ID of the content being commented on.
+ * @param contentBaseId The ContentBase ID of the content being commented on.
+ * @param loggedInUserId The User ID of the currently logged in user.
+ */
 export default function Comments({ generalBaseId, contentBaseId, loggedInUserId }) {
     const [comment, setComment] = useState('');
+    const [reloadCount, setReloadCount] = useState(0); // probably a better way of reloading comments
 
     const [commentIds, setCommentIds] = useState([]);
     useEffect(() => {
@@ -35,7 +42,7 @@ export default function Comments({ generalBaseId, contentBaseId, loggedInUserId 
         loadComments();
 
         return () => isMounted = false;
-    }, [generalBaseId]);
+    }, [reloadCount]);
 
     function handleCommentChange(event) {
         setComment(event.target.value);
@@ -44,6 +51,9 @@ export default function Comments({ generalBaseId, contentBaseId, loggedInUserId 
     async function addComment(event) {
         try {
             event.preventDefault();
+
+            // don't allow empty comments
+            if (comment === '') return;
 
             let res = await fetch('/comments/add', {
                 method: 'POST',
@@ -59,8 +69,9 @@ export default function Comments({ generalBaseId, contentBaseId, loggedInUserId 
             res = await res.json();
             if (res.status !== 'OK') throw new Error('Failed to add comment.');
 
-            // reset the comment textarea once the comment has been added
+            // reset the comment textarea once the comment has been added and reload the comments
             setComment('');
+            setReloadCount(reloadCount + 1);
         } catch (err) {
             console.error(err);
         }

@@ -37,13 +37,20 @@ export default function CategoryCard({ userId, contentBaseId, onClick, extraStyl
                 }
                 let thumbnail = res.content.sketch.thumbnail;
                 let title = res.content.generalBase.title;
-                let authorId = res.content.contentBase.author;
+                let authorId
+                try
+                {
+                    authorId=res.content.contentBase.author;
+                }catch{console.error("Failed to get authorid!")}
                 console.log("RESPONSE: ",res)
                 if (isMounted) {
                     setThumbnail(thumbnail);
                     setTitle(title);
-                    setAuthorId(authorId);
-                    setAuthorTitle(await window.getUserTitle(authorId));
+                    if(authorId!==undefined)
+                    {
+                        setAuthorId(authorId);
+                        setAuthorTitle(await window.getUserTitle(authorId));
+                    }
                     setLoading(false);
                 }
             } catch (err) {

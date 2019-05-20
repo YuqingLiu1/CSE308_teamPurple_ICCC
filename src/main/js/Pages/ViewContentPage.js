@@ -14,6 +14,7 @@ import Fab from '@material-ui/core/Fab';
 import TestFrameEditor from '../Components/TestFrameEditor';
 import ContentInfoCard from '../Components/ContentInfoCard';
 import Comments from '../Components/Comments';
+import Likes from '../Components/Likes';
 
 
 export default class ViewContentPage extends Component {
@@ -308,6 +309,7 @@ export default class ViewContentPage extends Component {
                                                 variant='primary'
                                                 onClick={this.handleContributableButtonClick}>Make Contributable</Button>
                                     }
+                                    <Likes generalBaseId={generalBaseId}/>
                                 </ButtonGroup>
                             </Col>
                             <Col xs={6} style={{ textAlign: 'center' }}>

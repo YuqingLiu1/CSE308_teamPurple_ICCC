@@ -129,6 +129,8 @@ window.fetchJson=async function(url,body)
 }
 
 //ICCC-SPECIFIC HELPER FUNCTIONS:------------------------------------------------------------
+//TODO Most of the below functions do NOT handle server response not OK errors. They should in the future.
+
 window.search={
 	//The functions 'response', 'results', and 'thumbnails' process a search query progressively, allowing you to debug intermediate steps.
 	async response(request={})
@@ -234,9 +236,40 @@ window.getUserTitle=async function(userId)
 	return (await getUserInfo(userId)).content.generalBase.title
 }
 
+window.getContentAuthor=async function(contentId)
+{
+	//Return the userId of the author of some contentId
+	console.assert(arguments.length ===1       ,'Wrong number of arguments' )
+	console.assert(typeof contentId ==='string','contentId must be a string')
+	return (await getContentInfo(contentId)).content.contentBase.author
+}
+
+window.goToContentAuthor=async function(contentId)
+{
+	//Go to the user page of the author of some contentId
+	console.assert(arguments.length ===1       ,'Wrong number of arguments' )
+	console.assert(typeof contentId ==='string','contentId must be a string')
+	return window.goToUserPage(await window.getContentAuthor(contentId))
+}
+
+window.goToUserPage=async function(userId)
+{
+	//A void function
+	console.assert(arguments.length ===1       ,'Wrong number of arguments')
+	console.assert(typeof userId    ==='string','userId must be a string'  )
+	window.changePage('userInfo', {userId})//This variable is made global in app.js
+}
+
 window.goToUserPage=async function(userId)
 {
 	console.assert(arguments.length ===1       ,'Wrong number of arguments')
 	console.assert(typeof userId    ==='string','userId must be a string'  )
 	window.changePage('userInfo', {userId})//This variable is made global in app.js
+}
+
+window.getContentInfo=async function(contentId)
+{
+	console.assert(arguments.length ===1       ,'Wrong number of arguments' )
+	console.assert(typeof contentId ==='string','contentId must be a string')
+	return await window.fetchJson('/content/info?id='+contentId)
 }

@@ -90,11 +90,17 @@ export default function ContentInfoCard({ contentBaseId, editable }) {
         }
     };
 
+    function linkToAuthor()
+    {
+         // console.log(await getContentAuthor(contentBaseId))
+        window.goToContentAuthor(contentBaseId)
+    }
+
     // rendering logic
     if (loaded) {
         if (editable) {
             return (
-                <Card>
+                <Card onClick={linkToAuthor}>
                     <Card.Img variant='top' src={authorPic}/>
                     <Card.Header>
                         <DBAwareEdiText type='text' value={title} onSave={onSaveTitle}/>
@@ -106,7 +112,7 @@ export default function ContentInfoCard({ contentBaseId, editable }) {
             );
         } else {
             return (
-                <Card>
+                <Card onClick={linkToAuthor}>
                     <Card.Img variant='top' src={authorPic}/>
                     <Card.Header>
                         {title}

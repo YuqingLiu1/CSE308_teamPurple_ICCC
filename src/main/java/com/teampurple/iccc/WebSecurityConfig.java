@@ -30,7 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/", "/built/**", "/css/**", "/generalBase/id", "generalBase/thumbnail",
                         "/user/add", "/user/exists", "/favicon.ico", "/login", "/frame/upload", "/getNumlikes",
                         "/clicklike", "/liked", "/getNumlike", "/content/info", "/search", "/category/info",
-                        "/user/info", "/content/surroundings", "/comments/info").permitAll()
+                        "/user/info", "/content/surroundings", "/comments/info", "/content/visibility").permitAll()
                 .anyRequest().authenticated()
                 .and()
             .logout()

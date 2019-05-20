@@ -167,6 +167,7 @@ export default class Category2 extends Component {
                 <option selected disabled label={"(Select Type)"}/>
                 <option value={"All"} label={"All"}/>
                 <option value={"User"} label={"User"}/>
+                <option value={"Content"} label={"All Content"}/>
                 <option value={"Series"} label={"Series"}/>
                 <option value={"Episode"} label={"Episode"}/>
                 <option value={"Frame"} label={"Frame"}/>

@@ -220,7 +220,16 @@ window.setCategoryType=async function(categoryId,type)
 	console.assert(['All','User','Series','Episode','Frame'].includes(type),'Type '+JSON.stringify(type)+' is not a valid category type')
 	return await setCategoryParameter(categoryId,'type',type)
 }
+
 window.getUserInfo=async function(userId)
 {
-	await window.fetchJson('/user/info?id='+userId)
+	console.assert(arguments.length ===1       ,'Wrong number of arguments'  )
+	console.assert(typeof userId    ==='string','userId must be a string'    )
+	return await window.fetchJson('/user/info?id='+userId)
+}
+window.getUserTitle=async function(userId)
+{
+	console.assert(arguments.length ===1       ,'Wrong number of arguments'  )
+	console.assert(typeof userId    ==='string','userId must be a string'    )
+	return (await getUserInfo(userId)).content.generalBase.title
 }

@@ -62,6 +62,7 @@ class Menubar extends Component
 
     render()
     {
+        let changePage = this.props.changePage;
         return (
             <Navbar bg="light" expand="lg">
                 <Nav.Link onClick={()=>{this.props.changePage('homepage')}}>
@@ -70,6 +71,11 @@ class Menubar extends Component
                     <i className="fab fa-cuttlefish fa-2x"/>
                     <i className="fab fa-cuttlefish fa-2x"/>
                 </Nav.Link>
+                <Nav className='mr-3'>
+                    <Nav.Link onClick={() => {changePage('refresh')}}>
+                        <i className="fas fa-redo fa-2x"/>
+                    </Nav.Link>
+                </Nav>
                 <Nav>
                     <Form inline>
                         <InputGroup>

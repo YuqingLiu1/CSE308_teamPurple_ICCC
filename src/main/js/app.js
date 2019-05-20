@@ -1,42 +1,41 @@
-import Category2 from './Components/Category2'
 require("@babel/polyfill")
 
-import React, {Component} from 'react'
-import ReactDOM from 'react-dom'
+import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 
-import Menubar from './Components/Menubar'
-import ArrowButton from './Components/NavButtons/ArrowButton'
-import PlusButton from './Components/NavButtons/PlusButton'
-import UserInfoPage from "./Pages/UserInfoPage"
-import LoggedOutCategories from './Components/loggedOutCategories'
-import LoggedInCategories from './Components/loggedInCategories'
-import CreateAccount from './Components/CreateAccount'
-import TestFrameEditor from './Components/TestFrameEditor'
-import NewSeriesPage from './Pages/NewSeriesPage'
-import LoginPage from './Pages/LoginPage'
-import TestPage from './Components/TestPage'
-import ViewContentPage from './Pages/ViewContentPage'
-import fetchJson from './Helpers/fetchJson'
-import './Helpers/globals'
-import ChangePassword from './Components/ChangePassword'
-import SearchResultsPage from './Pages/SearchResultsPage'
-import Category3 from './Components/Category3'
+import Menubar from './Components/Menubar';
+import UserInfoPage from './Pages/UserInfoPage';
+import LoggedOutCategories from './Components/loggedOutCategories';
+import LoggedInCategories from './Components/loggedInCategories';
+import CreateAccount from './Components/CreateAccount';
+import TestFrameEditor from './Components/TestFrameEditor';
+import NewSeriesPage from './Pages/NewSeriesPage';
+import LoginPage from './Pages/LoginPage';
+import TestPage from './Components/TestPage';
+import ViewContentPage from './Pages/ViewContentPage';
+import ChangePassword from './Components/ChangePassword';
+import SearchResultsPage from './Pages/SearchResultsPage';
 import CreateCategoryPage from './Pages/CreateCategoryPage';
+import RefreshPage from './Pages/RefreshPage';
+
+import './Helpers/globals';
 
 class App extends Component
 {
 	constructor(props)
 	{
 		super(props)
-		this.state={
-			page          : 'homepage',
-			loggedIn      : false,
-			bio           : '',
-			username      : '',
-			userInfoError : false,
-			generalBaseId : '',
+		this.state = {
+			prevPage: '',
+			prevPageData: {},
+			page: 'homepage',
+			pageData: {},
+			loggedIn: false,
+			bio: '',
+			username: '',
+			userInfoError: false,
+			generalBaseId: '',
 			loggedInUserId: '',
-			pageData      : {}
 		}
 	}
 
@@ -45,17 +44,25 @@ class App extends Component
 		this.refresh()
 	}
 
-	changePage=(page, pageData)=>
-	{
+	changePage = (page, pageData) => {
+		// keep track of the last page that was loaded (for refresh)
+		let prevPage = this.state.page;
+		let prevPageData = this.state.pageData;
 		this.setState({
-						  page    : page,
-						  pageData: pageData
-					  })
-		if(page==='homepage')
-		{
-			this.refresh()
+			prevPage: prevPage,
+			prevPageData: prevPageData,
+		});
+
+		// update the page to be loaded
+		this.setState({
+			page: page,
+			pageData: pageData
+		});
+
+		if (page === 'homepage') {
+			this.refresh();
 		}
-	}
+	};
 
 	refresh=async()=>
 	{
@@ -115,7 +122,11 @@ class App extends Component
 
 	render()
 	{
-		let loggedInUserId   =this.state.loggedInUserId
+		let loggedInUserId   =this.state.loggedInUserId;
+		let prevPage = this.state.prevPage;
+		let prevPageData = this.state.prevPageData;
+		let changePage = this.changePage;
+
 		window.loggedInUserId=loggedInUserId//A bit hacky (setting a global variable here), but very useful for debugging.
 
 		const pages={
@@ -144,7 +155,8 @@ class App extends Component
 					changePage={this.changePage}
 					{...this.state.pageData}
 				/>,
-			createCategoryPage: <CreateCategoryPage changePage={this.changePage} {...this.state.pageData} />
+			createCategoryPage: <CreateCategoryPage changePage={this.changePage} {...this.state.pageData} />,
+			refresh: <RefreshPage page={prevPage} pageData={prevPageData} changePage={changePage}/>
 		}
 
 		return <>

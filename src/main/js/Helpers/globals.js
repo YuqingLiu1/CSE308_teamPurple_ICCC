@@ -149,7 +149,7 @@ window.deleteCategory=async function(categoryId)
 {
 	console.assert(arguments.length ===1       ,'Wrong number of arguments'  )
 	console.assert(typeof categoryId==='string','categoryId must be a string')
-	return await window.fetchJson('/user/categories/delete?id='+categoryId)
+	return await window.fetchJson('/category/delete?id='+categoryId)
 }
 
 window.setCategoryParameter=async function(categoryId,parameterName,parameterValue)
@@ -160,7 +160,7 @@ window.setCategoryParameter=async function(categoryId,parameterName,parameterVal
 	console.assert(typeof categoryId   ==='string','categoryId must be a string'   )
 	const categoryInfo=await window.getCategoryInfoFromId(categoryId)
 	console.log(JSON.stringify(categoryInfo))
-	return await window.fetchJson('/user/categories/edit',{...categoryInfo,[parameterName]:parameterValue})//We simply wait for the refresh-loop to update the gui (it's pretty slow, but it works)
+	return await window.fetchJson('/category/edit',{...categoryInfo,[parameterName]:parameterValue})//We simply wait for the refresh-loop to update the gui (it's pretty slow, but it works)
 }
 
 window.setCategoryName=async function(categoryId,name)

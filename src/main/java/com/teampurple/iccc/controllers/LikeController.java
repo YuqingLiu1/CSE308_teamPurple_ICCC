@@ -1,12 +1,15 @@
 package com.teampurple.iccc.controllers;
 
 import com.teampurple.iccc.models.*;
+import com.teampurple.iccc.repositories.ContentBaseRepository;
 import com.teampurple.iccc.repositories.GeneralBaseRepository;
+import com.teampurple.iccc.repositories.SketchRepository;
 import com.teampurple.iccc.repositories.UserRepository;
 import com.teampurple.iccc.utils.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +20,12 @@ public class LikeController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ContentBaseRepository contentBaseRepository;
+
+    @Autowired
+    private SketchRepository sketchRepository;
 
     @Autowired
     private Authentication authentication;
@@ -211,6 +220,64 @@ public class LikeController {
 
             return new Response(Response.OK, likeCount);
         } catch (Exception e) {
+            return new Response(Response.ERROR, e.toString());
+        }
+    }
+
+    @GetMapping("/likes/GetlikedItem")
+    public Response getlikedItem(){
+        try {
+            User currentUser = authentication.getCurrentUser();
+            List<String> userLiked = currentUser.getLiked();
+            // create the empty search result to populate and return
+            List<AggregateInfo> users = new ArrayList<>();
+            List<AggregateInfo> series = new ArrayList<>();
+            List<AggregateInfo> episodes = new ArrayList<>();
+            List<AggregateInfo> frames = new ArrayList<>();
+            SearchResult searchResult = new SearchResult();
+            searchResult.setUsers(users);
+            searchResult.setSeries(series);
+            searchResult.setEpisodes(episodes);
+            searchResult.setFrames(frames);
+
+            for (int i=0;i<userLiked.size();i++){
+                GeneralBase item = generalBaseRepository.findById(userLiked.get(i)).get();
+                AggregateInfo aggregateInfo = new AggregateInfo();
+                aggregateInfo.setGeneralBase(item);
+                if (item.getType().equals(GeneralBase.USER_TYPE)){
+                    User user = userRepository.findById(item.getTypeRef()).get();
+                    aggregateInfo.setType(GeneralBase.USER_TYPE);
+                    aggregateInfo.setContentBase(null);
+                    aggregateInfo.setUser(user);
+                    aggregateInfo.setSketch(sketchRepository.findById(item.getSketch()).get());
+                }else {
+                    contentBaseRepository.findById(item.getTypeRef());
+                    ContentBase content = contentBaseRepository.findById(item.getTypeRef()).get();
+                    aggregateInfo.setType(content.getType());
+                    aggregateInfo.setContentBase(content);
+                    aggregateInfo.setUser(null);
+                    aggregateInfo.setSketch(sketchRepository.findById(item.getSketch()).get());
+
+                }
+                switch (aggregateInfo.getType()) {
+                    case GeneralBase.USER_TYPE:
+                        users.add(aggregateInfo);
+                        break;
+                    case ContentBase.SERIES:
+                        series.add(aggregateInfo);
+                        break;
+                    case ContentBase.EPISODE:
+                        episodes.add(aggregateInfo);
+                        break;
+                    case ContentBase.FRAME:
+                        frames.add(aggregateInfo);
+                        break;
+                    default:
+                        return new Response(Response.ERROR, "Found invalid AggregateInfo type: " + aggregateInfo.getType());
+                }
+            }
+            return new Response(Response.OK, searchResult);
+        }catch (Exception e){
             return new Response(Response.ERROR, e.toString());
         }
     }

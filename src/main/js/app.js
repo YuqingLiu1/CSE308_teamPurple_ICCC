@@ -42,6 +42,7 @@ class App extends Component
 	componentDidMount()
 	{
 		this.refresh()
+		window.changePage=this.changePage
 	}
 
 	changePage = (page, pageData) => {

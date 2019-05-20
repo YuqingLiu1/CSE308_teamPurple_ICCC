@@ -38,32 +38,40 @@ export default class Category2 extends Component {
 
     async componentDidMount() {
         try {
-            let props     =this.props
-            let categoryId= props.categoryId
-            let changePage= props.changePage
+            let props = this.props
+            let categoryId = props.categoryId
+            let changePage = props.changePage
 
             // fetch category information
             let categoryInfoRes = await fetch('/category/info?id=' + categoryId)
             categoryInfoRes = await categoryInfoRes.json()
             if (categoryInfoRes.status !== 'OK') throw new Error('Failed to fetch category with ID: ' + categoryId)
 
-			let type      =categoryInfoRes.content.type
-			let creator   =categoryInfoRes.content.creator
-			let searchText=categoryInfoRes.content.searchText
-			let name      =categoryInfoRes.content.name
+            let type = categoryInfoRes.content.type
+            let creator = categoryInfoRes.content.creator
+            let searchText = categoryInfoRes.content.searchText
+            let name = categoryInfoRes.content.name
+            let searchRes
 
-            // use category information to search for users/content
-            let searchRes = await fetch('/search', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    type: type,
-                    creator: creator,
-                    searchText: searchText
+            if(searchText==="LikedByMe"){
+                searchRes = await fetch('/likes/GetlikedItem', {
+                    method: 'GET'
                 })
-            })
+            }
+            else{
+                // use category information to search for users/content
+                searchRes = await fetch('/search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        type: type,
+                        creator: creator,
+                        searchText: searchText
+                    })
+                })
+            }
             searchRes = await searchRes.json()
             if (searchRes.status !== 'OK') throw new Error('Failed to search')
 

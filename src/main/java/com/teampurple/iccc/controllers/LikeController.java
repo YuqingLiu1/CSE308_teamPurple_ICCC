@@ -1,6 +1,5 @@
 package com.teampurple.iccc.controllers;
 
-import com.mongodb.MongoException;
 import com.teampurple.iccc.models.*;
 import com.teampurple.iccc.repositories.GeneralBaseRepository;
 import com.teampurple.iccc.repositories.UserRepository;
@@ -8,61 +7,129 @@ import com.teampurple.iccc.utils.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class LikeController {
     @Autowired
-    private GeneralBaseRepository generalBases;
-    @Autowired
-    private Authentication auth;
+    private GeneralBaseRepository generalBaseRepository;
 
     @Autowired
-    private UserRepository users;
+    private UserRepository userRepository;
 
-    @GetMapping("/liked")
-    public String getCurrentLikeState(@RequestParam(value="id") String generalBaseID) {
-        GeneralBase generalBase = generalBases.findById(generalBaseID).get();
-        User currentUser = auth.getCurrentUser();
-        List<String> likedusers = generalBase.getLikers();
-        for (int i = 0; i < likedusers.size(); i++) {
-            if (likedusers.get(i).equals(currentUser.getGeneralBaseRef())) {
-                return "True";
+    @Autowired
+    private Authentication authentication;
+
+    /**
+     * Description:
+     *   - determine if the current logged in user likes a specified GeneralBase
+     *   - must be logged in
+     *
+     * Request Params:
+     *   - id: String (GeneralBase ID of specified GeneralBase)
+     *
+     * Returns:
+     *   - status: String ('OK' or 'error')
+     *   - content (if status is 'OK'):
+     *       {
+     *           generalBaseId: String (GeneralBase ID of the specified GeneralBase),
+     *           liked: Boolean (true if the current logged in user likes the specified GeneralBase, false otherwise)
+     *       }
+     */
+    @GetMapping("/likes/likedByCurrentUser")
+    public Response getCurrentLikeState(@RequestParam(value="id") final String generalBaseId) {
+        try {
+            Liked liked = new Liked();
+            liked.setGeneralBaseId(generalBaseId);
+
+            // make sure a GeneralBase ID has been specified
+            if (generalBaseId == null) {
+                throw new Exception("Must specify GeneralBase ID when determining if current user liked something.");
             }
+
+            // make sure the user is currently logged in
+            User currentUser = authentication.getCurrentUser();
+            GeneralBase currentGeneralBase = authentication.getCurrentUserGeneralBase();
+            if (currentUser == null || currentGeneralBase == null) {
+                throw new Exception("Must be logged in to check if current user liked something.");
+            }
+
+            // make sure a GeneralBase with the specified GeneralBase ID exists
+            Optional<GeneralBase> generalBaseOptional = generalBaseRepository.findById(generalBaseId);
+            if (!generalBaseOptional.isPresent()) {
+                throw new Exception("Failed to find GeneralBase with ID: " + generalBaseId + ".");
+            }
+
+            // check if the current logged in user likes the specified GeneralBase
+            if (currentUser.getLiked().contains(generalBaseId)) {
+                liked.setLiked(true);
+            } else {
+                liked.setLiked(false);
+            }
+
+            return new Response(Response.OK, liked);
+        } catch (Exception e) {
+            return new Response(Response.ERROR, e.toString());
         }
-        return "False";
     }
 
+    /**
+     * Description:
+     *   - (un)subscribe to an author/series or (un)like a piece of content
+     *   - must be logged in
+     *   - automatically like/subscribe if currently not liked/subscribed, and vice versa if currently liked/subscribed
+     *
+     * Request Params:
+     *   - generalBaseId: String (GeneralBase ID of the GeneralBase of the thing the current user is
+     *                    (un)liking/(un)subscribing)
+     *
+     * Returns:
+     *   - status: String ('OK' or 'error')
+     *   - content (if status is 'error'): String (error message)
+     */
     @GetMapping("/clicklike")
-    public Response clickLike(@RequestParam(value="id") String generalBaseID) {
+    public Response clickLike(@RequestParam("id") final String generalBaseId) {
         try {
-            GeneralBase generalBase = generalBases.findById(generalBaseID).get();//The thing we're about to like
-            User currentUser = auth.getCurrentUser();
-            List<String> likers = generalBase.getLikers();//A list of generalbaseId's
-            List<String> liked = currentUser.getLiked();
-            for (int i = 0; i < likers.size(); i++) {
-                if (likers.get(i).equals(currentUser.getGeneralBaseRef())) {
-                    likers.remove(i);
-                    generalBase.setLikers(likers);
-                    generalBases.save(generalBase);
-                    //System.out.println("Remove");
-                    liked.remove(currentUser.getGeneralBaseRef());
-                    currentUser.setLiked(liked);
-                    users.save(currentUser);
-                    return new Response(Response.OK);
-                }
+            // make sure a GeneralBase ID has been specified
+            if (generalBaseId == null) {
+                throw new Exception("Must specify GeneralBase ID when liking/subscribing.");
             }
-            likers.add(currentUser.getGeneralBaseRef());
-            generalBase.setLikers(likers);
-            generalBases.save(generalBase);
-            liked.add(currentUser.getGeneralBaseRef());
-            currentUser.setLiked(liked);
-            users.save(currentUser);
-            //System.out.println("add");
+
+            // make sure the user is currently logged in
+            User currentUser = authentication.getCurrentUser();
+            GeneralBase currentGeneralBase = authentication.getCurrentUserGeneralBase();
+            if (currentUser == null || currentGeneralBase == null) {
+                throw new Exception("Must be logged in to like/subscribe.");
+            }
+
+            // make sure a GeneralBase with the specified GeneralBase ID exists
+            Optional<GeneralBase> generalBaseOptional = generalBaseRepository.findById(generalBaseId);
+            if (!generalBaseOptional.isPresent()) {
+                throw new Exception("Failed to find GeneralBase with ID: " + generalBaseId + ".");
+            }
+            GeneralBase generalBase = generalBaseOptional.get();
+
+            // (un)liking/(un)subscribing logic
+            List<String> likerGeneralBaseIds = generalBase.getLikers();
+            List<String> likedGeneralBaseIds = currentUser.getLiked();
+            if (likedGeneralBaseIds.contains(generalBaseId)) {
+                // the current user already liked/subscribed to the specified GeneralBase ID, so unlike/unsubscribe
+                likedGeneralBaseIds.remove(generalBaseId);
+                likerGeneralBaseIds.remove(currentGeneralBase.getId());
+            } else {
+                // the current user has not liked/subscribed to the specified GeneralBase ID, so like/subscribe
+                likedGeneralBaseIds.add(generalBaseId);
+                likerGeneralBaseIds.add(currentGeneralBase.getId());
+            }
+
+            // save changes
+            generalBaseRepository.save(generalBase);
+            userRepository.save(currentUser);
+
             return new Response(Response.OK);
-        }catch (Exception e ){
-            return new Response(Response.ERROR);
+        } catch (Exception e) {
+            return new Response(Response.ERROR, e.toString());
         }
     }
 
@@ -71,44 +138,33 @@ public class LikeController {
 
      */
     @GetMapping("/likeSeries")
-    public Response likeSeries(@RequestParam(value="id") String generalBaseID){
-        System.out.println("generalBaseId: " + generalBaseID);
+    public Response likeSeries(@RequestParam(value="id") String generalBaseID) {
         try{
-            //System.out.println("in here");
-            GeneralBase generalBase = generalBases.findById(generalBaseID).get();
-            //System.out.println("generalBase: " + generalBase);
-            User currentUser = auth.getCurrentUser();
-            //System.out.println("current User: " + currentUser);
+            GeneralBase generalBase = generalBaseRepository.findById(generalBaseID).get();
+            User currentUser = authentication.getCurrentUser();
             List<String> likers = generalBase.getLikers();
-            //System.out.println("likers before liking: " + likers);
             List<String> userLiked = currentUser.getLiked();
             for (int i = 0; i < likers.size(); i++){
-                //System.out.println("current user id: " + currentUser.getId());
                 if (likers.get(i).equals(currentUser.getGeneralBaseRef())){
-                    System.out.println("unlike");
                     likers.remove(i);
                     generalBase.setLikers(likers);
-                    generalBases.save(generalBase);
-                    //System.out.println("after deleting, likers are: " + generalBase.getLikers());
+                    generalBaseRepository.save(generalBase);
 
                     userLiked.remove(generalBaseID);
                     currentUser.setLiked(userLiked);
-                    users.save(currentUser);
+                    userRepository.save(currentUser);
                     return new Response(Response.OK);
                 }
             }
 
-            System.out.println("like");
             likers.add(currentUser.getGeneralBaseRef());
             generalBase.setLikers(likers);
-            generalBases.save(generalBase);
-            //System.out.println("after adding, liker are: " + generalBase.getLikers());
+            generalBaseRepository.save(generalBase);
 
             //content also added to user's liked
             userLiked.add(generalBaseID);
             currentUser.setLiked(userLiked);
-            users.save(currentUser);
-
+            userRepository.save(currentUser);
 
             return new Response(Response.OK);
         }catch(Exception e){
@@ -118,23 +174,45 @@ public class LikeController {
 
     }
 
+    /**
+     * Description:
+     *   - get the number of likes for a specified GeneralBase
+     *
+     * Request Params:
+     *   - id: String (GeneralBase ID of the GeneralBase to get the number of likes of)
+     *
+     * Returns:
+     *   - status: String ('OK' or 'error')
+     *   - content (if status is 'OK'):
+     *       {
+     *           generalBaseId: String (GeneralBase ID of the specified GeneralBase),
+     *           numLikes: Integer (number of likes for the specified GeneralBase)
+     *       }
+     */
+    @GetMapping("/likes/count")
+    public Response getNumber(@RequestParam("id") final String generalBaseId) {
+        try {
+            LikeCount likeCount = new LikeCount();
+            likeCount.setGeneralBaseId(generalBaseId);
 
+            // make sure there is a specified GeneralBase ID and that it is valid
+            if (generalBaseId == null) {
+                throw new Exception("Must provide a GeneralBase ID when getting number of likes.");
+            }
+            Optional<GeneralBase> generalBaseOptional = generalBaseRepository.findById(generalBaseId);
+            if (!generalBaseOptional.isPresent()) {
+                throw new Exception("Failed to find GeneralBase with ID: " + generalBaseId + ".");
+            }
+            GeneralBase generalBase = generalBaseOptional.get();
 
+            // get the number of likes for the specified GeneralBase
+            int numLikes = generalBase.getLikers().size();
+            likeCount.setNumLikes(numLikes);
 
-
-    @GetMapping("/getNumlike")
-    public String getNumber(){
-        User user = auth.getCurrentUser();
-        GeneralBase generalBase= generalBases.findById(user.getGeneralBaseRef()).get();
-        Integer num = new Integer(generalBase.getLikers().size());
-        return num.toString();
-    }
-
-    @GetMapping("/getNumlikes")
-    public String getNumber(@RequestParam(value="id") String generalBaseID) {
-        GeneralBase generalBase = generalBases.findById(generalBaseID).get();
-        Integer num = new Integer(generalBase.getLikers().size());
-        return num.toString();
+            return new Response(Response.OK, likeCount);
+        } catch (Exception e) {
+            return new Response(Response.ERROR, e.toString());
+        }
     }
 }
 

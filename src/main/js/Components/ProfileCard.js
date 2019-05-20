@@ -3,7 +3,7 @@ import Image from "react-bootstrap/Image";
 import DBAwareEdiText from "./DBAwareEdiText";
 import Likes from './Likes'
 
-export default function({ profileThumbnailUrl, username, editable }) {
+export default function({ generalBaseId, profileThumbnailUrl, username, editable }) {
     return <div>
         <div style={{textAlign: "center"}}>
             <Image src={profileThumbnailUrl} rounded fluid className="mb-3"/>
@@ -23,6 +23,6 @@ export default function({ profileThumbnailUrl, username, editable }) {
                 }
             </div>
         </div>
-        {/*<Likes/>*/}
+        <Likes generalBaseId={generalBaseId}/>
     </div>
 }

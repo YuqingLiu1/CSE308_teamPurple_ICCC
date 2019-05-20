@@ -47,7 +47,7 @@ export default function CategoryCard({ userId, contentBaseId, onClick, extraStyl
         loadData();
 
         return () => isMounted = false;
-    }, [userId, contentBaseId]);
+    }, []);
 
     // rendering logic
     if (loading) {

@@ -1,54 +1,61 @@
-import React, {useState} from 'react'
-import Heart from './Heart'
-import doFetch from '../Helpers/general.js'
-export default function({generalBaseId='', likedByCurrentUserColor='red', notLikedByCurrentUserColor='black'})
-{
-    const [likedByCurrentUser, setLikedByCurrentUser]=useState(true)
-    const [numberOfLikers    , setNumberOfLikers    ]=useState(true)
+require('@babel/polyfill')
 
-    console.assert(likedByCurrentUser!==undefined && Object.getPrototypeOf(likedByCurrentUser)===Boolean.prototype)//Type checking that likedByCurrentUser is boolean
+import React, { useState, useEffect } from 'react';
 
-    async function updateNumberOfLikers()
-    {
-        setNumberOfLikers(await doFetch('/getNumlikes?id='+generalBaseId,{method:'Get'}))
+import Heart from './Heart';
+
+export default function Likes({ generalBaseId, likedByCurrentUserColor='red', notLikedByCurrentUserColor='black' }) {
+    const [likedByCurrentUser, setLikedByCurrentUser] = useState(false);
+    const [numberOfLikers, setNumberOfLikers] = useState(0);
+    useEffect(() => {
+        let isMounted = true;
+
+        async function loadData() {
+            try {
+                // fetch number of likes for this GeneralBase
+                let res = await fetch(`/likes/count?id=${generalBaseId}`);
+                res = await res.json();
+                if (res.status !== 'OK') throw new Error(`Failed to get number of likes for GeneralBase with ID: ${generalBaseId}`);
+                let numLikes = res.content.numLikes;
+
+                // fetch whether the current logged in user likes this GeneralBase
+                res = await fetch(`/likes/likedByCurrentUser?id=${generalBaseId}`);
+                res = await res.json();
+                if (res.status !== 'OK') throw new Error(`Failed to determine if current user likes GeneralBase with ID: ${generalBaseId}`);
+                let likedByCurrentUser = res.content.liked;
+
+                if (isMounted) {
+                    setNumberOfLikers(numLikes);
+                    setLikedByCurrentUser(likedByCurrentUser);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+        loadData();
+
+        return () => isMounted = false;
+    }, [likedByCurrentUser]);
+
+    async function handleClick(event) {
+        event.preventDefault();
+
+        try {
+            let res = await fetch(`/clicklike?id=${generalBaseId}`);
+            res = await res.json();
+            if (res.status !== 'OK') throw new Error(`Failed to (un)like/(un)subscribe to GeneralBase with ID: ${generalBaseId}.`);
+            setLikedByCurrentUser(!likedByCurrentUser);
+        } catch (err) {
+            console.error(err);
+        }
     }
 
-    async function updateLikedByCurrentUser()
-    {
-
-        setLikedByCurrentUser(await doFetch('/liked?id=' + generalBaseId, {method: 'Get'}) === 'True')
-    }
-
-    function update()
-    {
-        updateNumberOfLikers()
-        updateLikedByCurrentUser()
-    }
-
-    async function toggle()
-    {
-        await doFetch('/clicklike?id='+generalBaseId,{method:'Get'})
-    }
-
-    async function onClick()
-    {
-        await toggle()
-        update()
-    }
-
-    update()
-
-    return <div
-        style={{
-            backgroundColor: "rgba(1,1,1,.2)",
-            // height         : "30px",
-            padding:"10px",
-            borderRadius:"10px",
-            // width          : "30px"
-        }}>
-        <Heart style={{height:"30px"}}
-               onClick={onClick}
-               color={likedByCurrentUser ? likedByCurrentUserColor : notLikedByCurrentUserColor}/>
-        {numberOfLikers}
-    </div>
+    return (
+        <div style={{ backgroundColor: 'rgba(1,1,1,.2)', padding: '10px', borderRadius: '10px' }}>
+            <Heart style={{ height: '30px' }}
+                   onClick={handleClick}
+                   color={likedByCurrentUser ? likedByCurrentUserColor : notLikedByCurrentUserColor}/>
+            {numberOfLikers}
+        </div>
+    );
 }

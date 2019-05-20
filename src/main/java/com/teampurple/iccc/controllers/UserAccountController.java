@@ -357,50 +357,6 @@ public class UserAccountController {
         users.save(currentUser);
         return new Response(Response.OK,categoryList);
     }
-    /*example:
-    fetchJson("/user/categories/edit",
-    {id:"5ccbdd3baf8cfc02b175303e",userRef:"5cc8f0880249f8f459875437",name:"hahahaha",type:"User",creator:"123",searchText:"hhey",likedBy:"me"})
-    */
-
-    @PostMapping("/user/categories/edit")
-    public Response updateCategory(@RequestBody Category updateCategoryItem){
-        User currentUser = auth.getCurrentUser();
-        if (currentUser == null) {
-            return new Response(Response.ERROR, "Could not find current logged in user");
-        }
-        if(!isValidCategoryType(updateCategoryItem.getType()))
-        {
-            return new Response(Response.ERROR,"Invalid category type: "+updateCategoryItem.getType());
-        }
-        Category oldcategory=categoryRepository.findById(updateCategoryItem.getId()).get();
-        oldcategory.setCreator(updateCategoryItem.getCreator());
-        oldcategory.setName(updateCategoryItem.getName());
-        oldcategory.setSearchText(updateCategoryItem.getSearchText());
-        oldcategory.setType(updateCategoryItem.getType());
-        oldcategory.setLikedBy(updateCategoryItem.getLikedBy());
-        categoryRepository.save(oldcategory);
-        //SearchController searcher = new SearchController();
-        //Response searchResult=searcher.search(oldcategory);
-        return new Response(Response.OK,oldcategory);
-    }
-    /*example:
-        fetchJson("/user/categories/delete?id=5ccbdd3baf8cfc02b175303e")
-    */
-    @GetMapping("/user/categories/delete")
-    public Response deleteCategory(@RequestParam(value="id") String deleteCatagoryId){
-        User currentUser = auth.getCurrentUser();
-        if (currentUser == null) {
-            return new Response(Response.ERROR, "Could not find current logged in user");
-        }
-        if (currentUser.getHomeCategories().contains(deleteCatagoryId)){
-            currentUser.getHomeCategories().remove(deleteCatagoryId);
-        }else if(currentUser.getUserCategories().contains(deleteCatagoryId)){
-            currentUser.getUserCategories().remove(deleteCatagoryId);
-        }
-        users.save(currentUser);
-        categoryRepository.deleteById(deleteCatagoryId);
-        return new Response(Response.OK);
-    }
 
     // @PostMapping("/user/categories/edit")
     // public Response updateCategory(@RequestBody Category newCategoryItem)

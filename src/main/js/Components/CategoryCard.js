@@ -17,6 +17,7 @@ export default function CategoryCard({ userId, contentBaseId, onClick, extraStyl
     const [thumbnail, setThumbnail] = useState('');
     const [title, setTitle] = useState('');
     const [authorTitle, setAuthorTitle] = useState('');
+    const [authorId, setAuthorId] = useState('');
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         let isMounted = true;
@@ -41,6 +42,7 @@ export default function CategoryCard({ userId, contentBaseId, onClick, extraStyl
                 if (isMounted) {
                     setThumbnail(thumbnail);
                     setTitle(title);
+                    setAuthorId(authorId);
                     setAuthorTitle(await window.getUserTitle(authorId));
                     setLoading(false);
                 }
@@ -61,7 +63,9 @@ export default function CategoryCard({ userId, contentBaseId, onClick, extraStyl
     } else {
         return (
             <Card style={{...{ width: '18rem', cursor: 'pointer' }, ...extraStyles}} onClick={onClick}>
-                <Card.Header style={{ textAlign: 'center' }}>{authorTitle}</Card.Header>
+                <Card.Header style={{ textAlign: 'center' }}>
+                    {"Author: "+authorTitle}
+                </Card.Header>
                 <Card.Img variant='top' src={thumbnail}/>
                 <Card.Footer style={{ textAlign: 'center' }}>{title}</Card.Footer>
             </Card>

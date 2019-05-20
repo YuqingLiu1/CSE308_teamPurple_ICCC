@@ -223,13 +223,20 @@ window.setCategoryType=async function(categoryId,type)
 
 window.getUserInfo=async function(userId)
 {
-	console.assert(arguments.length ===1       ,'Wrong number of arguments'  )
-	console.assert(typeof userId    ==='string','userId must be a string'    )
+	console.assert(arguments.length ===1       ,'Wrong number of arguments')
+	console.assert(typeof userId    ==='string','userId must be a string'  )
 	return await window.fetchJson('/user/info?id='+userId)
 }
 window.getUserTitle=async function(userId)
 {
-	console.assert(arguments.length ===1       ,'Wrong number of arguments'  )
-	console.assert(typeof userId    ==='string','userId must be a string'    )
+	console.assert(arguments.length ===1       ,'Wrong number of arguments')
+	console.assert(typeof userId    ==='string','userId must be a string'  )
 	return (await getUserInfo(userId)).content.generalBase.title
+}
+
+window.goToUserPage=async function(userId)
+{
+	console.assert(arguments.length ===1       ,'Wrong number of arguments')
+	console.assert(typeof userId    ==='string','userId must be a string'  )
+	window.changePage('userInfo', {userId})//This variable is made global in app.js
 }

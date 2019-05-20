@@ -92,6 +92,41 @@ window.annoyingDialogSelector=function(options,{allow_cancel=false}={})
 		}
 	}
 }
+window.fetchJson=async function(url,body)
+{
+	//Body is an optional parameter, meaning you don't have to specify it.
+	//But, if it IS specified, it must be a javascript Object (not a string, number etc).
+	//If body is specified, this method will send a POST request. Otherwise, it will send a GET request.
+	//This method will return the JSON.parse'd form of whatever the server gives back (probably an Object)
+	console.assert(!body||typeof body==='object','Invalid body type! Must either be undefined or an object')
+	console.assert(url!==undefined,'Must specify a URL!')
+	try
+	{
+		const response = await fetch(url,
+									 {
+										 method:body?'POST':'GET',
+										 body:JSON.stringify(body),
+										 headers:
+											 {
+												 "Content-Type": "application/json",
+											 }
+									 })
+		const responseText=await response.text()
+		try
+		{
+			return JSON.parse(responseText)
+		}
+		catch
+		{
+			console.error('RESPONSE RETURN INVALID JSON: response was',responseText)
+			return responseText
+		}
+	}
+	catch (err)
+	{
+		console.log('FETCH FAILED: url=',url,'body=',body)
+	}
+}
 
 //ICCC-SPECIFIC HELPER FUNCTIONS:------------------------------------------------------------
 window.search={
@@ -184,4 +219,8 @@ window.setCategoryType=async function(categoryId,type)
 	console.assert(typeof categoryId==='string','categoryId must be a string')
 	console.assert(['All','User','Series','Episode','Frame'].includes(type),'Type '+JSON.stringify(type)+' is not a valid category type')
 	return await setCategoryParameter(categoryId,'type',type)
+}
+window.getUserInfo=async function(userId)
+{
+	await window.fetchJson('/user/info?id='+userId)
 }

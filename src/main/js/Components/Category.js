@@ -44,7 +44,7 @@ export default function({categoryId="5ccb37a90e57323354e42726",/*items=[{content
 	function setQueryParameter(parameterName,parameterValue)
 	{
 		console.log(query)
-		fetchJson('/user/categories/edit',{...query,[parameterName]:parameterValue})//We simply wait for the refresh-loop to update the gui (it's pretty slow, but it works)
+		window.fetchJson('/user/categories/edit',{...query,[parameterName]:parameterValue})//We simply wait for the refresh-loop to update the gui (it's pretty slow, but it works)
 	}
 
 	function handleChangeName()

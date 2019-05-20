@@ -99,10 +99,7 @@ export default class Category2 extends Component {
 					generalBaseId: frame.generalBase.id,
 					contentBaseId: frame.contentBase.id,
                     onClick() {
-                        changePage('viewContentPage', {
-                            initialContentBaseId: frame.contentBase.id,
-                            initialSketchId: frame.sketch.id
-                        })
+                        changePage('viewContentPage', { contentBaseId: frame.contentBase.id })
                     }
                 }
             })

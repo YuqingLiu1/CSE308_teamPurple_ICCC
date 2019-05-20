@@ -42,7 +42,7 @@ export default function Comments({ generalBaseId, contentBaseId, loggedInUserId 
         loadComments();
 
         return () => isMounted = false;
-    }, [reloadCount]);
+    }, [generalBaseId, reloadCount]);
 
     function handleCommentChange(event) {
         setComment(event.target.value);

@@ -164,12 +164,13 @@ export default class Category2 extends Component {
 				Change Search Text
 			</Button>
             <select onChange={event=>handleChangeType(event.target.value)}>
-                <option selected disabled label={"(Select Type)"}/>
-                <option value={"All"} label={"All"}/>
-                <option value={"User"} label={"User"}/>
-                <option value={"Series"} label={"Series"}/>
-                <option value={"Episode"} label={"Episode"}/>
-                <option value={"Frame"} label={"Frame"}/>
+                <option                 label="(Select Type)" selected disabled />
+                <option value="All"     label="All"                             />
+                <option value="Content" label="Content"                         />
+                <option value="User"    label="User"                            />
+                <option value="Series"  label="Series"                          />
+                <option value="Episode" label="Episode"                         />
+                <option value="Frame"   label="Frame"                           />
             </select>
         </span>
 

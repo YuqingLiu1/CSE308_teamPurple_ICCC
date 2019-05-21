@@ -294,7 +294,7 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
                                     </Fab>
                                     :
                                     (
-                                        isContributable &&
+                                        (isContributable || userIsAuthor) &&
                                         <Fab onClick={createContent}>
                                             <i className="fas fa-plus fa-2x"/>
                                         </Fab>

@@ -26,10 +26,9 @@ class App extends Component
 	{
 		super(props)
 		this.state = {
-			prevPage: '',
-			prevPageData: {},
-			page: 'homepage',
-			pageData: {},
+			pageHistory: ['homepage'],
+			pageDataHistory: [{}],
+			pageIndex: 0,
 			loggedIn: false,
 			bio: '',
 			username: '',
@@ -45,19 +44,47 @@ class App extends Component
 		window.changePage=this.changePage
 	}
 
-	changePage = (page, pageData) => {
-		// keep track of the last page that was loaded (for refresh)
-		let prevPage = this.state.page;
-		let prevPageData = this.state.pageData;
+	backPage = () => {
+		let newPageIndex = this.state.pageIndex;
+		newPageIndex = newPageIndex > 0 ? newPageIndex - 1 : newPageIndex;
 		this.setState({
-			prevPage: prevPage,
-			prevPageData: prevPageData,
+			pageIndex: newPageIndex,
 		});
+	}
 
-		// update the page to be loaded
+	changePage = (page, pageData) => {
+		// if refresh page was last page, remove it and don't add the current page (because it would be a duplicate)
+		let newPageIndex = this.state.pageIndex;
+		let newPageHistory = this.state.pageHistory;
+		let newPageDataHistory = this.state.pageDataHistory;
+		if (newPageIndex > 0) {
+			if (newPageHistory[newPageIndex] === 'refresh') {
+				newPageHistory.splice(newPageIndex);
+				newPageDataHistory.splice(newPageIndex);
+				newPageIndex = newPageIndex - 1;
+				this.setState({
+					pageHistory: newPageHistory,
+					pageDataHistory: newPageDataHistory,
+					pageIndex: newPageIndex,
+				});
+				if (page === 'homepage') {
+					this.refresh();
+				}
+				return;
+			}
+		}
+
+		// if refresh page wasn't the last page, then add the new page (and page data) to the history;
+		// also make sure to remove any history after the current page index (to maintain back button consistency)
+		newPageIndex = newPageIndex + 1;
+		newPageHistory.splice(newPageIndex);
+		newPageDataHistory.splice(newPageIndex);
+		newPageHistory.push(page);
+		newPageDataHistory.push(pageData);
 		this.setState({
-			page: page,
-			pageData: pageData
+			pageHistory: newPageHistory,
+			pageDataHistory: newPageDataHistory,
+			pageIndex: newPageIndex,
 		});
 
 		if (page === 'homepage') {
@@ -93,9 +120,6 @@ class App extends Component
 		}
 		else
 		{
-			//TODO From Ryan: What the heck is going on here lol, why does it always make an error?
-			// Elliot: because both this else clause and the preceding else if clause are error cases; the else if
-			// is just more specific about what the error is
 			this.setState({userInfoError: true})
 		}
 	}
@@ -124,8 +148,11 @@ class App extends Component
 	render()
 	{
 		let loggedInUserId   =this.state.loggedInUserId;
-		let prevPage = this.state.prevPage;
-		let prevPageData = this.state.prevPageData;
+		let pageIndex = this.state.pageIndex;
+		let page = this.state.pageHistory[pageIndex];
+		let pageData = this.state.pageDataHistory[pageIndex];
+		let prevPage = pageIndex > 0 ? this.state.pageHistory[pageIndex - 1] : 'homepage';
+		let prevPageData = pageIndex > 0 ? this.state.pageDataHistory[pageIndex - 1] : {};
 		let changePage = this.changePage;
 
 		window.loggedInUserId=loggedInUserId//A bit hacky (setting a global variable here), but very useful for debugging.
@@ -137,13 +164,24 @@ class App extends Component
 			viewContentPage  :
 				<ViewContentPage
 					changePage={this.changePage}
-					{...this.state.pageData}
+					{...pageData}
 					refresh={this.refresh}
 					loggedInUserId={loggedInUserId}
 				/>,
-			searchResultsPage: <SearchResultsPage changePage={this.changePage} {...this.state.pageData} />,
-			newContent       : <NewSeriesPage     changePage={this.changePage} {...this.state.pageData} />,
-			editor           : <TestFrameEditor   pageData={this.state.pageData}/>,
+			searchResultsPage: (
+				<SearchResultsPage
+					changePage={this.changePage}
+					{...pageData}
+				/>),
+			newContent: (
+				<NewSeriesPage
+					changePage={this.changePage}
+					{...pageData}
+				/>),
+			editor: (
+				<TestFrameEditor
+					pageData={pageData}
+				/>),
 			test             : <TestPage/>,
 			homepage         :
 				this.state.loggedIn ?
@@ -155,9 +193,13 @@ class App extends Component
 					userId={loggedInUserId}
 					loggedInUserId={loggedInUserId}
 					changePage={this.changePage}
-					{...this.state.pageData}
+					{...pageData}
 				/>,
-			createCategoryPage: <CreateCategoryPage changePage={this.changePage} {...this.state.pageData} />,
+			createCategoryPage: (
+				<CreateCategoryPage
+					changePage={this.changePage}
+					{...pageData}
+				/>),
 			refresh: <RefreshPage page={prevPage} pageData={prevPageData} changePage={changePage}/>
 		}
 
@@ -175,10 +217,14 @@ class App extends Component
 				crossOrigin="anonymous"
 			/>
 			<div className="App">
-				<Menubar loggedIn={this.state.loggedIn} userId={this.state.loggedInUserId} changePage={this.changePage} />
-				{pages[this.state.page]}
+				<Menubar
+					loggedIn={this.state.loggedIn}
+					userId={this.state.loggedInUserId}
+					changePage={this.changePage}
+					backPage={this.backPage}
+				/>
+				{pages[page]}
 			</div>
-			{/*<Category3/>/!*For testing*!/*/}
 		</>
 	}
 }

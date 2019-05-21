@@ -162,8 +162,7 @@ export default function Category2({ categoryId, loggedInUserId, changePage }) {
 	const controls = (
 		<Collapse in={!notExpandedControls}>
 			<div>
-				<Button onClick={handleDelete}>Delete</Button>
-				<span style={{ width: 200, color: 'rgba(0,0,0,0)' }}>..................</span>
+				<Button onClick={handleDelete} className='mr-3'>Delete</Button>
 				This category shows
 				<select value={type} onChange={e => handleChangeType(e.target.value)}>
 					<option value="All" label="everything"/>

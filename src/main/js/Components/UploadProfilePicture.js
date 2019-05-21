@@ -32,9 +32,12 @@ export default class UploadProfilePicture extends Component {
 
     render() {
         return (
-            <Form encType='multipart/form-data'>
+
+            <div style={{backgroundColor:'rgba(128,0,128,.2)',padding:10,borderRadius:20}}><Form encType='multipart/form-data'>
+                Upload a profile picture:
+                <br/>
                 <Form.Control type='file' onChange={this.handleSubmit}/>
-            </Form>
+            </Form></div>
         );
     }
 }

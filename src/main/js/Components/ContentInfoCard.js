@@ -100,8 +100,8 @@ export default function ContentInfoCard({ contentBaseId, editable }) {
     if (loaded) {
         if (editable) {
             return (
-                <Card onClick={linkToAuthor}>
-                    <Card.Img variant='top' src={authorPic}/>
+                <Card>
+                    <Card.Img variant='top' src={authorPic} onClick={linkToAuthor}/>
                     <Card.Header>
                         <DBAwareEdiText type='text' value={title} onSave={onSaveTitle}/>
                     </Card.Header>

@@ -490,6 +490,46 @@ public class ContentController {
 
     /**
      * Description:
+     *   - determine if a piece of content is public/contributable
+     *
+     * Request params:
+     *   - id: String (ContentBase ID of the content to query)
+     *
+     * Returns:
+     *   - status: String ('OK' or 'error')
+     *   - content (if status is 'OK'):
+     *       {
+     *           isPublic: Boolean (whether the specified content is public),
+     *           isContributable: Boolean (whether the specified content is contributable)
+     *       }
+     */
+    @GetMapping("/content/visibility")
+    public Response getContentVisibility(@RequestParam("id") final String contentBaseId) {
+        try {
+            ContentVisibility visibility = new ContentVisibility();
+
+            // make sure content exists with given ContentBase ID
+            if (contentBaseId == null) {
+                throw new Exception("Must specify ContentBase ID when getting visibility.");
+            }
+            Optional<ContentBase> contentBaseOptional = contentBaseRepository.findById(contentBaseId);
+            if (!contentBaseOptional.isPresent()) {
+                throw new Exception("Failed to find content with ContentBase ID: " + contentBaseId + ".");
+            }
+            ContentBase contentBase = contentBaseOptional.get();
+
+            // determine whether the content is public/private and/or contributable/non-contributable
+            visibility.setPublic(contentBase.getPublic());
+            visibility.setContributable(contentBase.getContributable());
+
+            return new Response(Response.OK, visibility);
+        } catch (Exception e) {
+            return new Response(Response.ERROR, e.toString());
+        }
+    }
+
+    /**
+     * Description:
      *   - get the immediate surrounding ContentBase IDs (parent, child, left, and right) of a given ContentBase ID
      *   - only returns ContentBase IDs, so if the given ContentBase ID is for a series then the parent would be null
      *     (since it would be a user, which does not have an associated ContentBase)

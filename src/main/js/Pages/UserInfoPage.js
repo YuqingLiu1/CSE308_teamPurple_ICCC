@@ -105,14 +105,64 @@ export default class UserInfoPage extends Component
 
 	render()
 	{
-		let userThumbnail  =this.state.userThumbnail
-		let username       =this.state.username
-		let bio            =this.state.bio
-		let userCategoryIds=this.state.userCategoryIds
-		let changePage     =this.props.changePage
-		let loggedIn       =this.props.loggedIn
-		let generalBaseId  =this.state.generalBaseId
-		let loggedInUserId =this.props.loggedInUserId
+		let userThumbnail             =this.state.userThumbnail
+		let username                  =this.state.username
+		let bio                       =this.state.bio
+		let userCategoryIds           =this.state.userCategoryIds
+		let changePage                =this.props.changePage
+		let loggedIn                  =this.props.loggedIn
+		let generalBaseId             =this.state.generalBaseId
+		let loggedInUserId            =this.props.loggedInUserId
+		let profilePictureUploadButton=<>{
+			loggedIn &&
+			<UploadProfilePicture uploadType='profile' refresh={this.reload}/>
+		}</>
+		let profilePicture   =<>{
+			generalBaseId &&
+			<ProfileCard
+				generalBaseId={generalBaseId}
+				profileThumbnailUrl={userThumbnail}
+				username={username}
+				editable={loggedIn}
+				loggedInUserId={loggedInUserId}
+			/>
+		}</>
+		let profileBio       =<><h1>Bio:</h1>
+			{
+				bio &&
+				(
+					loggedIn ?
+						<DBAwareEdiText
+							inputProps={{rows: 5}}
+							type="textarea"
+							name="bio"
+							value={bio}
+						/>
+						:
+						<p>{bio}</p>
+				)
+			}</>
+		let allOfMyComments  =<><h1>My Comments:</h1>
+			{
+				generalBaseId &&
+				<ViewMyComment
+					generalBaseId={generalBaseId}
+				/>
+			}</>
+		let addCategoryButton=<>{
+			loggedIn &&
+			<Row>
+				<Button onClick={this.handleAddCategory}>Add Category</Button>
+			</Row>
+		}</>
+		let userCategories   =<>{
+			userCategoryIds.map((userCategoryId)=>
+								{
+									return (
+										<Category2 key={userCategoryId} loggedIn={true} categoryId={userCategoryId} changePage={changePage}/>
+									)
+								})
+		}</>
 		return (
 			<Container className="mt-5">
 				<Jumbotron>
@@ -120,63 +170,20 @@ export default class UserInfoPage extends Component
 						<Row>
 							<Col xs={5} style={{textAlign: "center"}}>
 								<Row>
-									{
-										generalBaseId &&
-										<ProfileCard
-											generalBaseId={generalBaseId}
-											profileThumbnailUrl={userThumbnail}
-											username={username}
-											editable={loggedIn}
-											loggedInUserId={loggedInUserId}
-										/>
-									}
-									{
-										loggedIn &&
-										<UploadProfilePicture uploadType='profile' refresh={this.reload}/>
-									}
+									{profilePicture}
+									{profilePictureUploadButton}
 								</Row>
 							</Col>
 							<Col xs={7}>
-								<h1>Bio:</h1>
-								{
-									bio &&
-									(
-										loggedIn ?
-											<DBAwareEdiText
-												inputProps={{rows: 5}}
-												type="textarea"
-												name="bio"
-												value={bio}
-											/>
-											:
-											<p>{bio}</p>
-									)
-								}
-								<br></br>
-								<h1>My Comments:</h1>
-								{
-									generalBaseId &&
-									<ViewMyComment
-										generalBaseId={generalBaseId}
-									/>
-								}
+								{profileBio}
+								<br>
+								</br>
+								{allOfMyComments}
 							</Col>
 						</Row>
-						{
-							loggedIn &&
-							<Row>
-								<Button onClick={this.handleAddCategory}>Add Category</Button>
-							</Row>
-						}
+						{addCategoryButton}
 						<Row className='mt-5'>
-							{
-								userCategoryIds.map((userCategoryId)=>
-													{
-														return (
-															<Category2 key={userCategoryId} loggedIn={true} categoryId={userCategoryId} changePage={changePage}/>
-														)
-													})
-							}
+							{userCategories}
 						</Row>
 					</Container>
 				</Jumbotron>

@@ -3,6 +3,9 @@ import {Card, Collapse, Modal} from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import DBAwareEdiText from './DBAwareEdiText'
 import CategoryCard from "./CategoryCard"
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 
 /**
  * Props:
@@ -28,10 +31,11 @@ export default class Category2 extends Component {
         super(props)
 
         this.state = {
-            name: '',
-            items: [],
-            loading: true,
-            isMyCategory:false
+            name               : '',
+            items              : [],
+            loading            : true,
+            isMyCategory       :false,
+			notExpandedControls:true,
         }
     }
 
@@ -168,24 +172,27 @@ export default class Category2 extends Component {
         //     </div>
         // )
 
-
-        const controls=<span>
-			<Button onClick={handleDelete}>
-				Delete
-			</Button>
-			<Button onClick={handleChangeSearch}>
-				Change Search Text
-			</Button>
-            <select onChange={event=>handleChangeType(event.target.value)}>
-                <option                 label="(Select Type)" selected disabled />
-                <option value="All"     label="All"                             />
-                <option value="Content" label="Content"                         />
-                <option value="User"    label="User"                            />
-                <option value="Series"  label="Series"                          />
-                <option value="Episode" label="Episode"                         />
-                <option value="Frame"   label="Frame"                           />
-            </select>
-        </span>
+		const controls=<>
+			<Collapse in={!this.state.notExpandedControls}>
+				<div>
+					<Button onClick={handleDelete}>
+						Delete
+					</Button>
+					<Button onClick={handleChangeSearch}>
+						Change Search Text
+					</Button>
+					<select onChange={event=>handleChangeType(event.target.value)}>
+						<option                 label="(Select Type)" selected disabled/>
+						<option value="All"     label="All"                            />
+						<option value="Content" label="Content"                        />
+						<option value="User"    label="User"                           />
+						<option value="Series"  label="Series"                         />
+						<option value="Episode" label="Episode"                        />
+						<option value="Frame"   label="Frame"                          />
+					</select>
+				</div>
+			</Collapse>
+		</>
 
         const cards = <Card.Body style={{overflowX: 'scroll'}}>
                 <div>
@@ -223,11 +230,25 @@ export default class Category2 extends Component {
                                             loading ?
                                                 'Loading...'
                                                     :
-                                                <>
+												<>
+													<Container>
+														<Row>
+															{/*<Col xs={1}>*/}
+																<Button onClick={()=>this.setState({notExpandedControls: !this.state.notExpandedControls})}>
+																	{this.state.notExpandedControls ? '▼' : '▲'}
+																</Button>
+															{/*</Col>*/}
+															{/*<Col xs={100}>*/}
+																<DBAwareEdiText viewProps={{style: {fontSize: categoryFontSize}}}
+																	// inputProps	={{style:{'fontSize':categoryFontSize}}}
+																				value={name} type={'text'} onSave={name=>window.setCategoryName(categoryId, name)}/>
+															{/*</Col>*/}
+														</Row>
+														<Row>
+
                                                     {controls}
-                                                <DBAwareEdiText viewProps={{style: {fontSize: categoryFontSize}}}
-                                                    // inputProps	={{style:{'fontSize':categoryFontSize}}}
-                                                                value={name} type={'text'} onSave={name=>window.setCategoryName(categoryId,name)}/>
+														</Row>
+													</Container>
                                                 </>
                                         }
                                     </div>

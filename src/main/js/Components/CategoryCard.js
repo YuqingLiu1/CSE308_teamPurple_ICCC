@@ -41,6 +41,7 @@ export default function CategoryCard({ userId, contentBaseId, onClick, extraStyl
                 if(contentBaseId)//Authors don't have authors; prevent an error here
                     authorId=res.content.contentBase.author;
 
+                // console.log("RESPONSE: ",res)
                 if (isMounted) {
                     setThumbnail(thumbnail);
                     setTitle(title);

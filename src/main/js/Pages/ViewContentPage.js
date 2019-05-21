@@ -18,7 +18,9 @@ import Comments from '../Components/Comments';
 import Likes from '../Components/Likes';
 
 export default function ViewContentPage({ contentBaseId, loggedInUserId, changePage }) {
-    const [showModal, setShowModal] = useState(false);
+    const [showAddContentModal, setShowAddContentModal] = useState(false);
+    const [showPublishModal, setShowPublishModal] = useState(false);
+    const [showContributableModal, setShowContributableModal] = useState(false);
 
     const [surroundingContent, setSurroundingContent] = useState({
         rightContentBaseId: '',
@@ -116,7 +118,12 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
         return () => isMounted = false;
     }, [contentBaseId]);
 
-    async function handlePublishButtonClick(event) {
+    function handlePublishButtonClick(event) {
+        event.preventDefault();
+        setShowPublishModal(true);
+    }
+
+    async function handlePublish(event) {
         try {
             event.preventDefault();
 
@@ -142,7 +149,12 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
         }
     }
 
-    async function handleContributableButtonClick(event) {
+    function handleContributableButtonClick(event) {
+        event.preventDefault();
+        setShowContributableModal(true);
+    }
+
+    async function handleMakeContributable(event) {
         try {
             event.preventDefault();
 
@@ -173,7 +185,7 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
 
         // make sure user is logged in
         if (!loggedInUserId) {
-            setShowModal(true);
+            setShowAddContentModal(true);
             return;
         }
 
@@ -201,10 +213,6 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
             parentContentBaseId: parentContentBaseId,
             firstFrame: firstFrame
         });
-    }
-
-    function closeModal() {
-        setShowModal(false);
     }
 
     // rendering logic
@@ -366,8 +374,8 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
         </Col>
     );
 
-    let modal = (
-        <Modal show={showModal} onHide={closeModal}>
+    let addContentModal = (
+        <Modal show={showAddContentModal} onHide={() => {setShowAddContentModal(false)}}>
             <Modal.Header closeButton>
                 <Modal.Title>Welcome!</Modal.Title>
             </Modal.Header>
@@ -383,9 +391,45 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
         </Modal>
     );
 
+    let publishModal = (
+        <Modal show={showPublishModal} onHide={() => {setShowPublishModal(false)}}>
+            <Modal.Header closeButton>
+                <Modal.Title>Confirm</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Are you sure you want to make this public? You cannot undo this action.</Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={() => {setShowPublishModal(false)}}>
+                    Cancel
+                </Button>
+                <Button variant="primary" onClick={handlePublish}>
+                    Publish
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    );
+
+    let contributableModal = (
+        <Modal show={showContributableModal} onHide={() => {setShowContributableModal(false)}}>
+            <Modal.Header closeButton>
+                <Modal.Title>Confirm</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Are you sure you want to make this contributable? You cannot undo this action.</Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={() => {setShowContributableModal(false)}}>
+                    Cancel
+                </Button>
+                <Button variant="primary" onClick={handleMakeContributable}>
+                    Make Contributable
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    );
+
     return (
         <Container fluid className='my-3'>
-            {modal}
+            {addContentModal}
+            {publishModal}
+            {contributableModal}
             <Row>
                 {leftColumn}
                 {middleColumn}

@@ -66,9 +66,7 @@ export default class Category2 extends Component {
 
 
             if(searchText==="LikedByMe"){
-                searchRes = await fetch('/likes/GetlikedItem', {
-                    method: 'GET'
-                })
+                searchRes = await fetch(`/likes/GetlikedItem?type=${type}`)
             }
             else{
                 // use category information to search for users/content

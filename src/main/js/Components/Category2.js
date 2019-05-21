@@ -63,6 +63,7 @@ export default function Category2({ categoryId, loggedInUserId, changePage }) {
 							type: type,
 							creator: creator,
 							searchText: searchText,
+							likedBy: likedBy,
 						})
 					});
 				}

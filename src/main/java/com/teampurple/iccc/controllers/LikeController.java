@@ -123,8 +123,7 @@ public class LikeController {
 
             // make sure the user is currently logged in
             User currentUser = authentication.getCurrentUser();
-            GeneralBase currentGeneralBase = authentication.getCurrentUserGeneralBase();
-            if (currentUser == null || currentGeneralBase == null) {
+            if (currentUser == null) {
                 throw new Exception("Must be logged in to like/subscribe.");
             }
 
@@ -136,16 +135,16 @@ public class LikeController {
             GeneralBase generalBase = generalBaseOptional.get();
 
             // (un)liking/(un)subscribing logic
-            List<String> likerGeneralBaseIds = generalBase.getLikers();
+            List<String> likerUserIds = generalBase.getLikers();
             List<String> likedGeneralBaseIds = currentUser.getLiked();
             if (likedGeneralBaseIds.contains(generalBaseId)) {
                 // the current user already liked/subscribed to the specified GeneralBase ID, so unlike/unsubscribe
                 likedGeneralBaseIds.remove(generalBaseId);
-                likerGeneralBaseIds.remove(currentGeneralBase.getId());
+                likerUserIds.remove(currentUser.getId());
             } else {
                 // the current user has not liked/subscribed to the specified GeneralBase ID, so like/subscribe
                 likedGeneralBaseIds.add(generalBaseId);
-                likerGeneralBaseIds.add(currentGeneralBase.getId());
+                likerUserIds.add(currentUser.getId());
             }
 
             // save changes

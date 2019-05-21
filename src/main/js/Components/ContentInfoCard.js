@@ -16,6 +16,7 @@ export default function ContentInfoCard({ contentBaseId, editable }) {
     const [authorPic  ,setAuthorPic  ] = useState(''   );
     const [authorName ,setAuthorName ] = useState(''   );
     const [loaded     ,setLoaded     ] = useState(false);
+    const [contentType     ,setContentType     ] = useState('');
     useEffect(() => {
         let isMounted = true;
 
@@ -28,6 +29,7 @@ export default function ContentInfoCard({ contentBaseId, editable }) {
                 // fetch info about content
                 let contentRes = await fetch('/content/info?id=' + contentBaseId);
                 contentRes = await contentRes.json();
+                console.log(contentRes)
                 if (contentRes.status !== 'OK') throw new Error('Could not fetch ContentBase by ID: ' + contentBaseId);
 
                 let title = contentRes.content.generalBase.title;
@@ -44,6 +46,11 @@ export default function ContentInfoCard({ contentBaseId, editable }) {
                     setTitle(title);
                     setDescription(description);
                     setAuthorPic(authorPic);
+                    try
+                    {
+                        setContentType(contentRes.content.contentBase.type);
+                    }
+                    catch{}
                     setAuthorName(await getContentAuthorTitle(contentBaseId))
                     setLoaded(true);
                 }
@@ -118,6 +125,7 @@ export default function ContentInfoCard({ contentBaseId, editable }) {
             return (
                 <Card onClick={linkToAuthor}>
                     <span style={{textAlign:'center'}} >Author:{authorName}</span>
+                    <span style={{textAlign:'center'}} >Type:{contentType}</span>
                     <Card.Img variant='top' src={authorPic}/>
                     <Card.Header>
                         {title}

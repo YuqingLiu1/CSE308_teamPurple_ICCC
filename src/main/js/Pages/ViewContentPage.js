@@ -29,6 +29,7 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
         childContentBaseId: '',
     });
     const [parentIsPublic, setParentIsPublic] = useState(false);
+    const [parentIsContributable, setParentIsContributable] = useState(false);
     useEffect(() => {
         let isMounted = true;
 
@@ -43,16 +44,21 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
                 let parentContentBaseId = res.content.parentContentBaseRef;
                 let childContentBaseId = res.content.childContentBaseRef;
 
-                // figure out if the parent is public
+                // figure out if the parent is public and/or contributable
                 let parentIsPublic;
+                let parentIsContributable;
                 if (!parentContentBaseId) {
-                    // no parent means the current content is a series, which must always be allowed to be made public
+                    // no parent means the current content is a series;
+                    // series must always be allowed to be made public,
+                    // and users are not "contributable"
                     parentIsPublic = true;
+                    parentIsContributable = false;
                 } else {
                     res = await fetch(`/content/visibility?id=${parentContentBaseId}`);
                     res = await res.json();
                     if (res.status !== 'OK') throw new Error(`Failed to load visibility of content for ContentBase ID: ${parentContentBaseId}.`);
                     parentIsPublic = res.content.public;
+                    parentIsContributable = res.content.contributable;
                 }
 
                 if (isMounted) {
@@ -63,6 +69,7 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
                         childContentBaseId: childContentBaseId,
                     });
                     setParentIsPublic(parentIsPublic);
+                    setParentIsContributable(parentIsContributable);
                 }
             } catch (err) {
                 console.log(err);
@@ -81,6 +88,7 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
     const [isContributable, setIsContributable] = useState(false);
     const [sketchId, setSketchId] = useState('');
     const [authorId, setAuthorId] = useState('');
+    const [isFirstFrame, setIsFirstFrame] = useState(false);
     useEffect(() => {
         let isMounted = true;
 
@@ -98,6 +106,7 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
                 let type = res.content.contentBase.type;
                 let generalBaseId = res.content.generalBase.id;
                 let authorId = res.content.contentBase.author;
+                let isFirstFrame = type === 'Frame' && !res.content.contentBase.parents.frame;
 
                 if (isMounted) {
                     setGeneralBaseId(generalBaseId);
@@ -108,6 +117,7 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
                     setIsContributable(isContributable);
                     setSketchId(sketchId);
                     setAuthorId(authorId);
+                    setIsFirstFrame(isFirstFrame);
                 }
             } catch (err) {
                 console.error(err);
@@ -215,6 +225,38 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
         });
     }
 
+    function createContentSameLevel(event) {
+        try {
+            event.preventDefault();
+
+            // make sure the user is logged in
+            if (!loggedInUserId) {
+                setShowAddContentModal(true);
+                return;
+            }
+
+            // make sure current content has valid type before creating new content
+            switch (type) {
+                case 'Series':
+                case 'Episode':
+                case 'Frame':
+                    break;
+                default:
+                    console.error(`Failed to create new content due to invalid type for current content: ${type}.`);
+                    return;
+            }
+
+            // go to content creation page
+            changePage('newContent', {
+                type: type,
+                parentContentBaseId: parentContentBaseId,
+                firstFrame: isFirstFrame
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     // rendering logic
     let leftContentBaseId = surroundingContent.leftContentBaseId;
     let rightContentBaseId = surroundingContent.rightContentBaseId;
@@ -292,7 +334,7 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
                                     <Fab onClick={() => {changePage('viewContentPage', { contentBaseId: childContentBaseId })}}>
                                         <i className="fas fa-arrow-down fa-2x"/>
                                     </Fab>
-                                    :
+                                        :
                                     (
                                         (isContributable || userIsAuthor) &&
                                         <Fab onClick={createContent}>
@@ -304,10 +346,17 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
                     </Col>
                     <Col xs={1} className='my-auto'>
                         {
-                            rightContentBaseId &&
-                            <Fab onClick={() => {changePage('viewContentPage', { contentBaseId: rightContentBaseId })}}>
-                                <i className="fas fa-arrow-right fa-2x"/>
-                            </Fab>
+                            rightContentBaseId ?
+                                <Fab onClick={() => {changePage('viewContentPage', { contentBaseId: rightContentBaseId })}}>
+                                    <i className="fas fa-arrow-right fa-2x"/>
+                                </Fab>
+                                    :
+                                (
+                                    (parentIsContributable || userIsAuthor) &&
+                                    <Fab onClick={createContentSameLevel}>
+                                        <i className="fas fa-plus fa-2x"/>
+                                    </Fab>
+                                )
                         }
                     </Col>
                 </Row>
@@ -350,10 +399,14 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
                     </Col>
                     <Col xs={1} className='my-auto'>
                         {
-                            rightContentBaseId &&
-                            <Fab onClick={() => {changePage('viewContentPage', { contentBaseId: rightContentBaseId })}}>
-                                <i className="fas fa-arrow-right fa-2x"/>
-                            </Fab>
+                            rightContentBaseId ?
+                                <Fab onClick={() => {changePage('viewContentPage', { contentBaseId: rightContentBaseId })}}>
+                                    <i className="fas fa-arrow-right fa-2x"/>
+                                </Fab>
+                                    :
+                                <Fab onClick={createContentSameLevel}>
+                                    <i className="fas fa-plus fa-2x"/>
+                                </Fab>
                         }
                     </Col>
                 </Row>

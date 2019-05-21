@@ -31,7 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/user/add", "/user/exists", "/favicon.ico", "/login", "/frame/upload", "/getNumlikes",
                         "/clicklike", "/liked", "/getNumlike", "/content/info", "/search", "/category/info",
                         "/user/info", "/content/surroundings", "/comments/info", "/content/visibility",
-                        "/likes/count").permitAll()
+                        "/likes/count", "/content/type").permitAll()
                 .anyRequest().authenticated()
                 .and()
             .logout()

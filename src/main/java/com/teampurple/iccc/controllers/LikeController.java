@@ -83,6 +83,22 @@ public class LikeController {
         }
     }
 
+    @GetMapping("/likes/everythingILike")
+    public Response getCurrentLikes() {
+        try {
+            // make sure the user is currently logged in
+            User currentUser = authentication.getCurrentUser();
+            GeneralBase currentGeneralBase = authentication.getCurrentUserGeneralBase();
+            if (currentUser == null || currentGeneralBase == null) {
+                throw new Exception("Must be logged in to check if current user liked something.");
+            }
+
+            return new Response(Response.OK, currentUser.getLiked());
+        } catch (Exception e) {
+            return new Response(Response.ERROR, e.toString());
+        }
+    }
+
     /**
      * Description:
      *   - (un)subscribe to an author/series or (un)like a piece of content

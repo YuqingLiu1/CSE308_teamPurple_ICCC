@@ -173,7 +173,7 @@ export default function Category2({ categoryId, loggedInUserId, changePage }) {
 					<option value="Frame" label="all frames"/>
 				</select>
 				{
-					type !== 'User' &&
+					type !== 'User' && type !=='All' &&
 					<select value={creator ? "Me" : "Anybody"} onChange={e => handleChangeCreator(e.target.value)}>
 						<option value="Me" label="that I made"/>
 						<option value="Anybody" label="that anybody made"/>

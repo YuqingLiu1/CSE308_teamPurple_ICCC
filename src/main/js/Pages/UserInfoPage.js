@@ -11,6 +11,7 @@ import UploadProfilePicture from "../Components/UploadProfilePicture"
 import Category from '../Components/Category'
 import Category2 from "../Components/Category2";
 import Button from 'react-bootstrap/Button';
+import ViewMyComment from "../Components/ViewMyComment";
 
 export default class UserInfoPage extends Component {
 	constructor(props) {
@@ -136,8 +137,23 @@ export default class UserInfoPage extends Component {
 												:
 											<p>{bio}</p>
 									)
+
+
 								}
+								<br></br>
+								<h1>My Comments:</h1>
+								{
+
+
+									generalBaseId &&
+									<ViewMyComment
+									generalBaseId={generalBaseId}
+									/>
+								}
+
+
 							</Col>
+
 						</Row>
 						{
 							loggedIn &&

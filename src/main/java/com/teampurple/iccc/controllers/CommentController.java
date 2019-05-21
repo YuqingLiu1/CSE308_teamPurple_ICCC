@@ -175,7 +175,7 @@ public class CommentController {
             if (onGB.getType().equals("ContentBase")) {
                 String onTitle = onGB.getTitle();
 
-                MyComment myComment = new MyComment(comment.getContent(), onTitle);
+                MyComment myComment = new MyComment(comment.getContent(), onTitle, onId);
                 myComments.add(myComment);
             }
         }

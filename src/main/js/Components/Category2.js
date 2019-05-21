@@ -240,10 +240,13 @@ export default class Category2 extends Component
 						<option value="Episode" label="all episodes"/>
 						<option value="Frame" label="all frames"/>
 					</select>
-					<select value={this.state.creator ? "Me" : "Anybody"} onChange={event=>handleChangeCreator(event.target.value)}>
-						<option value="Me" label="that I made (or is a user)"/>
-						<option value="Anybody" label="that anybody made"/>
-					</select>
+					{
+						this.state.type==='User' ? <></> :
+							<select value={this.state.creator ? "Me" : "Anybody"} onChange={event=>handleChangeCreator(event.target.value)}>
+								<option value="Me" label="that I made"/>
+								<option value="Anybody" label="that anybody made"/>
+							</select>
+					}
 					{/*{this.state.creator?" that I made ":" that anybody made "}*/}
 					containing the search phrase
 					<Button onClick={handleChangeSearch}>

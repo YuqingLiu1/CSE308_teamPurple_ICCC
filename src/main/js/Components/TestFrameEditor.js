@@ -490,36 +490,7 @@ class SketchFieldDemo extends React.Component {
                                 }/>
                             <Collapse in={this.state.expandControls}>
                                 <CardContent>
-                                    <div className="row">
-                                        <div className="col-lg-12">
-                                            <FormControlLabel
-                                                control={
-                                                    <Switch
-                                                        value={this.state.controlledSize}
-                                                        onChange={(e) => this.setState({ controlledSize: !this.state.controlledSize })}
-                                                    />
-                                                }
-                                                label="Control size"
-                                            />
-                                            <br/>
-                                            <Typography id="xSize">Change Canvas Width</Typography>
-                                            <Slider
-                                                step={1}
-                                                min={10}
-                                                max={1000}
-                                                value={this.state.sketchWidth}
-                                                onChange={(e, v) => this.setState({ sketchWidth: v })}/>
-                                            <br/>
-                                            <Typography id="ySize">Change Canvas Height</Typography>
-                                            <Slider
-                                                step={1}
-                                                min={10}
-                                                max={1000}
-                                                value={this.state.sketchHeight}
-                                                onChange={(e, v) => this.setState({ sketchHeight: v })}/>
-                                            <br/>
-                                        </div>
-                                    </div>
+
                                     <label htmlFor="zoom">Selection Actions (Select an object first!)</label>
                                     <div className="row">
                                         <div className="col">
@@ -647,41 +618,41 @@ class SketchFieldDemo extends React.Component {
                                 </CardContent>
                             </Collapse>
                         </Card>
-                        <Card style={styles.card}>
-                            <CardHeader
-                                title="Images"
-                                subheader="Upload Images as drawing"
-                                action={
-                                    <IconButton
-                                        onClick={(e) => this.setState({ expandImages: !this.state.expandImages })}>
-                                        <ExpandMore/>
-                                    </IconButton>
-                                }/>
-                            <Collapse in={this.state.expandImages}>
-                                <CardContent>
-                                    <div>
-                                        <TextField
-                                            label='Image URL'
-                                            helperText='Copy/Paste an image URL'
-                                            onChange={(e) => this.setState({ imageUrl: e.target.value })}
-                                            value={this.state.imageUrl}/>
-                                        <Button
-                                            variant="outlined"
-                                            onClick={(e) => {
-                                                this._sketch.addImg(this.state.imageUrl)
-                                            }}>
-                                            Load Image from URL
-                                        </Button>
-                                    </div>
-                                    <br/>
-                                    <Button
-                                        variant="outlined"
-                                        onClick={(e) => this._sketch.addImg(dataUrl)}>
-                                        Load Image from Data URL
-                                    </Button>
-                                </CardContent>
-                            </Collapse>
-                        </Card>
+                        {/*<Card style={styles.card}>*/}
+                        {/*    <CardHeader*/}
+                        {/*        title="Images"*/}
+                        {/*        subheader="Upload Images as drawing"*/}
+                        {/*        action={*/}
+                        {/*            <IconButton*/}
+                        {/*                onClick={(e) => this.setState({ expandImages: !this.state.expandImages })}>*/}
+                        {/*                <ExpandMore/>*/}
+                        {/*            </IconButton>*/}
+                        {/*        }/>*/}
+                        {/*    <Collapse in={this.state.expandImages}>*/}
+                        {/*        <CardContent>*/}
+                        {/*            <div>*/}
+                        {/*                <TextField*/}
+                        {/*                    label='Image URL'*/}
+                        {/*                    helperText='Copy/Paste an image URL'*/}
+                        {/*                    onChange={(e) => this.setState({ imageUrl: e.target.value })}*/}
+                        {/*                    value={this.state.imageUrl}/>*/}
+                        {/*                <Button*/}
+                        {/*                    variant="outlined"*/}
+                        {/*                    onClick={(e) => {*/}
+                        {/*                        this._sketch.addImg(this.state.imageUrl)*/}
+                        {/*                    }}>*/}
+                        {/*                    Load Image from URL*/}
+                        {/*                </Button>*/}
+                        {/*            </div>*/}
+                        {/*            <br/>*/}
+                        {/*            <Button*/}
+                        {/*                variant="outlined"*/}
+                        {/*                onClick={(e) => this._sketch.addImg(dataUrl)}>*/}
+                        {/*                Load Image from Data URL*/}
+                        {/*            </Button>*/}
+                        {/*        </CardContent>*/}
+                        {/*    </Collapse>*/}
+                        {/*</Card>*/}
                         {/*<Card style={styles.card}>*/}
                             {/*<CardHeader*/}
                                 {/*title="Controlled value"*/}
@@ -721,5 +692,36 @@ class SketchFieldDemo extends React.Component {
         );
     };
 }
+
+{/*<div className="row">*/}
+{/*    <div className="col-lg-12">*/}
+{/*        <FormControlLabel*/}
+{/*            control={*/}
+{/*                <Switch*/}
+{/*                    value={this.state.controlledSize}*/}
+{/*                    onChange={(e) => this.setState({ controlledSize: !this.state.controlledSize })}*/}
+{/*                />*/}
+{/*            }*/}
+{/*            label="Control size"*/}
+{/*        />*/}
+{/*        <br/>*/}
+{/*        <Typography id="xSize">Change Canvas Width</Typography>*/}
+{/*        <Slider*/}
+{/*            step={1}*/}
+{/*            min={10}*/}
+{/*            max={1000}*/}
+{/*            value={this.state.sketchWidth}*/}
+{/*            onChange={(e, v) => this.setState({ sketchWidth: v })}/>*/}
+{/*        <br/>*/}
+{/*        <Typography id="ySize">Change Canvas Height</Typography>*/}
+{/*        <Slider*/}
+{/*            step={1}*/}
+{/*            min={10}*/}
+{/*            max={1000}*/}
+{/*            value={this.state.sketchHeight}*/}
+{/*            onChange={(e, v) => this.setState({ sketchHeight: v })}/>*/}
+{/*        <br/>*/}
+{/*    </div>*/}
+{/*</div>*/}
 
 export default SketchFieldDemo;

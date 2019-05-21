@@ -21,6 +21,10 @@ export default function ContentInfoCard({ contentBaseId, editable }) {
 
         async function loadData() {
             try {
+                if (isMounted) {
+                    setLoaded(false);
+                }
+
                 // fetch info about content
                 let contentRes = await fetch('/content/info?id=' + contentBaseId);
                 contentRes = await contentRes.json();

@@ -154,6 +154,11 @@ window.search={
 	},
 }
 
+window.isLoggedIn=async function()
+{
+	//If no user is logged in, GET /user/info?id should return {"status":"error","content":"No User ID provided and no logged in user"}
+	return (await fetchJson("/user/info?id")).status!=='error'
+}
 window.getCategoryInfoFromId=async function(categoryId)
 {
 	let response=await fetchJson('/category/info?id='+categoryId)
@@ -243,6 +248,13 @@ window.getContentAuthor=async function(contentId)
 	console.assert(typeof contentId ==='string','contentId must be a string')
 	return (await getContentInfo(contentId)).content.contentBase.author
 }
+window.getContentAuthorTitle=async function(contentId)
+{
+	//Return the userId of the author of some contentId
+	console.assert(arguments.length ===1       ,'Wrong number of arguments' )
+	console.assert(typeof contentId ==='string','contentId must be a string')
+	return await getUserTitle(await getContentAuthor(contentId))
+}
 
 window.goToContentAuthor=async function(contentId)
 {
@@ -260,16 +272,57 @@ window.goToUserPage=async function(userId)
 	window.changePage('userInfo', {userId})//This variable is made global in app.js
 }
 
-window.goToUserPage=async function(userId)
-{
-	console.assert(arguments.length ===1       ,'Wrong number of arguments')
-	console.assert(typeof userId    ==='string','userId must be a string'  )
-	window.changePage('userInfo', {userId})//This variable is made global in app.js
-}
-
 window.getContentInfo=async function(contentId)
 {
 	console.assert(arguments.length ===1       ,'Wrong number of arguments' )
 	console.assert(typeof contentId ==='string','contentId must be a string')
 	return await window.fetchJson('/content/info?id='+contentId)
+}
+
+window.getMyUserInfo=async function()
+{
+	console.assert(arguments.length ===0       ,'Wrong number of arguments' )
+	//Get user info of the logged in user
+	return await window.fetchJson('/user/info?id')//Get info about the current user
+}
+
+window.getMyUserId=async function()
+{
+	console.assert(arguments.length ===0       ,'Wrong number of arguments' )
+	//Get the userId of the logged in user
+	return (await window.getMyUserInfo()).content.user.id
+}
+
+window.isMyContent=async function(contentId)
+{
+	console.assert(arguments.length ===1       ,'Wrong number of arguments' )
+	console.assert(typeof contentId ==='string','contentId must be a string')
+	//return true IFF the current logged in user is the author of the contentId
+	if(!await isLoggedIn())return false
+	return await window.getContentAuthor(contentId)===await window.getMyUserId()
+}
+
+window.getCategoryUserId=async function(categoryId)
+{
+	console.assert(arguments.length ===1       ,'Wrong number of arguments'  )
+	console.assert(typeof categoryId==='string','categoryId must be a string')
+	//Get the user that created this category
+	return (await window.getCategoryInfoFromId(categoryId)).userRef
+}
+
+window.isMyUserId=async function(userId)
+{
+	console.assert(arguments.length ===1       ,'Wrong number of arguments')
+	console.assert(typeof userId    ==='string','userId must be a string'  )
+	if(!await isLoggedIn())return false
+	return await getMyUserId()===userId
+}
+
+window.isMyCategory=async function(categoryId)
+{
+	console.assert(arguments.length ===1       ,'Wrong number of arguments'  )
+	console.assert(typeof categoryId==='string','categoryId must be a string')
+	if(!await isLoggedIn())return false
+	//Returns true IFF the logged in user owns that category ID
+	return await isMyUserId(await getCategoryUserId(categoryId))
 }

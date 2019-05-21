@@ -11,10 +11,11 @@ import DBAwareEdiText from "./DBAwareEdiText";
  * @param editable Whether or not the displayed info should be editable
  */
 export default function ContentInfoCard({ contentBaseId, editable }) {
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [authorPic, setAuthorPic] = useState('');
-    const [loaded, setLoaded] = useState(false);
+    const [title      ,setTitle      ] = useState(''   );
+    const [description,setDescription] = useState(''   );
+    const [authorPic  ,setAuthorPic  ] = useState(''   );
+    const [authorName ,setAuthorName ] = useState(''   );
+    const [loaded     ,setLoaded     ] = useState(false);
     useEffect(() => {
         let isMounted = true;
 
@@ -39,6 +40,7 @@ export default function ContentInfoCard({ contentBaseId, editable }) {
                     setTitle(title);
                     setDescription(description);
                     setAuthorPic(authorPic);
+                    setAuthorName(await getContentAuthorTitle(contentBaseId))
                     setLoaded(true);
                 }
             } catch (err) {
@@ -113,6 +115,7 @@ export default function ContentInfoCard({ contentBaseId, editable }) {
         } else {
             return (
                 <Card onClick={linkToAuthor}>
+                    <span style={{textAlign:'center'}} >Author:{authorName}</span>
                     <Card.Img variant='top' src={authorPic}/>
                     <Card.Header>
                         {title}

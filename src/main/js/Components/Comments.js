@@ -1,3 +1,5 @@
+import Modal from "react-bootstrap/Modal";
+
 require('@babel/polyfill')
 
 import React, { useState, useEffect } from 'react';
@@ -16,6 +18,7 @@ import Comment from './Comment';
  * @param loggedInUserId The User ID of the currently logged in user.
  */
 export default function Comments({ generalBaseId, contentBaseId, loggedInUserId }) {
+    const [showModal, setShowModal] = useState(false);
     const [comment, setComment] = useState('');
     const [reloadCount, setReloadCount] = useState(0); // probably a better way of reloading comments
 
@@ -52,6 +55,12 @@ export default function Comments({ generalBaseId, contentBaseId, loggedInUserId 
         try {
             event.preventDefault();
 
+            // make sure user is logged in
+            if (!loggedInUserId) {
+                setShowModal(true);
+                return;
+            }
+
             // don't allow empty comments
             if (comment === '') return;
 
@@ -77,8 +86,26 @@ export default function Comments({ generalBaseId, contentBaseId, loggedInUserId 
         }
     }
 
+    function closeModal() {
+        setShowModal(false);
+    }
+
     return (
         <Container>
+            <Modal show={showModal} onHide={closeModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Welcome!</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>You must be logged in to add a comment.</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={() => {changePage('login')}}>
+                        Login
+                    </Button>
+                    <Button variant="primary" onClick={() => {changePage('create')}}>
+                        Create Account
+                    </Button>
+                </Modal.Footer>
+            </Modal>
             <Form className="AddComment">
                 <Form.Group controlId="addCommentText">
                     <Form.Label style={{color:'black', padding:'0px', textShadow: '1px 1px lightgray'}}>Your Comment</Form.Label>

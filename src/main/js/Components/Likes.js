@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 
 import Heart from './Heart';
 
-export default function Likes({ generalBaseId, likedByCurrentUserColor='red', notLikedByCurrentUserColor='black' }) {
+export default function Likes({ generalBaseId, loggedInUserId, likedByCurrentUserColor='red', notLikedByCurrentUserColor='black' }) {
     const [likedByCurrentUser, setLikedByCurrentUser] = useState(false);
     const [numberOfLikers, setNumberOfLikers] = useState(0);
     useEffect(() => {
@@ -18,11 +18,16 @@ export default function Likes({ generalBaseId, likedByCurrentUserColor='red', no
                 if (res.status !== 'OK') throw new Error(`Failed to get number of likes for GeneralBase with ID: ${generalBaseId}`);
                 let numLikes = res.content.numLikes;
 
-                // fetch whether the current logged in user likes this GeneralBase
-                res = await fetch(`/likes/likedByCurrentUser?id=${generalBaseId}`);
-                res = await res.json();
-                if (res.status !== 'OK') throw new Error(`Failed to determine if current user likes GeneralBase with ID: ${generalBaseId}`);
-                let likedByCurrentUser = res.content.liked;
+                // fetch whether the current logged in user (if there is one) likes this GeneralBase
+                let likedByCurrentUser;
+                if (!loggedInUserId) {
+                    likedByCurrentUser = true;
+                } else {
+                    res = await fetch(`/likes/likedByCurrentUser?id=${generalBaseId}`);
+                    res = await res.json();
+                    if (res.status !== 'OK') throw new Error(`Failed to determine if current user likes GeneralBase with ID: ${generalBaseId}`);
+                    likedByCurrentUser = res.content.liked;
+                }
 
                 if (isMounted) {
                     setNumberOfLikers(numLikes);

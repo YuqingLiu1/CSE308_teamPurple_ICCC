@@ -205,8 +205,23 @@ public class UserAccountController {
             gb.setDateLastEdited(new Date());
             generalbase.save(gb);
 
+            // create new user
             User newUser = new User(user.getEmail(), new BCryptPasswordEncoder().encode(user.getPassword()));
             newUser.setGeneralBaseRef(gb.getId());
+            users.save(newUser);
+
+            // create default categories
+            Category defaultAllMyContentCategory = new Category();
+            defaultAllMyContentCategory.setName("All My Content");
+            defaultAllMyContentCategory.setType(NewCategoryItem.CONTENT_TYPE);
+            defaultAllMyContentCategory.setCreator(newUser.getId());
+            defaultAllMyContentCategory.setUserRef(newUser.getId());
+            categoryRepository.save(defaultAllMyContentCategory);
+
+            // don't forget to update the new user's list of categories
+            List<String> homeCategories = new ArrayList<>();
+            homeCategories.add(defaultAllMyContentCategory.getId());
+            newUser.setHomeCategories(homeCategories);
             users.save(newUser);
 
             // create a new sketch for the user profile

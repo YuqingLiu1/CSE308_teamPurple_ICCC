@@ -11,15 +11,20 @@ import DBAwareEdiText from "./DBAwareEdiText";
  * @param editable Whether or not the displayed info should be editable
  */
 export default function ContentInfoCard({ contentBaseId, editable }) {
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [authorPic, setAuthorPic] = useState('');
-    const [loaded, setLoaded] = useState(false);
+    const [title      ,setTitle      ] = useState(''   );
+    const [description,setDescription] = useState(''   );
+    const [authorPic  ,setAuthorPic  ] = useState(''   );
+    const [authorName ,setAuthorName ] = useState(''   );
+    const [loaded     ,setLoaded     ] = useState(false);
     useEffect(() => {
         let isMounted = true;
 
         async function loadData() {
             try {
+                if (isMounted) {
+                    setLoaded(false);
+                }
+
                 // fetch info about content
                 let contentRes = await fetch('/content/info?id=' + contentBaseId);
                 contentRes = await contentRes.json();
@@ -39,6 +44,7 @@ export default function ContentInfoCard({ contentBaseId, editable }) {
                     setTitle(title);
                     setDescription(description);
                     setAuthorPic(authorPic);
+                    setAuthorName(await getContentAuthorTitle(contentBaseId))
                     setLoaded(true);
                 }
             } catch (err) {
@@ -90,12 +96,16 @@ export default function ContentInfoCard({ contentBaseId, editable }) {
         }
     };
 
+    function linkToAuthor() {
+        window.goToContentAuthor(contentBaseId)
+    }
+
     // rendering logic
     if (loaded) {
         if (editable) {
             return (
                 <Card>
-                    <Card.Img variant='top' src={authorPic}/>
+                    <Card.Img variant='top' src={authorPic} onClick={linkToAuthor}/>
                     <Card.Header>
                         <DBAwareEdiText type='text' value={title} onSave={onSaveTitle}/>
                     </Card.Header>
@@ -106,7 +116,8 @@ export default function ContentInfoCard({ contentBaseId, editable }) {
             );
         } else {
             return (
-                <Card>
+                <Card onClick={linkToAuthor}>
+                    <span style={{textAlign:'center'}} >Author:{authorName}</span>
                     <Card.Img variant='top' src={authorPic}/>
                     <Card.Header>
                         {title}

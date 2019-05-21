@@ -225,7 +225,131 @@ public class LikeController {
     }
 
     @GetMapping("/likes/GetlikedItem")
-    public Response getlikedItem(){
+    public Response getlikedItem(@RequestParam("type") String type){
+        try {
+            User currentUser = authentication.getCurrentUser();
+            List<String> userLiked = currentUser.getLiked();
+            // create the empty search result to populate and return
+            List<AggregateInfo> users = new ArrayList<>();
+            List<AggregateInfo> series = new ArrayList<>();
+            List<AggregateInfo> episodes = new ArrayList<>();
+            List<AggregateInfo> frames = new ArrayList<>();
+            SearchResult searchResult = new SearchResult();
+            searchResult.setUsers(users);
+            searchResult.setSeries(series);
+            searchResult.setEpisodes(episodes);
+            searchResult.setFrames(frames);
+
+            for (int i=0;i<userLiked.size();i++) {
+                GeneralBase item = generalBaseRepository.findById(userLiked.get(i)).get();
+                AggregateInfo aggregateInfo = new AggregateInfo();
+                if (type.equals("All")) {
+                    aggregateInfo.setGeneralBase(item);
+                    if (item.getType().equals(GeneralBase.USER_TYPE)) {
+                        User user = userRepository.findById(item.getTypeRef()).get();
+                        aggregateInfo.setType(GeneralBase.USER_TYPE);
+                        aggregateInfo.setContentBase(null);
+                        aggregateInfo.setUser(user);
+                        aggregateInfo.setSketch(sketchRepository.findById(item.getSketch()).get());
+                    } else {
+                        ContentBase content = contentBaseRepository.findById(item.getTypeRef()).get();
+                        aggregateInfo.setType(content.getType());
+                        aggregateInfo.setContentBase(content);
+                        aggregateInfo.setUser(null);
+                        aggregateInfo.setSketch(sketchRepository.findById(item.getSketch()).get());
+
+                    }
+                    switch (aggregateInfo.getType()) {
+                        case GeneralBase.USER_TYPE:
+                            users.add(aggregateInfo);
+                            break;
+                        case ContentBase.SERIES:
+                            series.add(aggregateInfo);
+                            break;
+                        case ContentBase.EPISODE:
+                            episodes.add(aggregateInfo);
+                            break;
+                        case ContentBase.FRAME:
+                            frames.add(aggregateInfo);
+                            break;
+                    }
+                } else if (type.equals("User")) {
+                    if (item.getType().equals(GeneralBase.USER_TYPE)) {
+                        aggregateInfo.setGeneralBase(item);
+                        User user = userRepository.findById(item.getTypeRef()).get();
+                        aggregateInfo.setType(GeneralBase.USER_TYPE);
+                        aggregateInfo.setContentBase(null);
+                        aggregateInfo.setUser(user);
+                        aggregateInfo.setSketch(sketchRepository.findById(item.getSketch()).get());
+                        users.add(aggregateInfo);
+                    }
+                } else if (type.equals("Content")) {
+                    if (!item.getType().equals(GeneralBase.USER_TYPE)) {
+                        aggregateInfo.setGeneralBase(item);
+                        ContentBase content = contentBaseRepository.findById(item.getTypeRef()).get();
+                        aggregateInfo.setType(content.getType());
+                        aggregateInfo.setContentBase(content);
+                        aggregateInfo.setUser(null);
+                        aggregateInfo.setSketch(sketchRepository.findById(item.getSketch()).get());
+                        switch (aggregateInfo.getType()) {
+                            case ContentBase.SERIES:
+                                series.add(aggregateInfo);
+                                break;
+                            case ContentBase.EPISODE:
+                                episodes.add(aggregateInfo);
+                                break;
+                            case ContentBase.FRAME:
+                                frames.add(aggregateInfo);
+                                break;
+                        }
+                    }
+                } else if (type.equals("Series")) {
+                    if (!item.getType().equals(GeneralBase.USER_TYPE)) {
+                        ContentBase content = contentBaseRepository.findById(item.getTypeRef()).get();
+                        if (content.getType().equals(ContentBase.SERIES)) {
+                            aggregateInfo.setGeneralBase(item);
+                            aggregateInfo.setType(content.getType());
+                            aggregateInfo.setContentBase(content);
+                            aggregateInfo.setUser(null);
+                            aggregateInfo.setSketch(sketchRepository.findById(item.getSketch()).get());
+                            series.add(aggregateInfo);
+                        }
+                    } else if (type.equals("Episode")) {
+                        if (!item.getType().equals(GeneralBase.USER_TYPE)) {
+                            ContentBase content = contentBaseRepository.findById(item.getTypeRef()).get();
+                            if (content.getType().equals(ContentBase.EPISODE)) {
+                                aggregateInfo.setGeneralBase(item);
+                                aggregateInfo.setType(content.getType());
+                                aggregateInfo.setContentBase(content);
+                                aggregateInfo.setUser(null);
+                                aggregateInfo.setSketch(sketchRepository.findById(item.getSketch()).get());
+                                episodes.add(aggregateInfo);
+
+                            }
+                        }
+                    } else if (type.equals("Frame")) {
+                        if (!item.getType().equals(GeneralBase.USER_TYPE)) {
+                            ContentBase content = contentBaseRepository.findById(item.getTypeRef()).get();
+                            if (content.getType().equals(ContentBase.FRAME)) {
+                                aggregateInfo.setGeneralBase(item);
+                                aggregateInfo.setType(content.getType());
+                                aggregateInfo.setContentBase(content);
+                                aggregateInfo.setUser(null);
+                                aggregateInfo.setSketch(sketchRepository.findById(item.getSketch()).get());
+                                frames.add(aggregateInfo);
+                            }
+                        }
+                    }
+                }
+            }
+            System.out.println(searchResult.toString());
+            return new Response(Response.OK, searchResult);
+        }catch (Exception e){
+            return new Response(Response.ERROR, e.toString());
+        }
+    }
+    @GetMapping("/recommendation")
+    public Response recommendation(){
         try {
             User currentUser = authentication.getCurrentUser();
             List<String> userLiked = currentUser.getLiked();
@@ -242,38 +366,32 @@ public class LikeController {
 
             for (int i=0;i<userLiked.size();i++){
                 GeneralBase item = generalBaseRepository.findById(userLiked.get(i)).get();
-                AggregateInfo aggregateInfo = new AggregateInfo();
-                aggregateInfo.setGeneralBase(item);
                 if (item.getType().equals(GeneralBase.USER_TYPE)){
                     User user = userRepository.findById(item.getTypeRef()).get();
-                    aggregateInfo.setType(GeneralBase.USER_TYPE);
-                    aggregateInfo.setContentBase(null);
-                    aggregateInfo.setUser(user);
-                    aggregateInfo.setSketch(sketchRepository.findById(item.getSketch()).get());
-                }else {
-                    contentBaseRepository.findById(item.getTypeRef());
-                    ContentBase content = contentBaseRepository.findById(item.getTypeRef()).get();
-                    aggregateInfo.setType(content.getType());
-                    aggregateInfo.setContentBase(content);
-                    aggregateInfo.setUser(null);
-                    aggregateInfo.setSketch(sketchRepository.findById(item.getSketch()).get());
-
-                }
-                switch (aggregateInfo.getType()) {
-                    case GeneralBase.USER_TYPE:
-                        users.add(aggregateInfo);
-                        break;
-                    case ContentBase.SERIES:
-                        series.add(aggregateInfo);
-                        break;
-                    case ContentBase.EPISODE:
-                        episodes.add(aggregateInfo);
-                        break;
-                    case ContentBase.FRAME:
-                        frames.add(aggregateInfo);
-                        break;
-                    default:
-                        return new Response(Response.ERROR, "Found invalid AggregateInfo type: " + aggregateInfo.getType());
+                    List<String> recommendContent=user.getContent();
+                    for (int j=0;j<recommendContent.size();j++){
+                        ContentBase content = contentBaseRepository.findById(recommendContent.get(j)).get();
+                        GeneralBase contentbase = generalBaseRepository.findById(content.getGeneralBaseRef()).get();
+                        AggregateInfo aggregateInfo = new AggregateInfo();
+                        aggregateInfo.setGeneralBase(item);
+                        aggregateInfo.setType(content.getType());
+                        aggregateInfo.setContentBase(content);
+                        aggregateInfo.setUser(user);
+                        aggregateInfo.setSketch(sketchRepository.findById(contentbase.getSketch()).get());
+                        switch (aggregateInfo.getType()) {
+                            case ContentBase.SERIES:
+                                series.add(aggregateInfo);
+                                break;
+                            case ContentBase.EPISODE:
+                                episodes.add(aggregateInfo);
+                                break;
+                            case ContentBase.FRAME:
+                                frames.add(aggregateInfo);
+                                break;
+                            default:
+                                return new Response(Response.ERROR, "Found invalid AggregateInfo type: " + aggregateInfo.getType());
+                        }
+                    }
                 }
             }
             return new Response(Response.OK, searchResult);

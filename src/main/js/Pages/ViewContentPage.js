@@ -8,6 +8,7 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Image from 'react-bootstrap/Image';
+import Modal from "react-bootstrap/Modal";
 
 import Fab from '@material-ui/core/Fab';
 
@@ -17,17 +18,23 @@ import Comments from '../Components/Comments';
 import Likes from '../Components/Likes';
 
 export default function ViewContentPage({ contentBaseId, loggedInUserId, changePage }) {
+    const [showAddContentModal, setShowAddContentModal] = useState(false);
+    const [showPublishModal, setShowPublishModal] = useState(false);
+    const [showContributableModal, setShowContributableModal] = useState(false);
+
     const [surroundingContent, setSurroundingContent] = useState({
         rightContentBaseId: '',
         leftContentBaseId: '',
         parentContentBaseId: '',
         childContentBaseId: '',
     });
+    const [parentIsPublic, setParentIsPublic] = useState(false);
     useEffect(() => {
         let isMounted = true;
 
         async function loadSurroundingContent() {
             try {
+                // load the surrounding content
                 let res = await fetch('/content/surroundings?id=' + contentBaseId);
                 res = await res.json();
                 if (res.status !== 'OK') throw new Error('Failed to load surrounding content.');
@@ -36,6 +43,18 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
                 let parentContentBaseId = res.content.parentContentBaseRef;
                 let childContentBaseId = res.content.childContentBaseRef;
 
+                // figure out if the parent is public
+                let parentIsPublic;
+                if (!parentContentBaseId) {
+                    // no parent means the current content is a series, which must always be allowed to be made public
+                    parentIsPublic = true;
+                } else {
+                    res = await fetch(`/content/visibility?id=${parentContentBaseId}`);
+                    res = await res.json();
+                    if (res.status !== 'OK') throw new Error(`Failed to load visibility of content for ContentBase ID: ${parentContentBaseId}.`);
+                    parentIsPublic = res.content.public;
+                }
+
                 if (isMounted) {
                     setSurroundingContent({
                         rightContentBaseId: rightContentBaseId,
@@ -43,6 +62,7 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
                         parentContentBaseId: parentContentBaseId,
                         childContentBaseId: childContentBaseId,
                     });
+                    setParentIsPublic(parentIsPublic);
                 }
             } catch (err) {
                 console.log(err);
@@ -60,6 +80,7 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
     const [isPublic, setIsPublic] = useState(true);
     const [isContributable, setIsContributable] = useState(false);
     const [sketchId, setSketchId] = useState('');
+    const [authorId, setAuthorId] = useState('');
     useEffect(() => {
         let isMounted = true;
 
@@ -76,6 +97,7 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
                 let isContributable = res.content.contentBase.contributable;
                 let type = res.content.contentBase.type;
                 let generalBaseId = res.content.generalBase.id;
+                let authorId = res.content.contentBase.author;
 
                 if (isMounted) {
                     setGeneralBaseId(generalBaseId);
@@ -85,6 +107,7 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
                     setIsPublic(isPublic);
                     setIsContributable(isContributable);
                     setSketchId(sketchId);
+                    setAuthorId(authorId);
                 }
             } catch (err) {
                 console.error(err);
@@ -95,7 +118,12 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
         return () => isMounted = false;
     }, [contentBaseId]);
 
-    async function handlePublishButtonClick(event) {
+    function handlePublishButtonClick(event) {
+        event.preventDefault();
+        setShowPublishModal(true);
+    }
+
+    async function handlePublish(event) {
         try {
             event.preventDefault();
 
@@ -121,7 +149,12 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
         }
     }
 
-    async function handleContributableButtonClick(event) {
+    function handleContributableButtonClick(event) {
+        event.preventDefault();
+        setShowContributableModal(true);
+    }
+
+    async function handleMakeContributable(event) {
         try {
             event.preventDefault();
 
@@ -149,6 +182,12 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
 
     function createContent(event) {
         event.preventDefault();
+
+        // make sure user is logged in
+        if (!loggedInUserId) {
+            setShowAddContentModal(true);
+            return;
+        }
 
         let parentContentBaseId = contentBaseId;
         let currentContentType = type;
@@ -181,6 +220,7 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
     let rightContentBaseId = surroundingContent.rightContentBaseId;
     let parentContentBaseId = surroundingContent.parentContentBaseId;
     let childContentBaseId = surroundingContent.childContentBaseId;
+    let userIsAuthor = loggedInUserId && (loggedInUserId === authorId);
 
     let leftColumn = (
         isPublic ?
@@ -189,18 +229,21 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
                     contentBaseId={contentBaseId}
                     editable={false}  // TODO: figure out if this is actually not supposed to be editable
                 />
-                <ButtonGroup className='mt-3'>
-                    {
-                        !isContributable &&
-                        <Button
-                            variant='primary'
-                            onClick={handleContributableButtonClick}>Make Contributable</Button>
-                    }
-                    {
-                        generalBaseId &&
-                        <Likes generalBaseId={generalBaseId}/>
-                    }
-                </ButtonGroup>
+                {
+                    userIsAuthor &&
+                    <ButtonGroup className='mt-3'>
+                        {
+                            !isContributable &&
+                            <Button
+                                variant='primary'
+                                onClick={handleContributableButtonClick}>Make Contributable</Button>
+                        }
+                    </ButtonGroup>
+                }
+                {
+                    generalBaseId &&
+                    <Likes generalBaseId={generalBaseId} loggedInUserId={loggedInUserId}/>
+                }
             </Col>
                 :
             <Col xs={3}>
@@ -209,7 +252,12 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
                     editable={true}
                 />
                 <ButtonGroup className='mt-3'>
-                    <Button variant='primary' onClick={handlePublishButtonClick}>Publish</Button>
+                    {
+                        parentIsPublic ?
+                            <Button variant='primary' onClick={handlePublishButtonClick}>Publish</Button>
+                                :
+                            <Button variant='primary' disabled onClick={handlePublishButtonClick}>Publish</Button>
+                    }
                     <Button variant='primary' disabled onClick={handleContributableButtonClick}>Make Contributable</Button>
                 </ButtonGroup>
             </Col>
@@ -326,8 +374,62 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
         </Col>
     );
 
+    let addContentModal = (
+        <Modal show={showAddContentModal} onHide={() => {setShowAddContentModal(false)}}>
+            <Modal.Header closeButton>
+                <Modal.Title>Welcome!</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>You must be logged in to add content.</Modal.Body>
+            <Modal.Footer>
+                <Button variant="primary" onClick={() => {changePage('login')}}>
+                    Login
+                </Button>
+                <Button variant="primary" onClick={() => {changePage('create')}}>
+                    Create Account
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    );
+
+    let publishModal = (
+        <Modal show={showPublishModal} onHide={() => {setShowPublishModal(false)}}>
+            <Modal.Header closeButton>
+                <Modal.Title>Confirm</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Are you sure you want to make this public? You cannot undo this action.</Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={() => {setShowPublishModal(false)}}>
+                    Cancel
+                </Button>
+                <Button variant="primary" onClick={handlePublish}>
+                    Publish
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    );
+
+    let contributableModal = (
+        <Modal show={showContributableModal} onHide={() => {setShowContributableModal(false)}}>
+            <Modal.Header closeButton>
+                <Modal.Title>Confirm</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Are you sure you want to make this contributable? You cannot undo this action.</Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={() => {setShowContributableModal(false)}}>
+                    Cancel
+                </Button>
+                <Button variant="primary" onClick={handleMakeContributable}>
+                    Make Contributable
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    );
+
     return (
         <Container fluid className='my-3'>
+            {addContentModal}
+            {publishModal}
+            {contributableModal}
             <Row>
                 {leftColumn}
                 {middleColumn}

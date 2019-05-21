@@ -41,7 +41,7 @@ export default function CategoryCard({ userId, contentBaseId, onClick, extraStyl
                 if(contentBaseId)//Authors don't have authors; prevent an error here
                     authorId=res.content.contentBase.author;
 
-                console.log("RESPONSE: ",res)
+                // console.log("RESPONSE: ",res)
                 if (isMounted) {
                     setThumbnail(thumbnail);
                     setTitle(title);
@@ -69,17 +69,20 @@ export default function CategoryCard({ userId, contentBaseId, onClick, extraStyl
     } else {
         return (
             <Card style={{...{ width: '18rem', cursor: 'pointer' }, ...extraStyles}}>
-                {
-                    userId?
-                    <></>//Don't show the author field if we're looking at a user
-                        :
-                    <Card.Header onClick={()=>window.goToUserPage(authorId)}
-                        style={{textAlign: 'center'}}>
-                        {"Author: "+authorTitle}
-                    </Card.Header>
-                }
                 <Card.Img variant='top' src={thumbnail}  onClick={onClick}/>
-                <Card.Footer style={{ textAlign: 'center' }}  onClick={onClick}>{title}</Card.Footer>
+                <Card.Footer style={{ textAlign: 'center' }}  onClick={onClick}>{title}
+                    {
+                        userId?
+                            <></>//Don't show the author field if we're looking at a user
+                            :
+                            <>
+                                <br/>
+                            {/*<Card.Header onClick={()=>window.goToUserPage(authorId)}*/}
+                                         {/*style={{textAlign: 'center'}}>*/}
+                                {"Author: "+authorTitle}
+                            {/*</Card.Header>*/}
+                            </>
+                    }</Card.Footer>
             </Card>
         );
     }

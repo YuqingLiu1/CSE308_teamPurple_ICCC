@@ -1,3 +1,15 @@
+@import url('https://fonts.googleapis.com/css?family=Bitter|Nanum+Gothic|Quicksand');
+*
+{
+  /*margin: 0;*/
+  /*padding: 0;*/
+  font-family: 'Bitter',monospace;
+  /*color: white;*/
+  /*border-collapse: collapse;*/
+  /*border-width: 0;*/
+  /*text-shadow: 0px 0px 4px rgba(0, 0, 0, .3);*/
+
+}
 input.createInput{
   text-align: center;
   border-radius: 18px;

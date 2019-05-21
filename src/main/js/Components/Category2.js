@@ -20,7 +20,6 @@ export default function Category2({ categoryId, loggedInUserId, changePage }) {
 	const [searchText, setSearchText] = useState('');
 	const [name, setName] = useState('');
 	const [likedBy, setLikedBy] = useState('');
-	const [everythingILike, setEverythingILike] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [items, setItems] = useState([]);
 	const [notExpandedControls, setNotExpandedControls] = useState(true);
@@ -45,28 +44,22 @@ export default function Category2({ categoryId, loggedInUserId, changePage }) {
 					setSearchText(searchText);
 					setName(name);
 					setLikedBy(likedBy);
-					// setEverythingILike(await window.fetchJson('/likes/everythingILike').content);
 					setIsMyCategory(isMyCategory);
 				}
 
 				// now that we have info about this category, perform a search for users/content based on it
-				if (searchText === "LikedByMe") {
-					res = await fetch(`/likes/GetlikedItem?type=${type}`);
-				} else {
-					// use category information to search for users/content
-					res = await fetch('/search', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						body: JSON.stringify({
-							type: type,
-							creator: creator,
-							searchText: searchText,
-							likedBy: likedBy,
-						})
-					});
-				}
+				res = await fetch('/search', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						type: type,
+						creator: creator,
+						searchText: searchText,
+						likedBy: likedBy,
+					})
+				});
 				res = await res.json();
 				if (res.status !== 'OK') throw new Error('Failed to search.');
 
@@ -155,7 +148,7 @@ export default function Category2({ categoryId, loggedInUserId, changePage }) {
 			setLikedBy(loggedInUserId);
 		} else {
 			await window.setCategoryLikedBy(categoryId, null);
-			setLikedBy(null);
+			setLikedBy('');
 		}
 	};
 
@@ -165,7 +158,7 @@ export default function Category2({ categoryId, loggedInUserId, changePage }) {
 			<div>
 				<Button onClick={handleDelete} className='mr-3'>Delete</Button>
 				This category shows
-				<select value={type} onChange={e => handleChangeType(e.target.value)}>
+				<select value={type} onChange={e => handleChangeType(e.target.value)} className='mx-1'>
 					<option value="All" label="everything"/>
 					<option value="Content" label="all content"/>
 					<option value="User" label="all users"/>
@@ -175,27 +168,22 @@ export default function Category2({ categoryId, loggedInUserId, changePage }) {
 				</select>
 				{
 					type !== 'User' && type !=='All' &&
-					<select value={creator ? "Me" : "Anybody"} onChange={e => handleChangeCreator(e.target.value)}>
+					<select value={creator ? "Me" : "Anybody"} onChange={e => handleChangeCreator(e.target.value)} className='mr-1'>
 						<option value="Me" label="that I made"/>
 						<option value="Anybody" label="that anybody made"/>
 					</select>
 				}
 				containing the search phrase
-				<Button onClick={handleChangeSearch}>
-					{searchText}
+				<Button onClick={handleChangeSearch} className='mx-1'>
+					{JSON.stringify(searchText)}
 				</Button>
-				<select value={likedBy ? "Me" : null} onChange={e => handleChangeLikedBy(e.target.value)}>
+				<select value={likedBy ? "Me" : 'not me'} onChange={e => handleChangeLikedBy(e.target.value)}>
 					<option value="Me" label=" if I liked it"/>
-					<option value={null} label=" whether or not I liked it"/>
+					<option value='not me' label=" whether or not I liked it"/>
 				</select>
 			</div>
 		</Collapse>
 	);
-
-	let filteredItems = items;
-	// if (likedBy) {
-	// 	filteredItems = filteredItems.filter(x => everythingILike.includes(x.generalBaseId));
-	// }
 
 	const cards = (
 		<Card.Body style={{overflowX: 'scroll'}}>
@@ -204,7 +192,7 @@ export default function Category2({ categoryId, loggedInUserId, changePage }) {
 					<tbody>
 						<tr>
 							{
-								!filteredItems.length ?
+								!items.length ?
 									<td>
 										{
 											loading ?
@@ -214,7 +202,7 @@ export default function Category2({ categoryId, loggedInUserId, changePage }) {
 										}
 									</td>
 										:
-									filteredItems.map(x => {
+									items.map(x => {
 										return (
 											<td key={x.generalBaseId}>
 												{

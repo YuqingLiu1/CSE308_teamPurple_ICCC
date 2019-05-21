@@ -1,6 +1,7 @@
 package com.teampurple.iccc.controllers;
 
 import com.teampurple.iccc.models.*;
+import com.teampurple.iccc.models.User;
 import com.teampurple.iccc.repositories.CommentRepository;
 import com.teampurple.iccc.repositories.GeneralBaseRepository;
 import com.teampurple.iccc.repositories.SketchRepository;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
 
 @RestController
 public class CommentController {
@@ -145,6 +147,41 @@ public class CommentController {
         commentInfo.setAuthorSketch(authorSketch);
 
         return new Response(Response.OK, commentInfo);
+    }
+
+    //id is the general base id of user on profile card
+    @GetMapping("/comments/myComments")
+    public Response getUserComments(@RequestParam("id") final String generalBaseId) {
+        GeneralBase userGB = generalBaseRepository.findById(generalBaseId).get();
+        //System.out.println("user GB is " + userGB);
+
+        String userId = userGB.getTypeRef();
+        //System.out.println("user id is " + userId);
+
+        //for testing, delete it later
+        User commentUser = userRepository.findById(userId).get();
+        //System.out.println("user email is " + commentUser.getEmail());
+
+        //commentRepository
+        List<Comment> comments = commentRepository.findByAuthor(userId);
+        ArrayList<MyComment> myComments = new ArrayList();
+
+        for (int i = 0; i < comments.size(); i++){
+            //System.out.println(comments.get(i).getContent());
+
+            Comment comment = comments.get(i);
+            String onId = comment.getOn();
+            GeneralBase onGB = generalBaseRepository.findById(onId).get();
+            if (onGB.getType().equals("ContentBase")) {
+                String onTitle = onGB.getTitle();
+
+                MyComment myComment = new MyComment(comment.getContent(), onTitle);
+                myComments.add(myComment);
+            }
+        }
+
+
+        return new Response(Response.OK, myComments);
     }
 
 }

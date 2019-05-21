@@ -92,9 +92,7 @@ export default function ContentInfoCard({ contentBaseId, editable }) {
         }
     };
 
-    function linkToAuthor()
-    {
-         // console.log(await getContentAuthor(contentBaseId))
+    function linkToAuthor() {
         window.goToContentAuthor(contentBaseId)
     }
 

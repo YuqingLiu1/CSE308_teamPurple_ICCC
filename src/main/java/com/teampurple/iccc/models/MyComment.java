@@ -8,11 +8,23 @@ public class MyComment {
 
     private String title;
 
-    public MyComment(String content, String onTitle) {
+
+
+    private String generalBaseId;
+
+    public MyComment(String content, String onTitle, String gbid) {
         this.content = content;
         this.title = onTitle;
+        this.generalBaseId = gbid;
     }
 
+    public String getGeneralBaseId() {
+        return generalBaseId;
+    }
+
+    public void setGeneralBaseId(String generalBaseId) {
+        this.generalBaseId = generalBaseId;
+    }
 
     public String getContent() {
         return content;

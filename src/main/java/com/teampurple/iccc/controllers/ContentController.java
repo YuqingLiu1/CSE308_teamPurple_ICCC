@@ -530,6 +530,45 @@ public class ContentController {
 
     /**
      * Description:
+     *   - determine the type of a piece of content
+     *
+     * Request params:
+     *   - id: String (ContentBase ID of the content to query)
+     *
+     * Returns:
+     *   - status: String ('OK' or 'error')
+     *   - content (if status is 'OK'):
+     *       {
+     *           type: String (either "Series", "Episode", or "Frame" depending on the type of the specified content)
+     *       }
+     */
+    @GetMapping("/content/type")
+    public Response getContentType(@RequestParam("id") final String contentBaseId) {
+        try {
+            ContentType contentType = new ContentType();
+
+            // make sure the specified content exists
+            if (contentBaseId == null) {
+                throw new Exception("Must specify ContentBase ID when checking content type.");
+            }
+            Optional<ContentBase> contentBaseOptional = contentBaseRepository.findById(contentBaseId);
+            if (!contentBaseOptional.isPresent()) {
+                throw new Exception("Failed to find content with ContentBase ID: " + contentBaseId + ".");
+            }
+            ContentBase contentBase = contentBaseOptional.get();
+
+            // find the type of the content
+            contentType.setContentBaseId(contentBaseId);
+            contentType.setType(contentBase.getType());
+
+            return new Response(Response.OK, contentType);
+        } catch (Exception e) {
+            return new Response(Response.ERROR, e.toString());
+        }
+    }
+
+    /**
+     * Description:
      *   - get the immediate surrounding ContentBase IDs (parent, child, left, and right) of a given ContentBase ID
      *   - only returns ContentBase IDs, so if the given ContentBase ID is for a series then the parent would be null
      *     (since it would be a user, which does not have an associated ContentBase)

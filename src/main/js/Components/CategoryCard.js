@@ -1,5 +1,6 @@
 require('@babel/polyfill')
 
+//TODO Refactor this code - Ryan
 import React, { useState, useEffect } from 'react';
 import Card from 'react-bootstrap/Card';
 import Spinner from 'react-bootstrap/Spinner';
@@ -18,6 +19,7 @@ export default function CategoryCard({ userId, contentBaseId, onClick, extraStyl
     const [title, setTitle] = useState('');
     const [authorTitle, setAuthorTitle] = useState('');
     const [authorId, setAuthorId] = useState('');
+    const [contentType, setContentType] = useState('');
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         let isMounted = true;
@@ -41,12 +43,14 @@ export default function CategoryCard({ userId, contentBaseId, onClick, extraStyl
                 if(contentBaseId)//Authors don't have authors; prevent an error here
                     authorId=res.content.contentBase.author;
 
-                // console.log("RESPONSE: ",res)
                 if (isMounted) {
                     setThumbnail(thumbnail);
                     setTitle(title);
-                    if(contentBaseId)//
-                    {
+                    try {
+                        setContentType(res.content.contentBase.type)
+                    } catch {
+                    }
+                    if(contentBaseId) {
                         setAuthorId(authorId);
                         setAuthorTitle(await window.getUserTitle(authorId));
                     }
@@ -70,19 +74,22 @@ export default function CategoryCard({ userId, contentBaseId, onClick, extraStyl
         return (
             <Card style={{...{ width: '18rem', cursor: 'pointer' }, ...extraStyles}}>
                 <Card.Img variant='top' src={thumbnail}  onClick={onClick}/>
-                <Card.Footer style={{ textAlign: 'center' }}  onClick={onClick}>{title}
+                <Card.Footer style={{ textAlign: 'center' }}  onClick={onClick}>
+                    {title}
                     {
-                        userId?
-                            <></>//Don't show the author field if we're looking at a user
-                            :
+                        userId ?
+                            <>
+                                <br/>{"Type: User"}
+                            </>//Don't show the author field if we're looking at a user
+                                :
                             <>
                                 <br/>
-                            {/*<Card.Header onClick={()=>window.goToUserPage(authorId)}*/}
-                                         {/*style={{textAlign: 'center'}}>*/}
                                 {"Author: "+authorTitle}
-                            {/*</Card.Header>*/}
+                                <br/>
+                                {"Type: "+contentType}
                             </>
-                    }</Card.Footer>
+                    }
+                </Card.Footer>
             </Card>
         );
     }

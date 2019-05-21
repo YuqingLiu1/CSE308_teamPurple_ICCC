@@ -219,6 +219,24 @@ window.setCategorySearchText=async function(categoryId,searchText)
 	console.assert(typeof categoryId==='string','categoryId must be a string')
 	return await setCategoryParameter(categoryId,'searchText',searchText)
 }
+window.setCategoryCreator=async function(categoryId,creator)
+{
+	console.assert(arguments.length ===2       ,'Wrong number of arguments'  )
+	console.assert(typeof categoryId==='string','categoryId must be a string')
+	let out=await setCategoryParameter(categoryId,'creator',creator)
+	// alert("OUT")
+	return out
+
+}
+window.setCategoryLikedBy=async function(categoryId,likedBy)
+{
+	console.assert(arguments.length ===2       ,'Wrong number of arguments'  )
+	console.assert(typeof categoryId==='string','categoryId must be a string')
+	let out=await setCategoryParameter(categoryId,'likedBy',likedBy)
+	// alert("OUT")
+	return out
+
+}
 window.setCategoryType=async function(categoryId,type)
 {
 	console.assert(arguments.length ===2       ,'Wrong number of arguments'  )
@@ -325,4 +343,10 @@ window.isMyCategory=async function(categoryId)
 	if(!await isLoggedIn())return false
 	//Returns true IFF the logged in user owns that category ID
 	return await isMyUserId(await getCategoryUserId(categoryId))
+}
+
+window.getWhoLikedUser=async function(userId)
+{
+	//Get all userIds that liked the given userId
+	// (await getUserInfo(userId)).content.
 }

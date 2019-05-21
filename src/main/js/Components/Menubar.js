@@ -16,7 +16,7 @@ import Spinner from 'react-bootstrap/Spinner';
  * @param loggedIn Whether or not there is a currently logged in user.
  * @param changePage The function to call to change the current page.
  */
-export default function Menubar({ userId, loggedIn, changePage }) {
+export default function Menubar({ userId, loggedIn, changePage, backPage }) {
     const [searchText, setSearchText] = useState('');
     const [searchLoading, setSearchLoading] = useState(false);
 
@@ -113,6 +113,9 @@ export default function Menubar({ userId, loggedIn, changePage }) {
                 <i className="fab fa-cuttlefish fa-2x"/>
             </Nav.Link>
             <Nav className='mr-3'>
+                <Nav.Link onClick={backPage}>
+                    <i className="fas fa-arrow-left fa-2x"/>
+                </Nav.Link>
                 <Nav.Link onClick={() => {changePage('refresh')}}>
                     <i className="fas fa-redo fa-2x"/>
                 </Nav.Link>

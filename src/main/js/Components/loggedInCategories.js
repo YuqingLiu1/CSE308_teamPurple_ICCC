@@ -2,7 +2,6 @@ require('@babel/polyfill');
 
 import React, {Component} from "react"
 import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd"
-import Category from './Category';
 import Category2 from './Category2';
 
 // a little function to help us with reordering the result
@@ -63,7 +62,7 @@ export default class App extends Component
 					content:
 						<Category2
 							categoryId={categoryId}
-							loggedIn={true}
+							loggedInUserId={this.props.userId}
 							changePage={this.props.changePage}
 						/>
 				}

@@ -63,7 +63,6 @@ class App extends Component
             content:
                 <Category2
                     categoryId={ALL_SERIES_CATEGORY_ID}
-                    loggedIn={false}
                     changePage={this.props.changePage}
                 />
         },
@@ -72,7 +71,6 @@ class App extends Component
             content:
                 <Category2
                     categoryId={ALL_USERS_CATEGORY_ID}
-                    loggedIn={false}
                     changePage={this.props.changePage}
                 />
         }

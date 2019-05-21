@@ -26,11 +26,13 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
         parentContentBaseId: '',
         childContentBaseId: '',
     });
+    const [parentIsPublic, setParentIsPublic] = useState(false);
     useEffect(() => {
         let isMounted = true;
 
         async function loadSurroundingContent() {
             try {
+                // load the surrounding content
                 let res = await fetch('/content/surroundings?id=' + contentBaseId);
                 res = await res.json();
                 if (res.status !== 'OK') throw new Error('Failed to load surrounding content.');
@@ -39,6 +41,18 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
                 let parentContentBaseId = res.content.parentContentBaseRef;
                 let childContentBaseId = res.content.childContentBaseRef;
 
+                // figure out if the parent is public
+                let parentIsPublic;
+                if (!parentContentBaseId) {
+                    // no parent means the current content is a series, which must always be allowed to be made public
+                    parentIsPublic = true;
+                } else {
+                    res = await fetch(`/content/visibility?id=${parentContentBaseId}`);
+                    res = await res.json();
+                    if (res.status !== 'OK') throw new Error(`Failed to load visibility of content for ContentBase ID: ${parentContentBaseId}.`);
+                    parentIsPublic = res.content.public;
+                }
+
                 if (isMounted) {
                     setSurroundingContent({
                         rightContentBaseId: rightContentBaseId,
@@ -46,6 +60,7 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
                         parentContentBaseId: parentContentBaseId,
                         childContentBaseId: childContentBaseId,
                     });
+                    setParentIsPublic(parentIsPublic);
                 }
             } catch (err) {
                 console.log(err);
@@ -215,11 +230,11 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
                                 variant='primary'
                                 onClick={handleContributableButtonClick}>Make Contributable</Button>
                         }
-                        {
-                            generalBaseId &&
-                            <Likes generalBaseId={generalBaseId}/>
-                        }
                     </ButtonGroup>
+                }
+                {
+                    generalBaseId &&
+                    <Likes generalBaseId={generalBaseId} loggedInUserId={loggedInUserId}/>
                 }
             </Col>
                 :
@@ -229,7 +244,12 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
                     editable={true}
                 />
                 <ButtonGroup className='mt-3'>
-                    <Button variant='primary' onClick={handlePublishButtonClick}>Publish</Button>
+                    {
+                        parentIsPublic ?
+                            <Button variant='primary' onClick={handlePublishButtonClick}>Publish</Button>
+                                :
+                            <Button variant='primary' disabled onClick={handlePublishButtonClick}>Publish</Button>
+                    }
                     <Button variant='primary' disabled onClick={handleContributableButtonClick}>Make Contributable</Button>
                 </ButtonGroup>
             </Col>

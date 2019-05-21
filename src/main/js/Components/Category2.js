@@ -18,8 +18,6 @@ import CategoryCard from "./CategoryCard"
 //     const [name,setName]=useState('')
 //     const [items,setItems]=useState([])
 //     const [loading,setLoading]=useState('')
-//
-//
 // }
 
 
@@ -32,19 +30,28 @@ export default class Category2 extends Component {
         this.state = {
             name: '',
             items: [],
-            loading: true
+            loading: true,
+            isMyCategory:false
         }
     }
 
     async componentDidMount() {
         try {
+
+
             let props = this.props
             let categoryId = props.categoryId
             let changePage = props.changePage
 
+            if(this.props.loggedIn && await window.isMyCategory(categoryId))
+            {
+                this.setState({isMyCategory:true})
+            }
+
             // fetch category information
             let categoryInfoRes = await fetch('/category/info?id=' + categoryId)
             categoryInfoRes = await categoryInfoRes.json()
+            // console.log("CATEGORY: ",categoryInfoRes)
             if (categoryInfoRes.status !== 'OK') throw new Error('Failed to fetch category with ID: ' + categoryId)
 
             let type = categoryInfoRes.content.type
@@ -52,6 +59,7 @@ export default class Category2 extends Component {
             let searchText = categoryInfoRes.content.searchText
             let name = categoryInfoRes.content.name
             let searchRes
+
 
             if(searchText==="LikedByMe"){
                 searchRes = await fetch(`/likes/GetlikedItem?type=${type}`)
@@ -202,7 +210,7 @@ export default class Category2 extends Component {
                 <Card.Header>
                     <div style={{display: 'flex', flexDirection: 'vertical'}}>
                         {
-                            !loggedIn ?
+                            !(loggedIn&&this.state.isMyCategory) ?
                                 <span className='mx-auto' style={{'fontSize': categoryFontSize}}>
 									{name}
                                 </span>

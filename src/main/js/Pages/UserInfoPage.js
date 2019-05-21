@@ -97,6 +97,7 @@ export default class UserInfoPage extends Component {
 		let changePage = this.props.changePage;
 		let loggedIn = this.props.loggedIn;
 		let generalBaseId = this.state.generalBaseId;
+		let loggedInUserId = this.props.loggedInUserId;
 		return (
 			<Container className="mt-5">
 				<Jumbotron>
@@ -111,6 +112,7 @@ export default class UserInfoPage extends Component {
 												profileThumbnailUrl={userThumbnail}
 												username={username}
 												editable={loggedIn}
+												loggedInUserId={loggedInUserId}
 											/>
 									}
 									{

@@ -153,6 +153,7 @@ class App extends Component
 			userInfo        :
 				<UserInfoPage
 					userId={loggedInUserId}
+					loggedInUserId={loggedInUserId}
 					changePage={this.changePage}
 					{...this.state.pageData}
 				/>,

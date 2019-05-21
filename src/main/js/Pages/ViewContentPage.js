@@ -230,11 +230,11 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
                                 variant='primary'
                                 onClick={handleContributableButtonClick}>Make Contributable</Button>
                         }
-                        {
-                            generalBaseId &&
-                            <Likes generalBaseId={generalBaseId}/>
-                        }
                     </ButtonGroup>
+                }
+                {
+                    generalBaseId &&
+                    <Likes generalBaseId={generalBaseId} loggedInUserId={loggedInUserId}/>
                 }
             </Col>
                 :

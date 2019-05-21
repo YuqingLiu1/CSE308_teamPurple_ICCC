@@ -7,6 +7,9 @@ import com.teampurple.iccc.repositories.SketchRepository;
 import com.teampurple.iccc.repositories.UserRepository;
 import com.teampurple.iccc.utils.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +21,9 @@ import java.util.Optional;
 
 @RestController
 public class SearchController {
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Autowired
     private GeneralBaseRepository generalBaseRepository;
@@ -50,6 +56,7 @@ public class SearchController {
      *              if there is no restriction on who created the content),
      *   - searchText: String (the text to appear in the title/description of the content returned, or the
      *                 name/bio of the users returned)
+     *   - likedBy: String (User ID of user that must have liked the returned users/content; null if it doesn't matter)
      *
      * Returns:
      *   - status: String ('OK' or 'error')
@@ -169,6 +176,7 @@ public class SearchController {
         if (searchText != null) {
             searchText = searchText.trim();
         }
+        String likedBy = category.getLikedBy();
 
         List<ContentBase> allContentBases = new ArrayList<>();
         List<GeneralBase> allGeneralBases = new ArrayList<>();
@@ -177,14 +185,26 @@ public class SearchController {
         List<String> allContentBaseIds = new ArrayList<>();
         List<String> allGeneralBaseIds = new ArrayList<>();
 
-        // find the GeneralBases that match the search text
+        // find the GeneralBases that match the search text/likedBy criteria
         if (searchText == null || searchText.length() == 0) {
-            // match all GeneralBases
-            allGeneralBases = generalBaseRepository.findAll();
+            if (likedBy == null) {
+                // match all GeneralBases
+                allGeneralBases = generalBaseRepository.findAll();
+            } else {
+                // match GeneralBases based solely on likedBy criteria
+                allGeneralBases = generalBaseRepository.findAllByLiked(likedBy);
+            }
         } else {
-            // only match GeneralBases that contain the given search text
-            TextCriteria criteria = TextCriteria.forDefaultLanguage().matchingAny(searchText);
-            allGeneralBases = generalBaseRepository.findAllBy(criteria);
+            if (likedBy == null) {
+                // only match GeneralBases that contain the given search text
+                TextCriteria criteria = TextCriteria.forDefaultLanguage().matchingAny(searchText);
+                allGeneralBases = generalBaseRepository.findAllBy(criteria);
+            } else {
+                // match GeneralBases based on both search text and liked by criteria
+                TextCriteria textCriteria = TextCriteria.forDefaultLanguage().matchingAny(searchText);
+                Query query = Query.query(Criteria.where("likers").is(likedBy)).addCriteria(textCriteria);
+                allGeneralBases = mongoTemplate.find(query, GeneralBase.class);
+            }
         }
 
         // find the ContentBases that match the query

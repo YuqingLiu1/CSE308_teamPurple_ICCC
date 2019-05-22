@@ -58,9 +58,9 @@ export default class UserInfoPage extends Component
 		}
 	}
 
-	async componentDidUpdate(prevProps, prevState, snapshot)
+	async componentDidUpdate()
 	{
-		if(this.state.reload || prevProps.userId !== this.props.userId)
+		if(this.state.reload)
 		{
 			try
 			{
@@ -159,7 +159,7 @@ export default class UserInfoPage extends Component
 			userCategoryIds.map((userCategoryId)=>
 								{
 									return (
-										<Category2 key={userCategoryId} loggedInUserId={loggedInUserId} categoryId={userCategoryId} changePage={changePage}/>
+										<Category2 key={userCategoryId} loggedIn={true} categoryId={userCategoryId} changePage={changePage}/>
 									)
 								})
 		}</>

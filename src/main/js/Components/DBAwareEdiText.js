@@ -30,6 +30,7 @@ export default function DBAwareEdiText(props)
 	return (
 		<EdiText {...{...props, onSave: props.onSave ? props.onSave : onSave}}
 			hideIcons={true}
+
 			editButtonContent={<i className="far fa-edit"></i>}
 			editButtonClassName="transparent-button"
 			saveButtonContent={<i className="fas fa-check"></i>}

@@ -449,7 +449,7 @@ export default function ViewContentPage({ contentBaseId, loggedInUserId, changeP
             <Modal.Header closeButton>
                 <Modal.Title>Confirm</Modal.Title>
             </Modal.Header>
-            <Modal.Body>Are you sure you want to make this public? You cannot undo this action.</Modal.Body>
+            <Modal.Body>{"Don't forget to save your work before publishing!\nAlso, are you sure you want to make this public? You cannot undo this action."}</Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={() => {setShowPublishModal(false)}}>
                     Cancel

@@ -187,7 +187,7 @@ public class SearchController {
 
         // find the GeneralBases that match the search text/likedBy criteria
         if (searchText == null || searchText.length() == 0) {
-            if (likedBy == null) {
+            if (likedBy == null || likedBy.length() == 0) {
                 // match all GeneralBases
                 allGeneralBases = generalBaseRepository.findAll();
             } else {
@@ -195,7 +195,7 @@ public class SearchController {
                 allGeneralBases = generalBaseRepository.findAllByLiked(likedBy);
             }
         } else {
-            if (likedBy == null) {
+            if (likedBy == null || likedBy.length() == 0) {
                 // only match GeneralBases that contain the given search text
                 TextCriteria criteria = TextCriteria.forDefaultLanguage().matchingAny(searchText);
                 allGeneralBases = generalBaseRepository.findAllBy(criteria);
